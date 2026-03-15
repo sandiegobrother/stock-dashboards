@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Broadcom (AVGO) — Full Wall Street-Style Equity Research Dashboard. AI revenue, valuation, moat analysis, bull/bear/base scenarios.">
+<meta property="og:title" content="AVGO · Broadcom Equity Research Dashboard">
+<meta property="og:description" content="Full Wall Street-style stock analysis: AI revenue growth, valuation, competitive moat, risk assessment and price targets.">
+<meta property="og:type" content="website">
+<title>AVGO · Broadcom Equity Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+/* ─── RESET & ROOT ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #07090c;
+  --bg2:      #0d1117;
+  --surface:  #111720;
+  --surface2: #171e28;
+  --border:   #1e2836;
+  --border2:  #253042;
+  --accent:   #c9993a;
+  --accent-d: #9e7728;
+  --blue:     #4a84e8;
+  --green:    #3bbf72;
+  --red:      #df5454;
+  --text:     #dde2ea;
+  --muted:    #6e7d94;
+  --muted2:   #3a4a5e;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+  --radius:   6px;
+  --radius-lg: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── GRID NOISE TEXTURE ────────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201,153,58,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,153,58,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── SCROLLBAR ─────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ─── NAV ───────────────────────────────────────────────────── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(7,9,12,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 52px;
+}
+.nav-logo {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.12em;
+  text-decoration: none;
+}
+.nav-links {
+  display: flex;
+  gap: 0;
+  list-style: none;
+}
+.nav-links a {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 0 1rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.nav-links a:hover { color: var(--text); border-bottom-color: var(--accent); }
+.nav-pill {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  background: rgba(59,191,114,0.12);
+  color: var(--green);
+  border: 1px solid rgba(59,191,114,0.25);
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.08em;
+}
+@media (max-width: 700px) { .nav-links { display: none; } }
+
+/* ─── WRAPPER ───────────────────────────────────────────────── */
+.wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
+/* ─── HERO HEADER ───────────────────────────────────────────── */
+.hero {
+  padding: 3.5rem 0 2.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2.5rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  align-items: end;
+}
+.hero-left {}
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  color: var(--muted2);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.hero-ticker {
+  font-family: var(--font-mono);
+  font-size: 4rem;
+  font-weight: 500;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+.hero-name {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--muted);
+  margin-bottom: 0.75rem;
+}
+.hero-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.hero-right { text-align: right; }
+.hero-price {
+  font-family: var(--font-mono);
+  font-size: 2.4rem;
+  font-weight: 500;
+  color: var(--text);
+}
+.hero-target {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--accent);
+  margin-top: 4px;
+}
+.hero-date {
+  font-size: 0.7rem;
+  color: var(--muted2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+@media (max-width: 600px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { text-align: left; }
+  .hero-ticker { font-size: 2.8rem; }
+}
+
+/* ─── CONSENSUS RIBBON ──────────────────────────────────────── */
+.ribbon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  margin-bottom: 2.5rem;
+  overflow: hidden;
+}
+.ribbon-item {
+  padding: 0.85rem 1.5rem;
+  border-right: 1px solid var(--border);
+  flex: 1;
+  min-width: 120px;
+}
+.ribbon-item:last-child { border-right: none; }
+.ribbon-label {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted2);
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+.ribbon-value {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+.rv-green { color: var(--green); }
+.rv-amber { color: var(--accent); }
+.rv-blue  { color: var(--blue); }
+.rv-text  { color: var(--text); }
+
+/* ─── SECTION HEADING ───────────────────────────────────────── */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 2.5rem 0 1.25rem;
+}
+.section-head-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.section-head-label {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ─── CARDS ─────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.4rem;
+}
+.card-head {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted2);
+  font-weight: 500;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ─── GRIDS ─────────────────────────────────────────────────── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 1.25rem; }
+@media (max-width: 960px) { .g4 { grid-template-columns: repeat(2,1fr); } .g3 { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 600px) { .g4, .g3, .g2 { grid-template-columns: 1fr; } }
+
+/* ─── METRIC TILE ───────────────────────────────────────────── */
+.metric {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.metric:hover { border-color: var(--border2); transform: translateY(-1px); }
+.metric::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.metric:hover::after { opacity: 1; }
+.m-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted2); margin-bottom: 7px; font-weight: 500; }
+.m-value { font-family: var(--font-mono); font-size: 1.55rem; font-weight: 500; line-height: 1; }
+.m-sub { font-size: 0.73rem; color: var(--muted); margin-top: 5px; }
+
+/* ─── TABLE ─────────────────────────────────────────────────── */
+.tbl { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+.tbl th {
+  font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted2); text-align: left; padding: 0 1rem 0.65rem 0;
+  border-bottom: 1px solid var(--border); font-weight: 500;
+}
+.tbl td {
+  padding: 0.62rem 1rem 0.62rem 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.tbl tr:last-child td { border-bottom: none; }
+.tbl tr:hover td { background: rgba(255,255,255,0.015); }
+.tbl td.mono { font-family: var(--font-mono); font-size: 0.82rem; }
+.tbl td.right { text-align: right; }
+.tbl td.dim { color: var(--muted); font-size: 0.79rem; }
+.tbl .hl td { background: rgba(201,153,58,0.06); }
+.tbl .hl td:first-child { border-left: 2px solid var(--accent); padding-left: calc(1rem - 2px); }
+
+/* ─── BAR ───────────────────────────────────────────────────── */
+.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.bar-lbl { font-size: 0.73rem; color: var(--muted); width: 110px; flex-shrink: 0; }
+.bar-track { flex: 1; height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 3px; transition: width 1.2s cubic-bezier(.4,0,.2,1); }
+.bar-val { font-family: var(--font-mono); font-size: 0.73rem; width: 44px; text-align: right; color: var(--text); flex-shrink: 0; }
+
+/* ─── SCENARIO ──────────────────────────────────────────────── */
+.scenario {
+  border-radius: var(--radius-lg);
+  padding: 1.4rem;
+  border: 1px solid;
+  position: relative;
+  overflow: hidden;
+}
+.scenario::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  opacity: 0.04;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    -45deg, currentColor 0, currentColor 1px, transparent 0, transparent 50%
+  );
+  background-size: 8px 8px;
+}
+.sc-bull { border-color: rgba(59,191,114,0.3); color: var(--green); }
+.sc-base { border-color: rgba(74,132,232,0.3); color: var(--blue); }
+.sc-bear { border-color: rgba(223,84,84,0.3);  color: var(--red); }
+.sc-label {
+  font-family: var(--font-mono);
+  font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+  font-weight: 500; margin-bottom: 0.6rem;
+}
+.sc-target {
+  font-family: var(--font-display);
+  font-size: 2rem; font-weight: 700; line-height: 1; margin-bottom: 0.25rem;
+}
+.sc-upside { font-family: var(--font-mono); font-size: 0.82rem; margin-bottom: 0.85rem; }
+.sc-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.6; }
+
+/* ─── RISK ──────────────────────────────────────────────────── */
+.risk-row { display: flex; gap: 12px; padding: 0.7rem 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+.risk-row:last-child { border-bottom: none; }
+.risk-badge {
+  font-family: var(--font-mono); font-size: 0.6rem; font-weight: 500;
+  letter-spacing: 0.06em; padding: 3px 8px; border-radius: 3px;
+  white-space: nowrap; margin-top: 2px; flex-shrink: 0; width: 46px; text-align: center;
+}
+.rb-high { background: rgba(223,84,84,0.14); color: var(--red); }
+.rb-med  { background: rgba(201,153,58,0.14); color: var(--accent); }
+.rb-low  { background: rgba(59,191,114,0.14); color: var(--green); }
+.risk-name { font-size: 0.87rem; font-weight: 400; margin-bottom: 3px; }
+.risk-desc-text { font-size: 0.77rem; color: var(--muted); line-height: 1.45; }
+
+/* ─── STAR RATING ───────────────────────────────────────────── */
+.stars { color: var(--green); font-size: 0.78rem; letter-spacing: 1px; }
+
+/* ─── QUOTE BLOCK ───────────────────────────────────────────── */
+.quote-block {
+  border: 1px solid rgba(201,153,58,0.28);
+  background: rgba(201,153,58,0.05);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 1rem 1.2rem;
+  font-size: 0.87rem;
+  line-height: 1.65;
+  color: var(--text);
+  margin-top: 1rem;
+}
+.quote-block cite {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--muted2);
+  font-style: normal;
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  letter-spacing: 0.06em;
+}
+
+/* ─── VERDICT ───────────────────────────────────────────────── */
+.verdict {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+.verdict-label { font-family: var(--font-mono); font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted2); margin-bottom: 0.6rem; }
+.verdict-text { font-size: 0.9rem; line-height: 1.7; }
+
+/* ─── CHART CONTAINER ───────────────────────────────────────── */
+.chart-wrap { position: relative; width: 100%; height: 230px; }
+
+/* ─── FOOTER ────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 0 1rem;
+  font-size: 0.72rem;
+  color: var(--muted2);
+  line-height: 1.65;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.footer-brand {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+}
+
+/* ─── ANIMATIONS ────────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.5s ease both; }
+.fade-up:nth-child(1)  { animation-delay: 0.05s; }
+.fade-up:nth-child(2)  { animation-delay: 0.10s; }
+.fade-up:nth-child(3)  { animation-delay: 0.15s; }
+.fade-up:nth-child(4)  { animation-delay: 0.20s; }
+.fade-up:nth-child(5)  { animation-delay: 0.25s; }
+.fade-up:nth-child(6)  { animation-delay: 0.30s; }
+.fade-up:nth-child(7)  { animation-delay: 0.35s; }
+.fade-up:nth-child(8)  { animation-delay: 0.40s; }
+
+/* ─── PRINT ─────────────────────────────────────────────────── */
+@media print {
+  nav { display: none; }
+  body { background: #fff; color: #000; }
+  .card, .metric, .scenario { border-color: #ccc; background: #fafafa; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">AVGO · RESEARCH</a>
+  <ul class="nav-links">
+    <li><a href="#financials">Financials</a></li>
+    <li><a href="#valuation">Valuation</a></li>
+    <li><a href="#moat">Moat</a></li>
+    <li><a href="#scenarios">Scenarios</a></li>
+    <li><a href="#risks">Risks</a></li>
+    <li><a href="#verdict">Verdict</a></li>
+  </ul>
+  <span class="nav-pill">STRONG BUY</span>
+</nav>
+
+<div class="wrapper">
+
+  <!-- ── HERO ── -->
+  <header class="hero fade-up">
+    <div class="hero-left">
+      <div class="eyebrow">Wall Street · Equity Research · March 15, 2026</div>
+      <div class="hero-ticker">AVGO</div>
+      <div class="hero-name">Broadcom Inc.</div>
+      <div class="hero-tags">
+        <span class="tag">NASDAQ</span>
+        <span class="tag">Semiconductors</span>
+        <span class="tag">Infrastructure Software</span>
+        <span class="tag">AI / Cloud</span>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-price">$322.00</div>
+      <div class="hero-target">12-mo target · $467.68</div>
+      <div class="hero-date">Report date: 15 Mar 2026</div>
+    </div>
+  </header>
+
+  <!-- ── RIBBON ── -->
+  <div class="ribbon fade-up">
+    <div class="ribbon-item"><div class="ribbon-label">Consensus</div><div class="ribbon-value rv-green">STRONG BUY</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Price Target</div><div class="ribbon-value rv-amber">$467.68</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">High Target</div><div class="ribbon-value rv-amber">$630.00</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Market Cap</div><div class="ribbon-value rv-text">$1.64T</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">FY26 Rev Guide</div><div class="ribbon-value rv-green">$85–90B</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">AI Rev Target '27</div><div class="ribbon-value rv-amber">$100B+</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Dividend / Qtr</div><div class="ribbon-value rv-text">$0.65</div></div>
+  </div>
+
+  <!-- ── KEY METRICS ── -->
+  <section id="financials">
+    <div class="section-head">
+      <div class="section-head-label">Key Financial Metrics</div>
+      <div class="section-head-line"></div>
+    </div>
+    <div class="g4">
+      <div class="metric fade-up"><div class="m-label">Q1 FY26 Revenue</div><div class="m-value rv-text">$19.3B</div><div class="m-sub" style="color:var(--green)">+29% year-over-year</div></div>
+      <div class="metric fade-up"><div class="m-label">AI Revenue (Q1)</div><div class="m-value rv-amber">$8.4B</div><div class="m-sub" style="color:var(--green)">+106% year-over-year</div></div>
+      <div class="metric fade-up"><div class="m-label">Q1 Free Cash Flow</div><div class="m-value rv-text">$8.0B</div><div class="m-sub">41% FCF margin</div></div>
+      <div class="metric fade-up"><div class="m-label">Non-GAAP Gross Margin</div><div class="m-value rv-green">76%</div><div class="m-sub">Best-in-class semi</div></div>
+      <div class="metric fade-up"><div class="m-label">Trailing P/E (GAAP)</div><div class="m-value rv-text">67.4x</div><div class="m-sub">Forward P/E: 25.9x</div></div>
+      <div class="metric fade-up"><div class="m-label">PEG Ratio</div><div class="m-value rv-green">0.64</div><div class="m-sub">Below 1.0 = undervalued vs growth</div></div>
+      <div class="metric fade-up"><div class="m-label">Net Debt / EBITDA</div><div class="m-value rv-amber">2.3x</div><div class="m-sub">Down from 4.0x post-VMware</div></div>
+      <div class="metric fade-up"><div class="m-label">Return on Equity</div><div class="m-value rv-text">33.4%</div><div class="m-sub">ROIC: 21.3%</div></div>
+    </div>
+  </section>
+
+  <!-- ── REVENUE TABLE + CHART ── -->
+  <section id="valuation">
+    <div class="section-head">
+      <div class="section-head-label">Revenue Growth &amp; Valuation</div>
+      <div class="section-head-line"></div>
+    </div>
+    <div class="g2">
+
+      <!-- Revenue table -->
+      <div class="card">
+        <div class="card-head">Quarterly Revenue Progression</div>
+        <table class="tbl">
+          <thead>
+            <tr><th>Quarter</th><th class="right">Total Rev</th><th class="right">AI Rev</th><th class="right">AI Mix</th><th class="right">YoY</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Q1 FY25</td><td class="mono right">$14.9B</td><td class="mono right">$4.1B</td><td class="mono right">27%</td><td class="mono right" style="color:var(--green)">+34%</td></tr>
+            <tr><td>Q2 FY25</td><td class="mono right">$15.0B</td><td class="mono right">$4.4B</td><td class="mono right">29%</td><td class="mono right" style="color:var(--green)">+36%</td></tr>
+            <tr><td>Q3 FY25</td><td class="mono right">$16.0B</td><td class="mono right">$5.2B</td><td class="mono right">33%</td><td class="mono right" style="color:var(--green)">+39%</td></tr>
+            <tr><td>Q4 FY25</td><td class="mono right">$18.0B</td><td class="mono right">$6.2B</td><td class="mono right">34%</td><td class="mono right" style="color:var(--green)">+45%</td></tr>
+            <tr class="hl"><td><strong>Q1 FY26</strong></td><td class="mono right"><strong>$19.3B</strong></td><td class="mono right" style="color:var(--accent)"><strong>$8.4B</strong></td><td class="mono right" style="color:var(--accent)"><strong>44%</strong></td><td class="mono right" style="color:var(--green)"><strong>+29%</strong></td></tr>
+            <tr style="color:var(--muted)"><td><em>Q2 FY26 (guide)</em></td><td class="mono right"><em>$22.0B</em></td><td class="mono right"><em>~$14.8B</em></td><td class="mono right"><em>67%</em></td><td class="mono right" style="color:var(--green)"><em>+47%</em></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:1.25rem">
+          <div class="chart-wrap">
+            <canvas id="revenueChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Valuation comp + profitability -->
+      <div class="card">
+        <div class="card-head">Peer Valuation Comparison</div>
+        <table class="tbl">
+          <thead>
+            <tr><th>Ticker</th><th class="right">Mkt Cap</th><th class="right">Fwd P/E</th><th class="right">Rev Growth</th><th class="right">FCF Margin</th></tr>
+          </thead>
+          <tbody>
+            <tr class="hl"><td style="color:var(--accent)"><strong>AVGO</strong></td><td class="mono right">$1.64T</td><td class="mono right" style="color:var(--accent)">25.9x</td><td class="mono right" style="color:var(--green)">+29%</td><td class="mono right" style="color:var(--green)">41%</td></tr>
+            <tr><td>NVDA</td><td class="mono right">$2.6T</td><td class="mono right">28.0x</td><td class="mono right" style="color:var(--green)">+78%</td><td class="mono right">52%</td></tr>
+            <tr><td>MRVL</td><td class="mono right">~$95B</td><td class="mono right">24.0x</td><td class="mono right" style="color:var(--green)">+55%</td><td class="mono right">28%</td></tr>
+            <tr><td>QCOM</td><td class="mono right">~$160B</td><td class="mono right">13.5x</td><td class="mono right">+8%</td><td class="mono right">26%</td></tr>
+            <tr><td>AMD</td><td class="mono right">~$165B</td><td class="mono right">22.0x</td><td class="mono right" style="color:var(--green)">+25%</td><td class="mono right">18%</td></tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:1.5rem">
+          <div class="card-head" style="margin-bottom:1rem">Profitability Benchmarks (AVGO)</div>
+          <div class="bar-row"><div class="bar-lbl">Gross margin</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--accent)" data-target="76"></div></div><div class="bar-val">76%</div></div>
+          <div class="bar-row"><div class="bar-lbl">EBITDA margin</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--blue)" data-target="68"></div></div><div class="bar-val">68%</div></div>
+          <div class="bar-row"><div class="bar-lbl">FCF margin</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--green)" data-target="41"></div></div><div class="bar-val">41%</div></div>
+          <div class="bar-row"><div class="bar-lbl">ROE</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--muted)" data-target="33"></div></div><div class="bar-val">33%</div></div>
+        </div>
+
+        <div style="margin-top:1.5rem">
+          <div class="card-head" style="margin-bottom:1rem">Balance Sheet Snapshot</div>
+          <table class="tbl">
+            <tbody>
+              <tr><td class="dim">Net Debt / EBITDA</td><td class="mono right rv-amber">2.3x</td></tr>
+              <tr><td class="dim">Current ratio</td><td class="mono right">1.90</td></tr>
+              <tr><td class="dim">Debt / Equity</td><td class="mono right">0.83x</td></tr>
+              <tr><td class="dim">Annualised FCF run-rate</td><td class="mono right rv-green">~$35B</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BUSINESS MODEL + MOAT ── -->
+  <section id="moat">
+    <div class="section-head">
+      <div class="section-head-label">Business Model &amp; Competitive Moat</div>
+      <div class="section-head-line"></div>
+    </div>
+    <div class="g2">
+
+      <div class="card">
+        <div class="card-head">Revenue Segments</div>
+        <table class="tbl">
+          <thead>
+            <tr><th>Segment</th><th class="right">Mix</th><th>Key Products</th><th>Margin Profile</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Semiconductor Solutions</strong></td>
+              <td class="mono right rv-amber">~55%</td>
+              <td class="dim">Custom AI XPUs, Ethernet networking, storage controllers, wireless</td>
+              <td class="mono" style="color:var(--green)">Very high</td>
+            </tr>
+            <tr>
+              <td><strong>Infrastructure Software</strong></td>
+              <td class="mono right" style="color:var(--blue)">~45%</td>
+              <td class="dim">VMware cloud stack, cybersecurity, mainframe, distributed systems</td>
+              <td class="mono" style="color:var(--green)">Highest (recurring sub.)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:1.5rem">
+          <div class="card-head" style="margin-bottom:1rem">Industry Tailwinds (12–24 Months)</div>
+          <table class="tbl">
+            <thead><tr><th>Trend</th><th>AVGO Exposure</th><th class="right">Scale</th></tr></thead>
+            <tbody>
+              <tr><td>Hyperscaler AI capex explosion</td><td class="dim">Custom XPUs, networking</td><td class="mono right" style="color:var(--green)">$300B+ 2026</td></tr>
+              <tr><td>GPU alternatives (custom ASICs)</td><td class="dim">Direct beneficiary</td><td class="mono right" style="color:var(--green)">~70% share</td></tr>
+              <tr><td>Scale-up Ethernet networking</td><td class="dim">InfiniBand displacement</td><td class="mono right" style="color:var(--green)">Multi-$10B TAM</td></tr>
+              <tr><td>Enterprise cloud migration</td><td class="dim">VMware subscription conv.</td><td class="mono right" style="color:var(--accent)">1.5 yrs remaining</td></tr>
+              <tr><td>AI inference at edge</td><td class="dim">Networking + wireless</td><td class="mono right" style="color:var(--blue)">Emerging</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Competitive Moat Analysis</div>
+        <table class="tbl">
+          <thead><tr><th>Moat Source</th><th>Strength</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Custom silicon lock-in</td>
+              <td><span class="stars">★★★★★</span></td>
+              <td class="dim">3–5 yr co-design cycles; ~70% custom AI chip market share</td>
+            </tr>
+            <tr>
+              <td>Ethernet dominance</td>
+              <td><span class="stars">★★★★☆</span></td>
+              <td class="dim">Displacing InfiniBand in major hyperscaler clusters</td>
+            </tr>
+            <tr>
+              <td>VMware stickiness</td>
+              <td><span class="stars">★★★★★</span></td>
+              <td class="dim">Critical enterprise infra; 2/3 renewals converted to subscriptions</td>
+            </tr>
+            <tr>
+              <td>Capital allocation (Hock Tan)</td>
+              <td><span class="stars">★★★★★</span></td>
+              <td class="dim">Best-in-class M&amp;A discipline; private-equity rigor in public markets</td>
+            </tr>
+            <tr>
+              <td>Customer concentration (risk)</td>
+              <td><span style="color:var(--red);font-size:0.78rem">⚠ Risk</span></td>
+              <td class="dim">Google, Meta, OpenAI = outsized share of AI segment revenue</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="quote-block">
+          "We have line of sight to achieve AI revenue from chips — just chips — in <strong style="color:var(--accent)">excess of $100 billion in 2027</strong>. Over 1 million AI chips to be sold by 2027 leveraging stacked design technology."
+          <cite>— Hock Tan, CEO · Broadcom Q1 FY2026 Earnings Call</cite>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SCENARIOS ── -->
+  <section id="scenarios">
+    <div class="section-head">
+      <div class="section-head-label">Bull / Base / Bear Case Scenarios</div>
+      <div class="section-head-line"></div>
+    </div>
+    <div class="g3">
+      <div class="scenario sc-bull">
+        <div class="sc-label">🐂 Bull Case</div>
+        <div class="sc-target">$550–630</div>
+        <div class="sc-upside">+71% to +96% upside</div>
+        <div class="sc-desc">AI chip revenue exceeds $100B in 2027 as guided. Hyperscalers add new custom chip programs. VMware fully converted to high-margin subscriptions. Operating leverage drives EPS well above consensus. Ethernet takes further InfiniBand share across all major cloud providers.</div>
+      </div>
+      <div class="scenario sc-base">
+        <div class="sc-label">📊 Base Case</div>
+        <div class="sc-target">$430–470</div>
+        <div class="sc-upside">+33% to +46% upside</div>
+        <div class="sc-desc">Custom AI accelerators grow ~140% YoY. Networking revenue +60%. EBITDA margins hold ~68%. VMware integration proceeds smoothly. FY2026 revenue reaches $85–90B. Stock re-rates to ~30x forward earnings as earnings power becomes undeniable.</div>
+      </div>
+      <div class="scenario sc-bear">
+        <div class="sc-label">🐻 Bear Case</div>
+        <div class="sc-target">$223–280</div>
+        <div class="sc-upside">-13% to -31% downside</div>
+        <div class="sc-desc">A major hyperscaler reduces partnership scope significantly in favour of fully in-house silicon. Macro slowdown delays data centre capex. VMware enterprise churn exceeds expectations. Geopolitical disruptions hit TSMC manufacturing. FCF disappoints; debt deleveraging stalls.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RISKS + OUTLOOK ── -->
+  <section id="risks">
+    <div class="section-head">
+      <div class="section-head-label">Risk Assessment &amp; Outlook</div>
+      <div class="section-head-line"></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Key Risks</div>
+        <div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Customer concentration</div><div class="risk-desc-text">Google, Meta, and OpenAI account for a disproportionate share of AI chip revenue. Insourcing risk is structural.</div></div></div>
+        <div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Geopolitical / export restrictions</div><div class="risk-desc-text">Advanced chip export controls and TSMC Taiwan dependency are sector-wide systemic risks shared with all semis.</div></div></div>
+        <div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Marvell competition</div><div class="risk-desc-text">Targeting ~20% custom AI processor share by 2028, up from &lt;5% in 2023. A real but slow-moving threat.</div></div></div>
+        <div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">VMware execution risk</div><div class="risk-desc-text">Any stumble in enterprise subscription retention would compress the high-margin software revenue stream.</div></div></div>
+        <div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Balance sheet / leverage</div><div class="risk-desc-text">Net debt/EBITDA declining steadily; $35B+ annualised FCF provides ample coverage. Low near-term risk.</div></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">12–24 Month Forward Outlook</div>
+        <table class="tbl">
+          <thead><tr><th>Metric</th><th>FY2025A</th><th>FY2026E</th><th>FY2027E</th></tr></thead>
+          <tbody>
+            <tr><td>Total Revenue</td><td class="mono right">$51.6B</td><td class="mono right rv-green">~$87B</td><td class="mono right rv-green">~$115B+</td></tr>
+            <tr><td>AI Revenue</td><td class="mono right">~$21B</td><td class="mono right rv-amber">~$50B+</td><td class="mono right rv-amber">$100B+</td></tr>
+            <tr><td>EBITDA Margin</td><td class="mono right">66%</td><td class="mono right">~68%</td><td class="mono right rv-green">~70%</td></tr>
+            <tr><td>Free Cash Flow</td><td class="mono right">~$28B</td><td class="mono right rv-green">~$35B</td><td class="mono right rv-green">~$50B+</td></tr>
+            <tr><td>Net Debt / EBITDA</td><td class="mono right">2.5x</td><td class="mono right rv-green">~1.8x</td><td class="mono right rv-green">&lt;1.5x</td></tr>
+            <tr><td>EPS (Non-GAAP)</td><td class="mono right">~$4.96</td><td class="mono right rv-green">~$6.50</td><td class="mono right rv-green">~$9.00+</td></tr>
+          </tbody>
+        </table>
+
+        <div style="margin-top:1.25rem">
+          <div class="card-head" style="margin-bottom:0.75rem">Near-Term Catalysts</div>
+          <div class="risk-row"><div class="risk-badge rb-high">Q2'26</div><div><div class="risk-name" style="font-size:0.82rem">Q2 FY26 earnings release</div><div class="risk-desc-text">$22.0B revenue guided (+47% YoY). AI chip and networking trends key to watch.</div></div></div>
+          <div class="risk-row"><div class="risk-badge rb-med">H2'26</div><div><div class="risk-name" style="font-size:0.82rem">VMware conversion completion</div><div class="risk-desc-text">Full subscription migration unlocks predictable ~$20B annual software revenue.</div></div></div>
+          <div class="risk-row" style="border:none"><div class="risk-badge rb-low">'27</div><div><div class="risk-name" style="font-size:0.82rem">$100B AI chip milestone</div><div class="risk-desc-text">CEO guidance. Achieving this would be a significant re-rating event for the stock.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── VERDICT ── -->
+  <section id="verdict">
+    <div class="section-head">
+      <div class="section-head-label">Analyst Verdict</div>
+      <div class="section-head-line"></div>
+    </div>
+    <div class="verdict">
+      <div class="verdict-label">Bottom Line — Strong Buy · Target $467.68</div>
+      <div class="verdict-text">
+        Broadcom is one of the most asymmetric risk/reward opportunities in large-cap technology today. It sits at the intersection of the two most powerful infrastructure trends of the decade — AI compute and enterprise cloud migration — with a near-monopoly position in custom AI silicon (~70% share) and a growing, recurring high-margin software franchise from VMware. The <strong>0.64 PEG ratio</strong> and <strong>45%+ analyst consensus upside</strong> suggest the market has not fully priced in FY2027 earnings power. The Q2 FY2026 guidance of $22.0B (+47% YoY) further validates the trajectory. Q1 FCF of $8.0B alone annualises to a ~4.9% FCF yield on today's market cap — exceptional for a company growing this fast. Primary downside risk is customer concentration, not competitive displacement. <strong style="color:var(--green)">Maintain Strong Buy. Price Target: $467.68. Upside to $630 in bull scenario.</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div>
+      <div class="footer-brand">AVGO · EQUITY RESEARCH</div>
+      <div>Generated March 15, 2026 · For informational purposes only</div>
+    </div>
+    <div style="max-width:520px">
+      <strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. All figures are estimates based on publicly available data. Past performance does not guarantee future results. Please consult a licensed financial advisor before making any investment decisions. The author may hold positions in securities discussed.
+    </div>
+  </footer>
+
+</div><!-- /wrapper -->
+
+<script>
+/* ── REVENUE CHART ─────────────────────────────────────────── */
+new Chart(document.getElementById('revenueChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Q1 FY25', 'Q2 FY25', 'Q3 FY25', 'Q4 FY25', 'Q1 FY26', 'Q2 FY26*'],
+    datasets: [
+      {
+        label: 'Total Revenue ($B)',
+        data: [14.9, 15.0, 16.0, 18.0, 19.3, 22.0],
+        backgroundColor: 'rgba(74,132,232,0.55)',
+        borderColor: '#4a84e8',
+        borderWidth: 1,
+        borderRadius: 3,
+      },
+      {
+        label: 'AI Revenue ($B)',
+        data: [4.1, 4.4, 5.2, 6.2, 8.4, 14.8],
+        backgroundColor: 'rgba(201,153,58,0.65)',
+        borderColor: '#c9993a',
+        borderWidth: 1,
+        borderRadius: 3,
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#111720',
+        borderColor: '#1e2836',
+        borderWidth: 1,
+        titleColor: '#6e7d94',
+        bodyColor: '#dde2ea',
+        callbacks: { label: ctx => ' ' + ctx.dataset.label + ': $' + ctx.parsed.y + 'B' }
+      }
+    },
+    scales: {
+      x: {
+        ticks: { color: '#6e7d94', font: { size: 11 }, maxRotation: 30 },
+        grid: { display: false },
+        border: { color: '#1e2836' }
+      },
+      y: {
+        ticks: { color: '#6e7d94', font: { size: 11 }, callback: v => '$' + v + 'B' },
+        grid: { color: 'rgba(255,255,255,0.04)' },
+        border: { color: '#1e2836' },
+        beginAtZero: true
+      }
+    }
+  }
+});
+
+/* ── CHART LEGEND ─────────────────────────────────────────── */
+// Inject legend above chart (could also be in HTML)
+
+/* ── ANIMATED PROGRESS BARS ──────────────────────────────── */
+function animateBars() {
+  document.querySelectorAll('.bar-fill[data-target]').forEach(el => {
+    const target = el.getAttribute('data-target');
+    el.style.width = target + '%';
+  });
+}
+// Trigger after a short delay to get the CSS animation effect
+setTimeout(animateBars, 300);
+
+/* ── INTERSECTION OBSERVER FOR FADE-UP ───────────────────── */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.card, .metric, .scenario, .verdict').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(12px)';
+  el.style.transition = 'opacity 0.45s ease, transform 0.45s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
