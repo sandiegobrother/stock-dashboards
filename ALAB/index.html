@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Astera Labs, Inc. (ALAB) — Wall Street equity research dashboard.">
+<meta name="description" content="Astera Labs, Inc. (ALAB) — Full Wall Street equity research dashboard. AI-powered analysis, financials, valuation, and price targets.">
 <meta property="og:title" content="ALAB · Astera Labs, Inc. Equity Research">
 <title>ALAB · Astera Labs, Inc. Equity Research</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,16 +13,16 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#07090c;--bg2:#0d1117;--surface:#111720;--surface2:#171e28;--border:#1e2836;--border2:#253042;--accent:#c9993a;--blue:#4a84e8;--green:#3bbf72;--red:#df5454;--text:#dde2ea;--muted:#6e7d94;--muted2:#3a4a5e}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;padding:0;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,153,58,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(201,153,58,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.12em;text-decoration:none}
-.nav-links{display:flex;gap:0;list-style:none}
+.nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .9rem;height:52px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
 .nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
 .nav-pill{font-family:'IBM Plex Mono',monospace;font-size:.65rem;background:rgba(59,191,114,.12);color:#3bbf72;border:1px solid rgba(59,191,114,.25);padding:3px 10px;border-radius:20px;letter-spacing:.08em}
-.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px}
+.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none}
 .back-link:hover{color:var(--accent)}
 @media(max-width:700px){.nav-links{display:none}}
 .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
@@ -68,6 +68,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.82rem}
 .tbl td.right{text-align:right}
 .tbl td.dim{color:var(--muted);font-size:.79rem}
+.tbl .hl td{background:rgba(201,153,58,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(1rem - 2px)}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .bar-lbl{font-size:.73rem;color:var(--muted);width:110px;flex-shrink:0}
 .bar-track{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
@@ -86,11 +88,14 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .rb-high{background:rgba(223,84,84,.14);color:var(--red)}.rb-med{background:rgba(201,153,58,.14);color:var(--accent)}.rb-low{background:rgba(59,191,114,.14);color:var(--green)}
 .risk-name{font-size:.87rem;font-weight:400;margin-bottom:3px}
 .risk-desc-text{font-size:.77rem;color:var(--muted);line-height:1.45}
+.stars{color:var(--green);font-size:.78rem;letter-spacing:1px}
+.quote-block{border:1px solid rgba(201,153,58,.28);background:rgba(201,153,58,.05);border-left:3px solid var(--accent);border-radius:6px;padding:1rem 1.2rem;font-size:.87rem;line-height:1.65;color:var(--text);margin-top:1rem}
+.quote-block cite{display:block;font-size:.7rem;color:var(--muted2);font-style:normal;margin-top:.5rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em}
 .verdict{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:6px;padding:1.5rem;margin-bottom:2.5rem}
 .verdict-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.6rem}
 .verdict-text{font-size:.9rem;line-height:1.7}
-.chart-wrap{position:relative;width:100%;height:220px}
-footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;align-items:flex-start}
+.chart-wrap{position:relative;width:100%;height:230px}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between}
 .footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .fade-up{animation:fadeUp .5s ease both}
@@ -100,7 +105,8 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
 <nav>
   <a class="nav-logo" href="#">ALAB · RESEARCH</a>
   <ul class="nav-links">
-    <li><a href="#metrics">Metrics</a></li>
+    <li><a href="#financials">Financials</a></li>
+    <li><a href="#valuation">Valuation</a></li>
     <li><a href="#moat">Moat</a></li>
     <li><a href="#scenarios">Scenarios</a></li>
     <li><a href="#risks">Risks</a></li>
@@ -111,82 +117,193 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
 <div class="wrapper">
   <header class="hero fade-up">
     <div class="hero-left">
-      <div class="eyebrow">Wall Street · Equity Research · March 15, 2026</div>
+      <div class="eyebrow"><a class="back-link" href="../">← All Tickers</a> &nbsp;·&nbsp; Wall Street · Equity Research · March 15, 2026</div>
       <div class="hero-ticker">ALAB</div>
       <div class="hero-name">Astera Labs, Inc.</div>
-      <div class="hero-tags"><span class="tag">NASDAQ</span><span class="tag">AI Connectivity</span><span class="tag">Semiconductors</span></div>
+      <div class="hero-tags"><span class="tag">NASDAQ</span> <span class="tag">AI Connectivity</span> <span class="tag">PCIe 6</span> <span class="tag">Scorpio Switch</span> <span class="tag">CXL</span></div>
     </div>
     <div class="hero-right">
-      <div class="hero-price">$119.51</div>
-      <div class="hero-target">12-mo target · $194.71</div>
+      <div class="hero-price">$109.80</div>
+      <div class="hero-target">12-mo target · $205.00</div>
       <div class="hero-date">Report date: 15 Mar 2026</div>
     </div>
   </header>
 
   <div class="ribbon fade-up">
     <div class="ribbon-item"><div class="ribbon-label">Consensus</div><div class="ribbon-value" style="color:#3bbf72">STRONG BUY</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Price Target</div><div class="ribbon-value rv-amber">$194.71</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Price Target</div><div class="ribbon-value rv-amber">$205.00</div></div>
     <div class="ribbon-item"><div class="ribbon-label">High Target</div><div class="ribbon-value rv-amber">$250.00</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Market Cap</div><div class="ribbon-value rv-text">$20.5B</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+63%</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Market Cap</div><div class="ribbon-value rv-text">~$18.7B</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+87% to consensus</div></div>
     <div class="ribbon-item"><div class="ribbon-label">Exchange</div><div class="ribbon-value rv-blue">NASDAQ</div></div>
   </div>
 
-  <section id="metrics">
+  <section id="financials">
     <div class="section-head"><div class="section-head-label">Key Financial Metrics</div><div class="section-head-line"></div></div>
     <div class="g4">
-      <div class="metric fade-up"><div class="m-label">Revenue (TTM)</div><div class="m-value rv-text">$853M</div><div class="m-sub" style="color:var(--green)">+175% YoY</div></div>
-      <div class="metric fade-up"><div class="m-label">Gross Margin</div><div class="m-value rv-green">75.8%</div><div class="m-sub">Non-GAAP</div></div>
-      <div class="metric fade-up"><div class="m-label">FCF Margin</div><div class="m-value rv-text">~22%</div><div class="m-sub">Free cash flow %</div></div>
-      <div class="metric fade-up"><div class="m-label">Trailing P/E</div><div class="m-value rv-text">98x</div><div class="m-sub">Fwd P/E: ~55x</div></div>
+      <div class="metric fade-up"><div class="m-label">Q4 2025 Revenue</div><div class="m-value rv-text">$270.6M</div><div class="m-sub" style="color:var(--green)">+92% YoY · +17% QoQ · Beat $250M est</div></div>
+      <div class="metric fade-up"><div class="m-label">FY2025 Total Revenue</div><div class="m-value rv-amber">$852.5M</div><div class="m-sub" style="color:var(--green)">+115% year-over-year</div></div>
+      <div class="metric fade-up"><div class="m-label">Q4 Non-GAAP EPS</div><div class="m-value rv-text">$0.58</div><div class="m-sub">Beat $0.51 estimate by 14%</div></div>
+      <div class="metric fade-up"><div class="m-label">Q4 Non-GAAP Gross Margin</div><div class="m-value rv-green">75.7%</div><div class="m-sub">Down 70bps QoQ · hardware mix shift</div></div>
+      <div class="metric fade-up"><div class="m-label">Q1 2026 Revenue Guide</div><div class="m-value rv-text">$286–297M</div><div class="m-sub">~6-10% sequential growth</div></div>
+      <div class="metric fade-up"><div class="m-label">Scorpio P-Series Revenue</div><div class="m-value rv-green">15%+ of FY25</div><div class="m-sub">Only PCIe 6 fabric shipping in volume</div></div>
+      <div class="metric fade-up"><div class="m-label">Amazon Warrant Issued</div><div class="m-value rv-amber">$6.5B purchase commitment</div><div class="m-sub">Tied to up to $6.5B in product purchases</div></div>
+      <div class="metric fade-up"><div class="m-label">Cash & Investments</div><div class="m-value rv-text">$1.19B</div><div class="m-sub">Strong balance sheet · No debt</div></div>
+    </div>
+  </section>
+
+  <section id="valuation">
+    <div class="section-head"><div class="section-head-label">Revenue Growth &amp; Valuation</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Quarterly Revenue Progression</div>
+        <table class="tbl">
+          <thead><tr><th>Period</th><th class="right">Total Rev</th><th class="right">Scorpio (Switch Fabric) Revenue ($B)</th><th class="right">Mix</th><th class="right">YoY</th></tr></thead>
+          <tbody><tr><td>Q1 2025</td><td class="mono right">$137M</td><td class="mono right" >~$50M</td><td class="mono right" >37%</td><td class="mono right" style="color:var(--green)">+99%</td></tr><tr><td>Q2 2025</td><td class="mono right">$178M</td><td class="mono right" >~$66M</td><td class="mono right" >37%</td><td class="mono right" style="color:var(--green)">+107%</td></tr><tr><td>Q3 2025</td><td class="mono right">$232M</td><td class="mono right" >~$91M</td><td class="mono right" >39%</td><td class="mono right" style="color:var(--green)">+130%</td></tr><tr  class="hl"><td>Q4 2025</td><td class="mono right">$271M</td><td class="mono right" style="color:var(--accent)">~$110M</td><td class="mono right" style="color:var(--accent)">41%</td><td class="mono right" style="color:var(--green)">+92%</td></tr><tr><td>Q1 2026 (guide)</td><td class="mono right">$292M</td><td class="mono right" >~$130M</td><td class="mono right" >~45%</td><td class="mono right" style="color:var(--green)">+113%</td></tr></tbody>
+        </table>
+        <div style="margin-top:1.25rem">
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#4a84e8"></span>Total Revenue</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#c9993a"></span>Scorpio (Switch Fabric) Revenue ($B)</span>
+          </div>
+          <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">Peer Valuation Comparison</div>
+        <table class="tbl">
+          <thead><tr><th>Company</th><th class="right">Mkt Cap</th><th class="right">Fwd P/E</th><th class="right">Rev Growth</th><th class="right">FCF Margin</th></tr></thead>
+          <tbody><tr class="hl"><tdstyle="color:var(--accent)"><strong>ALAB</strong></td><td class="mono right">~$18.7B</td><td class="mono right" style="color:var(--accent)">55x</td><td class="mono right" style="color:var(--green)">+115%</td><td class="mono right" style="color:var(--green)">22%</td></tr>
+<tr><td><span>CRDO</span></td><td class="mono right">~$22B</td><td class="mono right" >40x</td><td class="mono right" style="color:var(--green)">+200%</td><td class="mono right" >25%</td></tr>
+<tr><td><span>MRVL</span></td><td class="mono right">~$79B</td><td class="mono right" >25x</td><td class="mono right" style="color:var(--green)">+42%</td><td class="mono right" >28%</td></tr>
+<tr><td><span>AVGO</span></td><td class="mono right">$1.64T</td><td class="mono right" >26x</td><td class="mono right" style="color:var(--green)">+29%</td><td class="mono right" >41%</td></tr>
+<tr><td><span>NVDA</span></td><td class="mono right">$2.82T</td><td class="mono right" >23x</td><td class="mono right" style="color:var(--green)">+65%</td><td class="mono right" >55%</td></tr>
+</tbody>
+        </table>
+        <div style="margin-top:1.5rem">
+          <div class="card-head" style="margin-bottom:1rem">Profitability Benchmarks</div>
+          <div class="bar-row"><div class="bar-lbl">Non-GAAP gross margin</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--accent)" data-target="76"></div></div><div class="bar-val">76%</div></div>
+<div class="bar-row"><div class="bar-lbl">Non-GAAP op. margin</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--blue)" data-target="40"></div></div><div class="bar-val">40%</div></div>
+<div class="bar-row"><div class="bar-lbl">Scorpio revenue mix</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--green)" data-target="41"></div></div><div class="bar-val">41%</div></div>
+<div class="bar-row"><div class="bar-lbl">Upside to analyst target</div><div class="bar-track"><div class="bar-fill" style="width:0%;background:var(--muted)" data-target="87"></div></div><div class="bar-val">87%</div></div>
+
+        </div>
+        <div style="margin-top:1.5rem">
+          <div class="card-head" style="margin-bottom:1rem">Balance Sheet Snapshot</div>
+          <table class="tbl"><tbody><tr><td class="dim">Cash & investments</td><td class="mono right" style="color:var(--green)">$1.19B</td></tr><tr><td class="dim">Total debt</td><td class="mono right" style="color:var(--green)">$0</td></tr><tr><td class="dim">Amazon warrant commitment</td><td class="mono right" style="color:var(--green)">Up to $6.5B in purchases</td></tr><tr><td class="dim">Q4 operating cash flow</td><td class="mono right" style="color:var(--green)">$95.3M</td></tr></tbody></table>
+        </div>
+      </div>
     </div>
   </section>
 
   <section id="moat">
-    <div class="section-head"><div class="section-head-label">Business Description &amp; Moat</div><div class="section-head-line"></div></div>
-    <div class="card" style="margin-bottom:1.25rem">
-      <div class="card-head">Company Overview</div>
-      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">Astera Labs designs semiconductor-based connectivity solutions for cloud and AI infrastructure, including PCIe/CXL retimers, CXL memory controllers, Ethernet smart cable modules, and the Scorpio smart fabric switch. Its COSMOS software suite enables fleet-scale management of connectivity resources for hyperscale operators.</p>
-    </div>
-    <div class="card">
-      <div class="card-head">Competitive Moat</div>
-      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">Astera occupies a critical bottleneck in AI data centers — connectivity between GPUs and memory/storage. Its Scorpio X-Series switch targets the $20B+ scale-up networking TAM. Deep co-development relationships with hyperscalers like Amazon create significant switching costs. Non-GAAP operating margin of 39% shows exceptional unit economics for a growth-stage semiconductor company.</p>
+    <div class="section-head"><div class="section-head-label">Business Model &amp; Competitive Moat</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Revenue Segments</div>
+        <table class="tbl">
+          <thead><tr><th>Segment</th><th class="right">Mix</th><th>Key Products</th><th>Margin Profile</th></tr></thead>
+          <tbody><tr><td><strong>Signal Conditioning (Aries/Taurus)</strong></td><td class="mono right" style="color:var(--accent)">~59%</td><td class="dim">PCIe Gen 5/6 DSP retimers (Aries), 400G/800G AEC modules (Taurus), CXL memory expansion</td><td class="mono" style="color:var(--green)">Highest · ~78% GM</td></tr>
+<tr><td><strong>Switch Fabric (Scorpio)</strong></td><td class="mono right" style="color:var(--accent)">~41%</td><td class="dim">Scorpio P-Series (PCIe 6 scale-out), Scorpio X-Series (scale-up networking, sampling 2026), COSMOS software</td><td class="mono" style="color:var(--green)">High · Growing</td></tr>
+</tbody>
+        </table>
+        <div style="margin-top:1.25rem">
+          <div class="card-head" style="margin-bottom:.75rem">Industry Tailwinds (12–24 Months)</div>
+          <table class="tbl"><thead><tr><th>Trend</th><th>AVGO Exposure</th><th class="right">Scale</th></tr></thead>
+          <tbody><tr><td>Scorpio expansion to 2+ more hyperscalers</td><td class="dim">Currently at 1-2 major customers</td><td class="mono right" style="color:var(--green)">Management guides H2 2026 ramp</td></tr><tr><td>PCIe 6 fabric only shipping in volume</td><td class="dim">Scorpio is the only PCIe 6 solution</td><td class="mono right" style="color:var(--green)">No credible alternative in market today</td></tr><tr><td>Optical connectivity engines</td><td class="dim">Doubles merchant scale-up switching TAM</td><td class="mono right" style="color:var(--green)">On track for 2028 deployment</td></tr><tr><td>Amazon warrant = $6.5B commitment</td><td class="dim">Largest partner commitment in company history</td><td class="mono right" style="color:var(--green)">Signals deep strategic alignment</td></tr><tr><td>Scale-up networking TAM</td><td class="dim">~$20B annually by 2030 per management</td><td class="mono right" style="color:var(--green)">Astera targeting $10B+ share</td></tr></tbody></table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">Competitive Moat Analysis</div>
+        <table class="tbl"><thead><tr><th>Moat Source</th><th>Strength</th><th>Notes</th></tr></thead>
+        <tbody><tr><td>Only PCIe 6 fabric in production</td><td><span class="stars">★★★★★</span></td><td class="dim">Scorpio is shipping in volume — no competitor has reached this milestone</td></tr>
+<tr><td>Amazon strategic partnership</td><td><span class="stars">★★★★★</span></td><td class="dim">$6.5B warrant commitment is the most powerful validation possible from a hyperscaler</td></tr>
+<tr><td>COSMOS software platform</td><td><span class="stars">★★★★☆</span></td><td class="dim">Fleet-scale management software creates stickiness beyond silicon</td></tr>
+<tr><td>CFO departure risk</td><td><span class="stars">⚠ Risk</span></td><td class="dim">CFO Mike Tate stepping down triggered initial stock selloff — execution continuity risk</td></tr>
+<tr><td>Gross margin compression</td><td><span class="stars">⚠ Risk</span></td><td class="dim">Amazon warrant creates ~2pt/quarter non-cash gross margin headwind starting Q2 2026</td></tr>
+</tbody></table>
+        <div class="quote-block">"<strong style='color:var(--accent)'>AI is still in its early innings</strong>, and we are really bottlenecked by the availability of resources more than anything else. Our served addressable market could expand more than 10x over five years, reaching $25 billion. Astera Labs has arrived at a critical inflection point."<cite>— Jitendra Mohan, CEO · Astera Labs Q4 2025 Earnings Call, February 10, 2026</cite></div>
+      </div>
     </div>
   </section>
 
   <section id="scenarios">
-    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Scenarios</div><div class="section-head-line"></div></div>
+    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Case Scenarios</div><div class="section-head-line"></div></div>
     <div class="g3">
-      <div class="scenario sc-bull"><div class="sc-label">🐂 Bull Case</div><div class="sc-target">$250</div><div class="sc-upside">+109% upside</div><div class="sc-desc">Scorpio X-Series ramps broadly across hyperscalers. Amazon deal scales up significantly. Scale-up networking TAM hits $20B by 2030 and Astera captures 15%+ share.</div></div>
-      <div class="scenario sc-base"><div class="sc-label">📊 Base Case</div><div class="sc-target">$195</div><div class="sc-upside">+63% upside</div><div class="sc-desc">Revenue grows 80%+ in 2026 driven by connectivity demand. Gross margins hold above 75%. Lead hyperscaler programs expand to additional customers.</div></div>
-      <div class="scenario sc-bear"><div class="sc-label">🐻 Bear Case</div><div class="sc-target">$60</div><div class="sc-upside">-50% downside</div><div class="sc-desc">Hyperscaler consolidation or in-sourcing of connectivity chips slows adoption. Competition from Marvell and Broadcom intensifies. Valuation compression.</div></div>
+      <div class="scenario sc-bull">
+        <div class="sc-label">🐂 Bull Case</div>
+        <div class="sc-target">$250</div>
+        <div class="sc-upside">+128% upside</div>
+        <div class="sc-desc">Scorpio ships to 5+ hyperscalers by end of 2026. Optical connectivity engines accelerate to 2027. Amazon commitment fully ramps. Revenue reaches $2B in 2026. Citigroup $250 target achieved. Scale-up networking TAM exceeds expectations.</div>
+      </div>
+      <div class="scenario sc-base">
+        <div class="sc-label">📊 Base Case</div>
+        <div class="sc-target">$205</div>
+        <div class="sc-upside">+87% upside</div>
+        <div class="sc-desc">Q1 guide of $286-297M achieved. Scorpio expands to 2 additional major hyperscalers in H2 2026 as guided. R&D investments in Israel center translate to product wins. Revenue reaches $1.3-1.5B in 2026. Stock re-rates toward the $205 analyst median.</div>
+      </div>
+      <div class="scenario sc-bear">
+        <div class="sc-label">🐻 Bear Case</div>
+        <div class="sc-target">$60</div>
+        <div class="sc-upside">-45% downside</div>
+        <div class="sc-desc">Scorpio hyperscaler expansion slower than guided. Amazon warrant non-cash charges compress gross margins more than expected. CFO transition disrupts operations. Marvell or Broadcom develop competing PCIe 6 solutions faster than expected.</div>
+      </div>
     </div>
   </section>
 
   <section id="risks">
-    <div class="section-head"><div class="section-head-label">Risk Assessment</div><div class="section-head-line"></div></div>
-    <div class="card"><div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Customer concentration</div><div class="risk-desc-text">Amazon reportedly dominates revenue; any pullback would be outsized</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Valuation</div><div class="risk-desc-text">98x trailing P/E prices in near-perfect execution</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Competition</div><div class="risk-desc-text">Broadcom and Marvell entering similar product categories</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Balance sheet</div><div class="risk-desc-text">Net cash position; low debt risk</div></div></div>
-</div>
+    <div class="section-head"><div class="section-head-label">Risk Assessment &amp; Forward Outlook</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Key Risks</div>
+        <div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Gross margin compression</div><div class="risk-desc-text">Amazon warrant → ~2pt/quarter non-cash GM headwind starting Q2 2026; optics on margins will look worse</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Valuation post-selloff</div><div class="risk-desc-text">Stock still at 55x forward earnings — needs flawless execution of Scorpio ramp</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">CFO departure</div><div class="risk-desc-text">Mike Tate transitioning to strategic advisor; Desmond Lynch new CFO from March 2026</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Customer concentration</div><div class="risk-desc-text">Amazon and a handful of hyperscalers dominate revenue</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">PCIe 6 moat</div><div class="risk-desc-text">Scorpio is the only PCIe 6 fabric in production volume — competition is quarters to years behind</div></div></div>
+
+      </div>
+      <div class="card">
+        <div class="card-head">Forward Revenue &amp; Earnings Outlook</div>
+        <table class="tbl">
+          <thead><tr><th>Metric</th><th>FY2025A</th><th>FY2026E</th><th>FY2027E</th></tr></thead>
+          <tbody><tr><td>Total Revenue</td><td class="mono right">$852.5M</td><td class="mono right" style="color:var(--green)">~$1.3-1.5B</td><td class="mono right" style="color:var(--green)">~$2.0B+</td></tr>
+<tr><td>Scorpio Revenue</td><td class="mono right">~$130M/qtr</td><td class="mono right" style="color:var(--green)">Ramping to multiple hyperscalers</td><td class="mono right" style="color:var(--green)">~$800M+ annually</td></tr>
+<tr><td>Non-GAAP Gross Margin</td><td class="mono right">~75.7%</td><td class="mono right" style="color:var(--green)">~73-74% (warrant drag)</td><td class="mono right" style="color:var(--green)">~75%+ (scale benefits)</td></tr>
+<tr><td>Non-GAAP EPS</td><td class="mono right">~$2.00</td><td class="mono right" style="color:var(--green)">~$2.50-3.00</td><td class="mono right" style="color:var(--green)">~$4.00+</td></tr>
+<tr><td>Served Addressable Market</td><td class="mono right">~$2.5B</td><td class="mono right" style="color:var(--green)">Expanding</td><td class="mono right" style="color:var(--green)">~$25B by 2030</td></tr>
+</tbody>
+        </table>
+      </div>
+    </div>
   </section>
 
   <section id="verdict">
     <div class="section-head"><div class="section-head-label">Analyst Verdict</div><div class="section-head-line"></div></div>
     <div class="verdict">
-      <div class="verdict-label">Bottom Line · STRONG BUY · Target $194.71</div>
-      <div class="verdict-text">Astera Labs is a pure-play beneficiary of the AI connectivity wave with best-in-class margins for a growth semiconductor company. The Scorpio X-Series scale-up switch positions it to expand its TAM from connectivity to switching — a $20B opportunity. At 63% implied upside to analyst consensus, the risk/reward is compelling for investors who can tolerate concentration and valuation risk. <strong style='color:var(--green)'>Strong Buy. Target: $194.71.</strong></div>
+      <div class="verdict-label">Bottom Line · STRONG BUY · Target $205.00</div>
+      <div class="verdict-text">Astera Labs is trading 58% below average analyst price targets following the post-earnings selloff — a gap that 24/7 Wall St described as reflecting market overreaction to non-cash accounting charges rather than fundamental deterioration. The company beat Q4 estimates on both EPS and revenue, the Scorpio PCIe 6 switch is the only solution shipping in volume, and the Amazon $6.5B warrant commitment is the most powerful hyperscaler partnership validation in the AI connectivity sector. The CFO transition and gross margin compression from warrant accounting are legitimate concerns but do not change the competitive moat. With 87% upside to consensus and Citi targeting $250, ALAB offers a compelling asymmetric opportunity for investors who can handle near-term volatility. <strong style='color:var(--green)'>Strong Buy. Target: $205.00. Citi target: $250. Barclays floor: $155.</strong></div>
     </div>
   </section>
 
   <footer>
     <div><div class="footer-brand">ALAB · EQUITY RESEARCH</div><div>Generated March 15, 2026 · For informational purposes only</div></div>
-    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making any investment decisions.</div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making investment decisions.</div>
   </footer>
 </div>
 <script>
-const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}});},{threshold:.1});
+new Chart(document.getElementById('revChart'),{
+  type:'bar',
+  data:{
+    labels:["Q1 2025", "Q2 2025", "Q3 2025", "Q4 2025", "Q1 2026 (guide)"],
+    datasets:[
+      {label:'Total Revenue',data:[0.137, 0.178, 0.232, 0.271, 0.292],backgroundColor:'rgba(74,132,232,0.55)',borderColor:'#4a84e8',borderWidth:1,borderRadius:3},
+      {label:'Scorpio (Switch Fabric) Revenue ($B)',data:[0.05, 0.066, 0.091, 0.11, 0.13],backgroundColor:'rgba(201,153,58,0.65)',borderColor:'#c9993a',borderWidth:1,borderRadius:3}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111720',borderColor:'#1e2836',borderWidth:1,titleColor:'#6e7d94',bodyColor:'#dde2ea'}},scales:{x:{ticks:{color:'#6e7d94',font:{size:11},maxRotation:30},grid:{display:false},border:{color:'#1e2836'}},y:{ticks:{color:'#6e7d94',font:{size:11}},grid:{color:'rgba(255,255,255,0.04)'},border:{color:'#1e2836'},beginAtZero:true}}}
+});
+const observer=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting){en.target.style.opacity='1';en.target.style.transform='translateY(0)'}}),{threshold:.1});
 document.querySelectorAll('.card,.metric,.scenario,.verdict').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(12px)';el.style.transition='opacity .45s ease,transform .45s ease';observer.observe(el)});
 setTimeout(()=>document.querySelectorAll('.bar-fill[data-target]').forEach(el=>el.style.width=el.getAttribute('data-target')+'%'),300);
 </script>
