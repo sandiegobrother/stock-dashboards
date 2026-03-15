@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Stock Research Dashboard · Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07090c;--surface:#111720;--border:#1e2836;--accent:#c9993a;--green:#3bbf72;--red:#df5454;--blue:#4a84e8;--amber:#c9993a;--text:#dde2ea;--muted:#6e7d94;--muted2:#3a4a5e}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;padding:0;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,153,58,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(201,153,58,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.9rem;font-weight:500;color:var(--accent);letter-spacing:.12em;text-decoration:none}
+.nav-sub{font-size:.7rem;color:var(--muted);letter-spacing:.06em}
+.wrapper{position:relative;z-index:1;max-width:1300px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3rem 0 2rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.16em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-title{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:700;color:var(--text);margin-bottom:.5rem}
+.hero-title span{color:var(--accent)}
+.hero-sub{font-size:.95rem;color:var(--muted);max-width:600px;line-height:1.65}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:1.5rem 0}
+.filter-btn{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.08em;padding:5px 14px;border-radius:4px;border:1px solid var(--border);color:var(--muted);background:transparent;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(201,153,58,.08)}
+.stats-row{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.75rem 1.25rem;display:flex;flex-direction:column;gap:4px}
+.stat-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2)}
+.stat-value{font-family:'IBM Plex Mono',monospace;font-size:1.1rem;font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;text-decoration:none;display:block;transition:border-color .2s,transform .2s;position:relative;overflow:hidden}
+.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0;transition:opacity .2s}
+.card:hover::before{opacity:1}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem}
+.card-ticker{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;color:var(--accent)}
+.card-consensus{font-family:'IBM Plex Mono',monospace;font-size:.6rem;letter-spacing:.08em;padding:3px 9px;border-radius:3px;font-weight:500}
+.cs-sb{background:rgba(59,191,114,.12);color:#3bbf72;border:1px solid rgba(59,191,114,.25)}
+.cs-b{background:rgba(74,132,232,.12);color:#4a84e8;border:1px solid rgba(74,132,232,.25)}
+.cs-h{background:rgba(201,153,58,.12);color:#c9993a;border:1px solid rgba(201,153,58,.25)}
+.cs-s{background:rgba(223,84,84,.12);color:#df5454;border:1px solid rgba(223,84,84,.25)}
+.card-company{font-size:.82rem;color:var(--muted);margin-bottom:.5rem;line-height:1.3}
+.card-sector{font-family:'IBM Plex Mono',monospace;font-size:.62rem;color:var(--muted2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1rem}
+.card-divider{height:1px;background:var(--border);margin:.75rem 0}
+.card-row{display:flex;justify-content:space-between;margin-bottom:4px}
+.card-lbl{font-size:.72rem;color:var(--muted)}
+.card-val{font-family:'IBM Plex Mono',monospace;font-size:.78rem;font-weight:500}
+.upside-positive{color:#3bbf72}
+.upside-negative{color:#df5454}
+.upside-neutral{color:#c9993a}
+.card-desc{font-size:.77rem;color:var(--muted);line-height:1.5;margin-top:.75rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.card{animation:fadeUp .4s ease both}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">📊 STOCK RESEARCH</a>
+  <span class="nav-sub">32 Equity Research Dashboards · March 15, 2026</span>
+</nav>
+<div class="wrapper">
+  <div class="hero">
+    <div class="hero-eyebrow">Wall Street · Equity Research · March 15, 2026</div>
+    <div class="hero-title">Portfolio <span>Research Hub</span></div>
+    <div class="hero-sub">Full Wall Street–style equity research dashboards for 32 stocks. Click any card to view the full analysis including financials, competitive moat, scenarios, and analyst verdicts.</div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterCards('all')">All (31)</button>
+    <button class="filter-btn" onclick="filterCards('STRONG BUY')">Strong Buy</button>
+    <button class="filter-btn" onclick="filterCards('BUY')">Buy</button>
+    <button class="filter-btn" onclick="filterCards('HOLD')">Hold</button>
+    <button class="filter-btn" onclick="filterCards('semi')">Semiconductors</button>
+    <button class="filter-btn" onclick="filterCards('ai')">AI / Tech</button>
+    <button class="filter-btn" onclick="filterCards('health')">Healthcare</button>
+    <button class="filter-btn" onclick="filterCards('consumer')">Consumer</button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat"><div class="stat-label">Total Tickers</div><div class="stat-value" style="color:var(--accent)">31</div></div>
+    <div class="stat"><div class="stat-label">Strong Buy</div><div class="stat-value" style="color:var(--green)">14</div></div>
+    <div class="stat"><div class="stat-label">Buy</div><div class="stat-value" style="color:var(--blue)">13</div></div>
+    <div class="stat"><div class="stat-label">Hold</div><div class="stat-value" style="color:var(--amber)">3</div></div>
+    <div class="stat"><div class="stat-label">Report Date</div><div class="stat-value">15 Mar 2026</div></div>
+  </div>
+
+  <div class="grid" id="cardGrid">
+    <!-- ALAB -->
+    <a class="card" href="ALAB/index.html" data-tags="semi ai strong buy">
+      <div class="card-top"><div class="card-ticker">ALAB</div><div class="card-consensus cs-sb">STRONG BUY</div></div>
+      <div class="card-company">Astera Labs, Inc.</div>
+      <div class="card-sector">Semiconductors · AI Connectivity</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$119.51</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$194.71</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+63%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">$20.5B</div></div>
+      <div class="card-desc">AI connectivity semiconductors — PCIe retimers, CXL controllers, and the Scorpio smart fabric switch for hyperscale AI clusters.</div>
+    </a>
+    <!-- APP -->
+    <a class="card" href="APP/index.html" data-tags="ai tech strong buy">
+      <div class="card-top"><div class="card-ticker">APP</div><div class="card-consensus cs-sb">STRONG BUY</div></div>
+      <div class="card-company">AppLovin Corporation</div>
+      <div class="card-sector">Ad Technology · AI Marketing</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$461.45</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$703.71</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+53%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$152B</div></div>
+      <div class="card-desc">AI-powered mobile marketing platform. Axon engine delivers 66% revenue growth and 84% EBITDA margins. Expanding into e-commerce advertising.</div>
+    </a>
+    <!-- AVGO -->
+    <a class="card" href="AVGO/index.html" data-tags="semi ai strong buy">
+      <div class="card-top"><div class="card-ticker">AVGO</div><div class="card-consensus cs-sb">STRONG BUY</div></div>
+      <div class="card-company">Broadcom Inc.</div>
+      <div class="card-sector">Semiconductors · Infrastructure Software</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$322.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$467.68</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+45%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">$1.64T</div></div>
+      <div class="card-desc">Custom AI silicon (~70% market share), Ethernet networking, and VMware software. AI revenue +106% YoY to $8.4B. $100B AI chip target for 2027.</div>
+    </a>
+    <!-- BE -->
+    <a class="card" href="BE/index.html" data-tags="energy hold">
+      <div class="card-top"><div class="card-ticker">BE</div><div class="card-consensus cs-h">HOLD</div></div>
+      <div class="card-company">Bloom Energy Corporation</div>
+      <div class="card-sector">Clean Energy · Fuel Cells</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$149.50</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$124.50</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-negative">-17%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$8B</div></div>
+      <div class="card-desc">Solid-oxide fuel cells for data center behind-the-meter power. Benefiting from AI energy demand surge. Record 2025 results but trading above consensus target.</div>
+    </a>
+    <!-- CAVA -->
+    <a class="card" href="CAVA/index.html" data-tags="consumer buy">
+      <div class="card-top"><div class="card-ticker">CAVA</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">CAVA Group, Inc.</div>
+      <div class="card-sector">Restaurants · Fast Casual</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$68.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$83.33</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+22%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$7.4B</div></div>
+      <div class="card-desc">The Chipotle of Mediterranean food. 350+ locations, 16%+ annual unit expansion, and strong brand equity with a decade of growth runway ahead.</div>
+    </a>
+    <!-- CRCL -->
+    <a class="card" href="CRCL/index.html" data-tags="ai tech buy">
+      <div class="card-top"><div class="card-ticker">CRCL</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Circle Internet Group</div>
+      <div class="card-sector">Fintech · Stablecoin</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$95.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$131.69</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+39%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$18B</div></div>
+      <div class="card-desc">Issuer of USDC stablecoin ($50B+ circulation). High-margin net interest income on reserves. Institutional trust and regulatory compliance as core moat.</div>
+    </a>
+    <!-- CRDO -->
+    <a class="card" href="CRDO/index.html" data-tags="semi ai strong buy">
+      <div class="card-top"><div class="card-ticker">CRDO</div><div class="card-consensus cs-sb">STRONG BUY</div></div>
+      <div class="card-company">Credo Technology Group</div>
+      <div class="card-sector">Semiconductors · AI Networking</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$135.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$185.50</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+37%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$21B</div></div>
+      <div class="card-desc">Active Electrical Cables (AECs) disrupting optical cables in AI cluster connectivity. 200%+ revenue growth driven by hyperscaler adoption.</div>
+    </a>
+    <!-- CRWD -->
+    <a class="card" href="CRWD/index.html" data-tags="ai tech buy">
+      <div class="card-top"><div class="card-ticker">CRWD</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">CrowdStrike Holdings, Inc.</div>
+      <div class="card-sector">Cybersecurity · AI Security</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$441.46</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$507.20</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+15%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$108B</div></div>
+      <div class="card-desc">Cloud-native cybersecurity leader. $5.25B ARR (+24%). First GAAP profitability. Iran cyberwar elevating enterprise demand for Falcon platform.</div>
+    </a>
+    <!-- CRWV -->
+    <a class="card" href="CRWV/index.html" data-tags="ai tech buy">
+      <div class="card-top"><div class="card-ticker">CRWV</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">CoreWeave, Inc.</div>
+      <div class="card-sector">AI Cloud Infrastructure</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$73.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$121.00</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+66%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$23B</div></div>
+      <div class="card-desc">Specialized AI GPU cloud provider. $11.9B Microsoft contract. IPO'd in 2025. Filling the gap between hyperscaler GPU capacity and AI startup demand.</div>
+    </a>
+    <!-- CVNA -->
+    <a class="card" href="CVNA/index.html" data-tags="consumer buy">
+      <div class="card-top"><div class="card-ticker">CVNA</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Carvana Co.</div>
+      <div class="card-sector">Automotive E-commerce</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$220.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$441.45</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+101%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$42B</div></div>
+      <div class="card-desc">Online used car marketplace comeback story. From near-bankruptcy to $13.7B revenue with record GPU expansion and EBITDA profitability in 2025.</div>
+    </a>
+    <!-- EOSE -->
+    <a class="card" href="EOSE/index.html" data-tags="energy buy">
+      <div class="card-top"><div class="card-ticker">EOSE</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Eos Energy Enterprises</div>
+      <div class="card-sector">Energy Storage · Zinc Batteries</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$3.20</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$8.00</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+150%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$400M</div></div>
+      <div class="card-desc">Zinc-based long-duration battery storage. No lithium, no fire risk. Targeting utility-scale grid storage. High-risk pre-profitability stage company.</div>
+    </a>
+    <!-- HIMS -->
+    <a class="card" href="HIMS/index.html" data-tags="health buy">
+      <div class="card-top"><div class="card-ticker">HIMS</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Hims &amp; Hers Health, Inc.</div>
+      <div class="card-sector">Digital Health · GLP-1</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$22.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$35.00</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+59%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$5B</div></div>
+      <div class="card-desc">Telehealth platform with 80% gross margins. GLP-1/semaglutide subscription is the key growth driver alongside sexual health and dermatology.</div>
+    </a>
+    <!-- LLY -->
+    <a class="card" href="LLY/index.html" data-tags="health buy">
+      <div class="card-top"><div class="card-ticker">LLY</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Eli Lilly and Company</div>
+      <div class="card-sector">Pharmaceuticals · GLP-1</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$790.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$1,174.53</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+49%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$750B</div></div>
+      <div class="card-desc">Global GLP-1 obesity leader with Mounjaro and Zepbound. 20%+ superior weight loss vs Novo Nordisk. $150B+ obesity market by 2030.</div>
+    </a>
+    <!-- LULU -->
+    <a class="card" href="LULU/index.html" data-tags="consumer hold">
+      <div class="card-top"><div class="card-ticker">LULU</div><div class="card-consensus cs-h">HOLD</div></div>
+      <div class="card-company">Lululemon Athletica Inc.</div>
+      <div class="card-sector">Retail · Athleisure</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$220.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$216.98</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-neutral">-1%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$27B</div></div>
+      <div class="card-desc">Premium athleisure brand navigating North America growth deceleration. International expansion (China, EMEA) and product refresh are key catalysts to watch.</div>
+    </a>
+    <!-- MELI -->
+    <a class="card" href="MELI/index.html" data-tags="consumer ai buy">
+      <div class="card-top"><div class="card-ticker">MELI</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">MercadoLibre, Inc.</div>
+      <div class="card-sector">Latin America E-commerce · Fintech</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$2,100</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$2,785</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+33%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$107B</div></div>
+      <div class="card-desc">Amazon + PayPal + Shopify of Latin America. 650M people market. Mercado Pago fintech flywheel processing $200B annually.</div>
+    </a>
+    <!-- META -->
+    <a class="card" href="META/index.html" data-tags="ai tech strong buy">
+      <div class="card-top"><div class="card-ticker">META</div><div class="card-consensus cs-sb">STRONG BUY</div></div>
+      <div class="card-company">Meta Platforms, Inc.</div>
+      <div class="card-sector">Social Media · AI</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$716.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$838.50</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+17%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$1.82T</div></div>
+      <div class="card-desc">3.3B daily users, most attractive mega-cap valuation at 22x forward P/E. $115-135B AI capex in 2026 — the biggest bet in corporate history.</div>
+    </a>
+    <!-- MRVL -->
+    <a class="card" href="MRVL/index.html" data-tags="semi ai strong buy">
+      <div class="card-top"><div class="card-ticker">MRVL</div><div class="card-consensus cs-sb">STRONG BUY</div></div>
+      <div class="card-company">Marvell Technology, Inc.</div>
+      <div class="card-sector">Semiconductors · AI Silicon</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$81.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$116.34</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+44%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$68B</div></div>
+      <div class="card-desc">#2 custom AI chip designer. Targeting 20% AI ASIC market share by 2028. PAM4 DSP and PCIe 8.0 leadership. Strong Q4 results and guidance.</div>
+    </a>
+    <!-- MSTR -->
+    <a class="card" href="MSTR/index.html" data-tags="ai tech buy">
+      <div class="card-top"><div class="card-ticker">MSTR</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">MicroStrategy / Strategy Inc.</div>
+      <div class="card-sector">Bitcoin Treasury</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$295.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$450.00</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+52%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$65B</div></div>
+      <div class="card-desc">World's largest corporate Bitcoin holder (500,000+ BTC). Leveraged BTC exposure vehicle. Only for investors with high BTC conviction. Extreme volatility.</div>
+    </a>
+    <!-- NBIS -->
+    <a class="card" href="NBIS/index.html" data-tags="ai tech strong buy">
+      <div class="card-top"><div class="card-ticker">NBIS</div><div class="card-consensus cs-sb">STRONG BUY</div></div>
+      <div class="card-company">Nebius Group N.V.</div>
+      <div class="card-sector">AI Cloud · European</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$32.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$150.62</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+371%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$6B</div></div>
+      <div class="card-desc">European AI cloud backed by $2B NVIDIA investment. Priority access to Rubin architecture GPUs. Targeting 5GW AI data center capacity by 2030.</div>
+    </a>
+    <!-- NFLX -->
+    <a class="card" href="NFLX/index.html" data-tags="consumer buy">
+      <div class="card-top"><div class="card-ticker">NFLX</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Netflix, Inc.</div>
+      <div class="card-sector">Streaming · Entertainment</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$980.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$1,100</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+12%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$420B</div></div>
+      <div class="card-desc">300M+ subscribers. Advertising tier, live sports (NFL, WWE), and password sharing monetization driving multiple new revenue growth vectors.</div>
+    </a>
+    <!-- NVDA -->
+    <a class="card" href="NVDA/index.html" data-tags="semi ai strong buy">
+      <div class="card-top"><div class="card-ticker">NVDA</div><div class="card-consensus cs-sb">STRONG BUY</div></div>
+      <div class="card-company">NVIDIA Corporation</div>
+      <div class="card-sector">Semiconductors · AI Platform</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$116.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$263.29</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+46%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$2.82T</div></div>
+      <div class="card-desc">Defining company of the AI era. FY2026 revenue $216B (+65%). CUDA ecosystem moat. GTC 2026 to unveil Rubin architecture and robotics platform.</div>
+    </a>
+    <!-- ORCL -->
+    <a class="card" href="ORCL/index.html" data-tags="ai tech buy">
+      <div class="card-top"><div class="card-ticker">ORCL</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Oracle Corporation</div>
+      <div class="card-sector">Enterprise Software · AI Cloud</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$175.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$220.00</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+26%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$482B</div></div>
+      <div class="card-desc">Database-to-cloud transformation. OCI growing 50%+. Stargate AI partnership with OpenAI. Underappreciated AI cloud story in enterprise software.</div>
+    </a>
+    <!-- OSCR -->
+    <a class="card" href="OSCR/index.html" data-tags="health buy">
+      <div class="card-top"><div class="card-ticker">OSCR</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Oscar Health, Inc.</div>
+      <div class="card-sector">Health Insurance · ACA</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$16.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$22.00</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+38%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$3.5B</div></div>
+      <div class="card-desc">Tech-driven ACA health insurer. 45% revenue growth. Digital-first engagement platform. ACA policy risk is the key variable to monitor.</div>
+    </a>
+    <!-- PLTR -->
+    <a class="card" href="PLTR/index.html" data-tags="ai tech buy">
+      <div class="card-top"><div class="card-ticker">PLTR</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Palantir Technologies Inc.</div>
+      <div class="card-sector">AI Platform · Defense</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$85.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$193.78</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+128%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$184B</div></div>
+      <div class="card-desc">AI defense/enterprise platform. AIP boot camps driving Fortune 500 adoption. Iran conflict boosting government revenue. 200x P/E requires perfect execution.</div>
+    </a>
+    <!-- RDDT -->
+    <a class="card" href="RDDT/index.html" data-tags="ai tech buy">
+      <div class="card-top"><div class="card-ticker">RDDT</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Reddit, Inc.</div>
+      <div class="card-sector">Social Media · AI Data</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$130.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$225.69</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+74%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$22B</div></div>
+      <div class="card-desc">90% gross margin social platform with unique AI training data moat. 20-year authentic human corpus cannot be replicated. Dual revenue: ads + AI licensing.</div>
+    </a>
+    <!-- SMCL -->
+    <a class="card" href="SMCL/index.html" data-tags="energy buy">
+      <div class="card-top"><div class="card-ticker">SMCL</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Sembcorp Marine</div>
+      <div class="card-sector">Marine Engineering · Energy</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$12.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$18.00</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+50%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$2B</div></div>
+      <div class="card-desc">Marine engineering pivot to offshore wind and LNG. Deep technical expertise in complex offshore structures. Energy transition tailwind.</div>
+    </a>
+    <!-- SNDK -->
+    <a class="card" href="SNDK/index.html" data-tags="semi buy">
+      <div class="card-top"><div class="card-ticker">SNDK</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">SanDisk Corporation</div>
+      <div class="card-sector">NAND Flash Memory</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$38.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$537.31*</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">See note</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$6B</div></div>
+      <div class="card-desc">WD spinoff NAND flash company. AI-driven storage demand tailwind. NAND cycle recovery + Kioxia JV. *Target may reflect pre-spinoff pricing — verify.</div>
+    </a>
+    <!-- SOXL -->
+    <a class="card" href="SOXL/index.html" data-tags="semi">
+      <div class="card-top"><div class="card-ticker">SOXL</div><div class="card-consensus cs-h">ETF</div></div>
+      <div class="card-company">Direxion Daily Semi 3X Bull ETF</div>
+      <div class="card-sector">Leveraged ETF · Semiconductors</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">~$18.00</div></div>
+      <div class="card-row"><div class="card-lbl">Type</div><div class="card-val">3x Daily ETF</div></div>
+      <div class="card-row"><div class="card-lbl">AUM</div><div class="card-val">~$7B</div></div>
+      <div class="card-row"><div class="card-lbl">Risk</div><div class="card-val" style="color:var(--red)">⚠ EXTREME</div></div>
+      <div class="card-desc">3x leveraged semiconductor ETF. Trading instrument only — NOT for long-term holding. Daily rebalancing causes volatility decay in sideways markets.</div>
+    </a>
+    <!-- TEM -->
+    <a class="card" href="TEM/index.html" data-tags="health ai buy">
+      <div class="card-top"><div class="card-ticker">TEM</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">Tempus AI, Inc.</div>
+      <div class="card-sector">AI Healthcare · Precision Medicine</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$42.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$65.00</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+55%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$6B</div></div>
+      <div class="card-desc">World's largest precision medicine data library. 7M+ patient records + molecular data. AI-powered oncology diagnosis and pharma data licensing.</div>
+    </a>
+    <!-- TMDX -->
+    <a class="card" href="TMDX/index.html" data-tags="health buy">
+      <div class="card-top"><div class="card-ticker">TMDX</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">TransMedics Group, Inc.</div>
+      <div class="card-sector">Medical Devices · Organ Transplant</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$55.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$90.00</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+64%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$1.6B</div></div>
+      <div class="card-desc">Portable organ perfusion system expanding the transplantable organ pool. First-mover regulatory advantage. Organ aviation logistics network moat.</div>
+    </a>
+    <!-- TSLA -->
+    <a class="card" href="TSLA/index.html" data-tags="consumer ai hold">
+      <div class="card-top"><div class="card-ticker">TSLA</div><div class="card-consensus cs-h">HOLD</div></div>
+      <div class="card-company">Tesla, Inc.</div>
+      <div class="card-sector">EV / Energy / AI / Robotics</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$248.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$396.23</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+60%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$796B</div></div>
+      <div class="card-desc">EV + Energy + Robotaxi + Optimus. BYD competition and brand headwinds in near term. 95x P/E requires robotaxi thesis to materialize. High conviction required.</div>
+    </a>
+    <!-- UNH -->
+    <a class="card" href="UNH/index.html" data-tags="health buy">
+      <div class="card-top"><div class="card-ticker">UNH</div><div class="card-consensus cs-b">BUY</div></div>
+      <div class="card-company">UnitedHealth Group</div>
+      <div class="card-sector">Health Insurance · Optum</div>
+      <div class="card-divider"></div>
+      <div class="card-row"><div class="card-lbl">Price</div><div class="card-val">$430.00</div></div>
+      <div class="card-row"><div class="card-lbl">Target</div><div class="card-val" style="color:var(--accent)">$620.00</div></div>
+      <div class="card-row"><div class="card-lbl">Upside</div><div class="card-val upside-positive">+44%</div></div>
+      <div class="card-row"><div class="card-lbl">Mkt Cap</div><div class="card-val">~$393B</div></div>
+      <div class="card-desc">Largest US health insurer. Optum vertical integration flywheel. Historically cheap at 13x forward earnings. Political/regulatory headwinds are the key risk.</div>
+    </a>
+  </div>
+
+  <footer>
+    <div><div class="footer-brand">📊 STOCK RESEARCH HUB</div><div>Generated March 15, 2026 · 31 Equity Research Dashboards</div></div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> All reports are for informational and educational purposes only. Nothing constitutes financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making any investment decisions.</div>
+  </footer>
+</div>
+<script>
+function filterCards(type){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.card').forEach(c=>{
+    const tags=c.getAttribute('data-tags')||'';
+    if(type==='all'){c.style.display='block';return}
+    if(type==='STRONG BUY'){c.style.display=tags.includes('strong buy')?'block':'none';return}
+    if(type==='BUY'){c.style.display=(tags.includes('buy')&&!tags.includes('strong buy'))?'block':'none';return}
+    if(type==='HOLD'){c.style.display=tags.includes('hold')?'block':'none';return}
+    if(type==='semi'){c.style.display=tags.includes('semi')?'block':'none';return}
+    if(type==='ai'){c.style.display=tags.includes('ai')?'block':'none';return}
+    if(type==='health'){c.style.display=tags.includes('health')?'block':'none';return}
+    if(type==='consumer'){c.style.display=tags.includes('consumer')?'block':'none';return}
+  });
+}
+</script>
+</body>
+</html>
