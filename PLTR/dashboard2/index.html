@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PLTR · Deep Financial Breakdown · Dashboard 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#070b10;--surface:#0e1420;--surface2:#141c2a;--surface3:#1a2436;--border:#1a2436;--border2:#243248;--accent:#5b9cf6;--green:#34d399;--red:#f87171;--amber:#fbbf24;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(91,156,246,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(56,189,248,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,11,16,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2);}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-hub{color:var(--accent);border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.08)}.nav-hub:hover{background:rgba(91,156,246,.15)}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(59,191,114,.08);border:1px solid rgba(59,191,114,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#3bbf72;letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#3bbf72}
+.hero-right{text-align:right}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-verdict{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#3bbf72;line-height:1.1}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:220px;text-align:right}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-grade{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+.grade-a{color:var(--green)}.grade-b{color:var(--accent)}.grade-c{color:var(--amber)}.grade-d{color:var(--red)}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:240px;margin-top:1rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:rgba(91,156,246,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.health-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.health-lbl{font-size:.75rem;color:var(--muted);width:150px;flex-shrink:0}
+.health-track{flex:1;height:7px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.health-fill{height:100%;border-radius:4px}
+.health-val{font-family:'IBM Plex Mono',monospace;font-size:.73rem;width:60px;text-align:right;flex-shrink:0}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #3bbf72;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:2px 8px;border-radius:3px;font-weight:500;letter-spacing:.04em}
+.pill-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.pill-amber{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">PLTR · DEEP FINANCIALS</a>
+  <ul class="nav-links">
+    <li><a href="#revenue">Revenue</a></li>
+    <li><a href="#income">Net Income</a></li>
+    <li><a href="#cashflow">FCF</a></li>
+    <li><a href="#margins">Margins</a></li>
+    <li><a href="#debt">Debt</a></li>
+    <li><a href="#roe">ROE</a></li>
+    <li><a href="#verdict">Verdict</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 2 · Deep Financial Breakdown · 5-Year Analysis · March 15, 2026</div>
+        <div class="hero-ticker">PLTR</div>
+        <div class="hero-name">Palantir Technologies Inc. — FY2021–FY2025</div>
+        <div class="hero-badge">FINANCIALLY ACCELERATING · RULE OF 40 SCORE 127</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Financial Health</div>
+        <div class="hero-verdict">A</div>
+        <div class="hero-sub">FY2025 revenue $4.48B +56%. GAAP NI $1.63B. Zero debt. $7.2B cash. FY2026 guide +61%.</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Revenue Growth</div><div class="score-grade grade-a">A+</div><div class="score-sub">+56% FY2025 · accelerating</div></div>
+    <div class="score-item"><div class="score-label">Net Income</div><div class="score-grade grade-a">A</div><div class="score-sub">$1.63B GAAP NI 36% margin</div></div>
+    <div class="score-item"><div class="score-label">Free Cash Flow</div><div class="score-grade grade-a">A+</div><div class="score-sub">$2.27B FCF FY2025</div></div>
+    <div class="score-item"><div class="score-label">Profit Margins</div><div class="score-grade grade-a">A</div><div class="score-sub">80% gross margin sustained</div></div>
+    <div class="score-item"><div class="score-label">Debt Levels</div><div class="score-grade grade-a">A+</div><div class="score-sub">Zero debt · $7.2B cash</div></div>
+    <div class="score-item"><div class="score-label">Return on Equity</div><div class="score-grade grade-b">B+</div><div class="score-sub">28% ROE improving</div></div>
+  </div>
+
+  <section id="revenue">
+    <div class="section-head"><div class="section-head-label">1 · Revenue Growth</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Annual Revenue (FY2021–FY2025)</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Revenue</th><th class="right">YoY Growth</th><th>Key Driver</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">$1.54B</td><td class="mono right" style="color:var(--green)">+41%</td><td class="dim">Government: CIA, NSA, DoD · commercial early stage</td></tr>
+<tr><td>2022</td><td class="mono right">$1.91B</td><td class="mono right" style="color:var(--green)">+24%</td><td class="dim">Commercial expansion begins · AIP development</td></tr>
+<tr><td>2023</td><td class="mono right">$2.23B</td><td class="mono right" style="color:var(--green)">+17%</td><td class="dim">AIP launch · First GAAP profitable quarter</td></tr>
+<tr><td>2024</td><td class="mono right">$2.87B</td><td class="mono right" style="color:var(--green)">+29%</td><td class="dim">AIP bootcamp explosion · US commercial +54%</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">$4.48B</td><td class="mono right" style="color:var(--green)">+56%</td><td class="dim">AIP mainstream · Rule-of-40 127 · FY2026 guide $7.19B +61%</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6"><strong style='color:#34d399'>Revenue CAGR 2021-2025: +31% · Accelerating:</strong> +17% (2023) → +29% (2024) → +56% (2025) → +61% guided (2026).</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Revenue Trend</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Total Revenue ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Revenue Analysis</div><div class="analysis-text">Palantir's revenue growth is accelerating — the rarest outcome in enterprise software. From +17% in 2023 to +56% in 2025, driven by AIP (AI Platform) achieving explosive product-market fit. US commercial revenue grew 109% in FY2025. US commercial revenue grew 137% in Q4 2025. The 2026 guidance of $7.19B (+61%) crushes consensus by nearly $1B — demonstrating extraordinary demand momentum. <strong>A Rule-of-40 score of 127% (growth rate + FCF margin) places Palantir in a category of its own in enterprise software.</strong></div></div>
+  </section>
+
+  <section id="income">
+    <div class="section-head"><div class="section-head-label">2 · Net Income Trends</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">GAAP vs Non-GAAP Net Income</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">GAAP NI</th><th class="right">Non-GAAP NI</th><th class="right">GAAP Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">-$520M</td><td class="mono right">$334M</td><td class="mono right">-34%</td></tr>
+<tr><td>2022</td><td class="mono right">-$374M</td><td class="mono right">$479M</td><td class="mono right">-20%</td></tr>
+<tr><td>2023</td><td class="mono right">$210M</td><td class="mono right">$633M</td><td class="mono right">9%</td></tr>
+<tr><td>2024</td><td class="mono right">$462M</td><td class="mono right">$1.14B</td><td class="mono right">16%</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">$1.63B</td><td class="mono right">$2.25B</td><td class="mono right">36%</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6"><strong style='color:#34d399'>GAAP NI grew from -$520M to +$1.63B in 4 years — $2.15B swing.</strong> GAAP profitability achieved 2023, now at 36% margin.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Net Income Chart</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>GAAP NI</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Non-GAAP NI</span>
+        </div>
+        <div class="chart-wrap"><canvas id="incChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Net Income Analysis</div><div class="analysis-text">Palantir's GAAP profitability journey — from -$520M (2021) to +$1.63B (2025) — represents one of the best financial improvement trajectories in enterprise software history. The 36% GAAP net margin in FY2025 and 57% adjusted operating margin in Q4 2025 demonstrate extraordinary operating leverage. <strong>Every 10% revenue increase generates ~12% EBITDA growth — the leverage is exceptional.</strong></div></div>
+  </section>
+
+  <section id="cashflow">
+    <div class="section-head"><div class="section-head-label">3 · Free Cash Flow</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Free Cash Flow (FY2021–FY2025)</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">FCF</th><th class="right">Growth</th><th class="right">FCF Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right" style="color:var(--green)">$319M</td><td class="mono right" style="color:var(--green)">+N/M</td><td class="mono right">21%</td></tr>
+<tr><td>2022</td><td class="mono right" style="color:var(--green)">$308M</td><td class="mono right" style="color:var(--red)">-3%</td><td class="mono right">16%</td></tr>
+<tr><td>2023</td><td class="mono right" style="color:var(--green)">$731M</td><td class="mono right" style="color:var(--green)">+137%</td><td class="mono right">33%</td></tr>
+<tr><td>2024</td><td class="mono right" style="color:var(--green)">$1.15B</td><td class="mono right" style="color:var(--green)">+57%</td><td class="mono right">40%</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right" style="color:var(--green)">$2.27B</td><td class="mono right" style="color:var(--green)">+97%</td><td class="mono right">51%</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6"><strong style='color:#34d399'>FCF grew 7x in 4 years · 51% FCF margin in FY2025.</strong> FY2025 FCF of $2.27B nearly doubled YoY. 2026 FCF expected ~$4B.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">FCF Trend</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Free Cash Flow ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>FCF Margin (%)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="fcfChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Free Cash Flow Analysis</div><div class="analysis-text">Palantir's FCF grew from $308M to $2.27B — a 638% increase in 4 years. The 51% FCF margin in FY2025 is software-quality metrics that rival the best businesses in technology. <strong>A company generating $2.27B in FCF with zero debt and growing 56% annually with $7.2B in cash is an extraordinary financial profile.</strong></div></div>
+  </section>
+
+  <section id="margins">
+    <div class="section-head"><div class="section-head-label">4 · Profit Margins</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Margin Evolution</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Gross Margin</th><th class="right">EBITDA Margin</th><th class="right">Net Margin</th><th class="right">FCF Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">78%</td><td class="mono right">N/M</td><td class="mono right">-34%</td><td class="mono right">21%</td></tr>
+<tr><td>2022</td><td class="mono right">79%</td><td class="mono right">25%</td><td class="mono right">-20%</td><td class="mono right">16%</td></tr>
+<tr><td>2023</td><td class="mono right">80%</td><td class="mono right">28%</td><td class="mono right">9%</td><td class="mono right">33%</td></tr>
+<tr><td>2024</td><td class="mono right">80%</td><td class="mono right">36%</td><td class="mono right">16%</td><td class="mono right">40%</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">80%</td><td class="mono right">50%</td><td class="mono right">36%</td><td class="mono right">51%</td></tr>
+</tbody></table>
+        <div style="margin-top:1.1rem">
+          <div class="card-head" style="margin-bottom:.85rem">Latest Year Benchmarks</div>
+          <div class="health-row"><div class="health-lbl">Gross margin (consistent 80%)</div><div class="health-track"><div class="health-fill" style="width:80%;background:#5b9cf6"></div></div><div class="health-val" style="color:#5b9cf6">80%</div></div><div class="health-row"><div class="health-lbl">Adj. EBITDA margin FY2025</div><div class="health-track"><div class="health-fill" style="width:57%;background:#34d399"></div></div><div class="health-val" style="color:#34d399">57%</div></div><div class="health-row"><div class="health-lbl">GAAP net margin FY2025</div><div class="health-track"><div class="health-fill" style="width:36%;background:#fbbf24"></div></div><div class="health-val" style="color:#fbbf24">36%</div></div><div class="health-row"><div class="health-lbl">FCF margin FY2025</div><div class="health-track"><div class="health-fill" style="width:51%;background:#a78bfa"></div></div><div class="health-val" style="color:#a78bfa">51%</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">Margin Trends Chart</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Gross</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>EBITDA</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>Net (GAAP)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="mgnChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Margin Analysis</div><div class="analysis-text">80% gross margin has been remarkably consistent across 5 years — reflecting pure software platform economics. EBITDA margin expanded from near zero (2022) to 57% in Q4 2025 as revenue scale drove operating leverage. GAAP net margin reached 36% — extraordinary for a company still growing at 56%. <strong>Every incremental revenue dollar generates ~85 cents in gross profit and ~50 cents in FCF — a compounding machine.</strong></div></div>
+  </section>
+
+  <section id="debt">
+    <div class="section-head"><div class="section-head-label">5 · Debt Levels</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Debt &amp; Leverage Evolution</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Gross Debt</th><th class="right">Net Debt</th><th class="right">Adj. EBITDA</th><th class="right">ND/EBITDA</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">$0</td><td class="mono right">-$2.3B</td><td class="mono right">N/M</td><td class="mono right" style="color:var(--green)">Net cash</td></tr>
+<tr><td>2022</td><td class="mono right">$0</td><td class="mono right">-$2.4B</td><td class="mono right">$478M</td><td class="mono right" style="color:var(--green)">Net cash</td></tr>
+<tr><td>2023</td><td class="mono right">$0</td><td class="mono right">-$3.4B</td><td class="mono right">$626M</td><td class="mono right" style="color:var(--green)">Net cash</td></tr>
+<tr><td>2024</td><td class="mono right">$0</td><td class="mono right">-$4.5B</td><td class="mono right">$1.03B</td><td class="mono right" style="color:var(--green)">Net cash</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">$0</td><td class="mono right">-$7.2B</td><td class="mono right">$2.25B</td><td class="mono right" style="color:var(--green)">Net cash</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6"><strong style='color:#34d399'>Zero debt in entire public history. $7.2B cash growing each quarter.</strong> Financial fortress that funds operations, growth, and potential buybacks.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Debt vs. EBITDA</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#f87171;display:inline-block"></span>Gross Debt ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Adj. EBITDA ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="dbtChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Debt Analysis</div><div class="analysis-text">Palantir has maintained a zero-debt balance sheet throughout its entire public history — funded purely by FCF and equity. $7.2B in cash provides 3+ years of operational runway and the capacity for a major buyback program. <strong>Zero financial risk — this is one of the cleanest balance sheets in enterprise software.</strong></div></div>
+  </section>
+
+  <section id="roe">
+    <div class="section-head"><div class="section-head-label">6 · Return on Equity</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">ROE &amp; Capital Returns</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">ROE</th><th class="right">ROIC</th><th class="right">Dividends</th><th class="right">Buybacks</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">-24%</td><td class="mono right">-18%</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+<tr><td>2022</td><td class="mono right">-14%</td><td class="mono right">-10%</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+<tr><td>2023</td><td class="mono right">8%</td><td class="mono right">6%</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+<tr><td>2024</td><td class="mono right">15%</td><td class="mono right">12%</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">28%</td><td class="mono right">22%</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">ROE turned positive in 2023, now at 28% and expanding rapidly. No dividends or buybacks yet — first shareholder return program expected 2026.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">ROE Trend &amp; Capital Return</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>ROE (%)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>Total Capital Return ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="roeChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">ROE &amp; Capital Allocation Analysis</div><div class="analysis-text">ROE improved from -24% (2021) to +28% (2025) — a 52-percentage point swing in four years. With $7.2B cash and zero debt, ROIC of 22% understates the underlying return quality. <strong>A buyback program would dramatically increase ROE while reducing share dilution from SBC — expect Palantir to initiate this in 2026.</strong></div></div>
+  </section>
+
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">Overall Financial Verdict</div><div class="section-head-line"></div></div>
+    <div class="g3" style="margin-bottom:1.25rem">
+      <div class="card" style="border-color:rgba(52,211,153,.3)">
+        <div class="card-head">Strengths</div><div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>Revenue accelerating: +17%→+29%→+56%→+61% guided — rare in enterprise software</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>$7.2B cash, zero debt — fortress balance sheet</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>80% gross margin sustained over 5 years</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>Rule-of-40 score 127% — among highest in enterprise software globally</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>GAAP profitability achieved 2023, now at 36% net margin in FY2025</div>
+      </div>
+      <div class="card" style="border-color:rgba(251,191,36,.3)">
+        <div class="card-head">Watch Items</div><div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>65x+ forward P/E requires sustained high-growth execution — no margin for error</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>SBC elevated at ~$700M/year — ongoing dilution</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>Revenue concentration: US government ~40% of total — lumpy, politically sensitive</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>Still no dividend or buyback — shareholder returns all via stock appreciation</div>
+      </div>
+      <div class="card" style="border-color:rgba(91,156,246,.3)">
+        <div class="card-head">5-Year Summary</div>
+        <table class="tbl"><tbody>
+          <tr><td class="dim">Revenue CAGR (4yr)</td><td class="mono right" style="color:var(--green)">31% · Accelerating to 56%+</td></tr><tr><td class="dim">GAAP NI FY2025</td><td class="mono right" style="color:var(--green)">$1.63B (36% margin)</td></tr><tr><td class="dim">FCF FY2025</td><td class="mono right" style="color:var(--green)">$2.27B (51% margin)</td></tr><tr><td class="dim">Cash (zero debt)</td><td class="mono right" style="color:var(--green)">$7.2B</td></tr><tr><td class="dim">Gross margin</td><td class="mono right" style="color:var(--green)">80% (consistent 5yr)</td></tr><tr><td class="dim">ROE</td><td class="mono right" style="color:var(--green)">28% (rapidly improving)</td></tr><tr><td class="dim">FY2026 guide</td><td class="mono right" style="color:var(--green)">$7.19B (+61%)</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div class="verdict-block">
+      <div class="verdict-title">Is Palantir Technologies Inc. Financially Strong or Weakening? — Definitive Assessment</div>
+      <div class="verdict-text">Palantir is financially accelerating — revenue, margins, and FCF all improving simultaneously and dramatically. The GAAP profitability inflection arrived in 2023 and has now reached 36% net margin in FY2025. Zero debt and $7.2B in cash provide total financial security. The FY2026 guidance of $7.19B crushing consensus by ~$1B is the most important datapoint — it implies the AIP adoption wave is still in early innings. <strong style='color:#34d399'>Financial health: A. Trend: Strongly Accelerating. One of the best financial improvement trajectories in enterprise software history.</strong></div>
+    </div>
+  </section>
+
+  <footer>
+    <div><div class="footer-brand">PLTR · DEEP FINANCIAL BREAKDOWN · DASHBOARD 2</div><div>5-Year Analysis · March 15, 2026</div></div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> For informational purposes only. Not financial advice. Please consult a licensed financial advisor before making investment decisions.</div>
+  </footer>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+  var yrs = ["2021", "2022", "2023", "2024", "2025"];
+  var opts = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#0e1420',borderColor:'#1a2436',borderWidth:1,titleColor:'#64748b',bodyColor:'#e2e8f0'} },
+    scales:{
+      x:{ ticks:{color:'#64748b',font:{size:11},maxRotation:0}, grid:{display:false}, border:{color:'#1a2436'} },
+      y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'#1a2436'}, beginAtZero:true }
+    }
+  };
+  function $B(v){ return '$'+v+'B'; }
+  function pct(v){ return v+'%'; }
+
+  // Revenue
+  new Chart(document.getElementById('revChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[1.54, 1.91, 2.23, 2.87, 4.48],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // Net income
+  new Chart(document.getElementById('incChart'),{type:'bar',data:{labels:yrs,datasets:[{label:'GAAP',data:[-0.52, -0.37, 0.21, 0.46, 1.63],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4},{label:'NonGAAP',data:[0.33, 0.48, 0.63, 1.14, 2.25],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // FCF dual axis
+  new Chart(document.getElementById('fcfChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0.32, 0.31, 0.73, 1.15, 2.27],backgroundColor:'rgba(52,211,153,0.6)',borderColor:'#34d399',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[21, 16, 33, 40, 51],borderColor:'#5b9cf6',backgroundColor:'rgba(91,156,246,0.15)',pointBackgroundColor:'#5b9cf6',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#64748b',font:{size:11},callback:pct},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+
+  // Margins
+  new Chart(document.getElementById('mgnChart'),{type:'line',data:{labels:yrs,datasets:[{data:[78, 79, 80, 80, 80],borderColor:'#5b9cf6',backgroundColor:'rgba(91,156,246,0.08)',pointBackgroundColor:'#5b9cf6',borderWidth:2,fill:true,tension:0.3},{data:[0, 25, 28, 36, 50],borderColor:'#34d399',backgroundColor:'rgba(52,211,153,0.05)',pointBackgroundColor:'#34d399',borderWidth:2,fill:false,tension:0.3},{data:[-34, -20, 9, 16, 36],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.05)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:false,tension:0.3}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct}}}}});
+
+  // Debt
+  new Chart(document.getElementById('dbtChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0, 0, 0, 0, 0],backgroundColor:'rgba(248,113,113,0.5)',borderColor:'#f87171',borderWidth:1,borderRadius:4},{data:[0, 0.48, 0.63, 1.03, 2.25],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // ROE dual axis
+  new Chart(document.getElementById('roeChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[-24, -14, 8, 15, 28],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[0, 0, 0, 0, 0],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.1)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#64748b',font:{size:11},callback:$B},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+});
+</script>
+</body>
+</html>
