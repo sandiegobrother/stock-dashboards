@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="CAVA Group, Inc. (CAVA) — Wall Street equity research dashboard.">
-<meta property="og:title" content="CAVA · CAVA Group, Inc. Equity Research">
+<meta name="description" content="CAVA Group, Inc. (CAVA) — Full Wall Street equity research dashboard.">
 <title>CAVA · CAVA Group, Inc. Equity Research</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -13,16 +12,16 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#07090c;--bg2:#0d1117;--surface:#111720;--surface2:#171e28;--border:#1e2836;--border2:#253042;--accent:#c9993a;--blue:#4a84e8;--green:#3bbf72;--red:#df5454;--text:#dde2ea;--muted:#6e7d94;--muted2:#3a4a5e}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;padding:0;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,153,58,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(201,153,58,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.12em;text-decoration:none}
-.nav-links{display:flex;gap:0;list-style:none}
+.nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .9rem;height:52px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
 .nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
 .nav-pill{font-family:'IBM Plex Mono',monospace;font-size:.65rem;background:rgba(59,191,114,.12);color:#3bbf72;border:1px solid rgba(59,191,114,.25);padding:3px 10px;border-radius:20px;letter-spacing:.08em}
-.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px}
+.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none}
 .back-link:hover{color:var(--accent)}
 @media(max-width:700px){.nav-links{display:none}}
 .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
@@ -53,7 +52,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem}
 @media(max-width:960px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}}
-.metric{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;position:relative;overflow:hidden}
 .metric:hover{border-color:var(--border2);transform:translateY(-1px)}
 .metric::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0;transition:opacity .2s}
 .metric:hover::after{opacity:1}
@@ -61,17 +60,19 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .m-value{font-family:'IBM Plex Mono',monospace;font-size:1.55rem;font-weight:500;line-height:1}
 .m-sub{font-size:.73rem;color:var(--muted);margin-top:5px}
 .tbl{width:100%;border-collapse:collapse;font-size:.86rem}
-.tbl th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 1rem .65rem 0;border-bottom:1px solid var(--border);font-weight:500}
-.tbl td{padding:.62rem 1rem .62rem 0;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .65rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.62rem .75rem .62rem 0;border-bottom:1px solid var(--border);vertical-align:top}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tr:hover td{background:rgba(255,255,255,.015)}
 .tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.82rem}
 .tbl td.right{text-align:right}
 .tbl td.dim{color:var(--muted);font-size:.79rem}
+.tbl .hl td{background:rgba(201,153,58,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.bar-lbl{font-size:.73rem;color:var(--muted);width:110px;flex-shrink:0}
-.bar-track{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
-.bar-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.bar-lbl{font-size:.73rem;color:var(--muted);width:130px;flex-shrink:0}
+.bar-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
 .bar-val{font-family:'IBM Plex Mono',monospace;font-size:.73rem;width:44px;text-align:right;color:var(--text);flex-shrink:0}
 .scenario{border-radius:10px;padding:1.4rem;border:1px solid;position:relative;overflow:hidden}
 .scenario::before{content:'';position:absolute;inset:0;opacity:.04;pointer-events:none;background:repeating-linear-gradient(-45deg,currentColor 0,currentColor 1px,transparent 0,transparent 50%);background-size:8px 8px}
@@ -86,21 +87,23 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .rb-high{background:rgba(223,84,84,.14);color:var(--red)}.rb-med{background:rgba(201,153,58,.14);color:var(--accent)}.rb-low{background:rgba(59,191,114,.14);color:var(--green)}
 .risk-name{font-size:.87rem;font-weight:400;margin-bottom:3px}
 .risk-desc-text{font-size:.77rem;color:var(--muted);line-height:1.45}
+.stars{color:var(--green);font-size:.78rem;letter-spacing:1px}
+.quote-block{border:1px solid rgba(201,153,58,.28);background:rgba(201,153,58,.05);border-left:3px solid var(--accent);border-radius:6px;padding:1rem 1.2rem;font-size:.87rem;line-height:1.65;color:var(--text);margin-top:1rem}
+.quote-block cite{display:block;font-size:.7rem;color:var(--muted2);font-style:normal;margin-top:.5rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em}
 .verdict{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:6px;padding:1.5rem;margin-bottom:2.5rem}
 .verdict-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.6rem}
 .verdict-text{font-size:.9rem;line-height:1.7}
-.chart-wrap{position:relative;width:100%;height:220px}
-footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;align-items:flex-start}
+.chart-wrap{position:relative;width:100%;height:230px;margin-top:1rem}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between}
 .footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.fade-up{animation:fadeUp .5s ease both}
 </style>
 </head>
 <body>
 <nav>
   <a class="nav-logo" href="#">CAVA · RESEARCH</a>
   <ul class="nav-links">
-    <li><a href="#metrics">Metrics</a></li>
+    <li><a href="#financials">Financials</a></li>
+    <li><a href="#valuation">Valuation</a></li>
     <li><a href="#moat">Moat</a></li>
     <li><a href="#scenarios">Scenarios</a></li>
     <li><a href="#risks">Risks</a></li>
@@ -109,86 +112,323 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
   <span class="nav-pill">BUY</span>
 </nav>
 <div class="wrapper">
-  <header class="hero fade-up">
+
+  <!-- HERO -->
+  <header class="hero">
     <div class="hero-left">
-      <div class="eyebrow">Wall Street · Equity Research · March 15, 2026</div>
+      <div class="eyebrow"><a class="back-link" href="../">← All Tickers</a> &nbsp;·&nbsp; Wall Street · Equity Research · March 15, 2026</div>
       <div class="hero-ticker">CAVA</div>
       <div class="hero-name">CAVA Group, Inc.</div>
-      <div class="hero-tags"><span class="tag">NYSE</span><span class="tag">Fast Casual</span><span class="tag">Mediterranean</span><span class="tag">Restaurant Growth</span></div>
+      <div class="hero-tags"><span class="tag">NYSE</span> <span class="tag">Fast Casual</span> <span class="tag">Mediterranean</span> <span class="tag">Restaurant Growth</span> <span class="tag">1,000 Unit Target</span></div>
     </div>
     <div class="hero-right">
-      <div class="hero-price">$68.00</div>
+      <div class="hero-price">$83.00</div>
       <div class="hero-target">12-mo target · $83.33</div>
       <div class="hero-date">Report date: 15 Mar 2026</div>
     </div>
   </header>
 
-  <div class="ribbon fade-up">
+  <!-- RIBBON -->
+  <div class="ribbon">
     <div class="ribbon-item"><div class="ribbon-label">Consensus</div><div class="ribbon-value" style="color:#3bbf72">BUY</div></div>
     <div class="ribbon-item"><div class="ribbon-label">Price Target</div><div class="ribbon-value rv-amber">$83.33</div></div>
     <div class="ribbon-item"><div class="ribbon-label">High Target</div><div class="ribbon-value rv-amber">$100.00</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Market Cap</div><div class="ribbon-value rv-text">~$7.4B</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+22%</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Market Cap</div><div class="ribbon-value rv-text">~$9.1B</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+0.4% to consensus (stock ran post-earnings)</div></div>
     <div class="ribbon-item"><div class="ribbon-label">Exchange</div><div class="ribbon-value rv-blue">NYSE</div></div>
   </div>
 
-  <section id="metrics">
+  <!-- KEY METRICS -->
+  <section id="financials">
     <div class="section-head"><div class="section-head-label">Key Financial Metrics</div><div class="section-head-line"></div></div>
     <div class="g4">
-      <div class="metric fade-up"><div class="m-label">Revenue (TTM)</div><div class="m-value rv-text">~$950M</div><div class="m-sub" style="color:var(--green)">+24% YoY</div></div>
-      <div class="metric fade-up"><div class="m-label">Gross Margin</div><div class="m-value rv-green">~26%</div><div class="m-sub">Non-GAAP</div></div>
-      <div class="metric fade-up"><div class="m-label">FCF Margin</div><div class="m-value rv-text">~8%</div><div class="m-sub">Free cash flow %</div></div>
-      <div class="metric fade-up"><div class="m-label">Trailing P/E</div><div class="m-value rv-text">~180x</div><div class="m-sub">Fwd P/E: ~95x</div></div>
+      <div class="metric"><div class="m-label">FY2025 Revenue</div><div class="m-value rv-text">$1.04B</div><div class="m-sub" style="color:var(--green)">+22.5% YoY · First $1B year ever</div></div>
+      <div class="metric"><div class="m-label">Q4 2025 Revenue</div><div class="m-value rv-amber">$275M</div><div class="m-sub" style="color:var(--green)">+21% YoY · Beat $268M estimate</div></div>
+      <div class="metric"><div class="m-label">Q4 Same-Store Sales</div><div class="m-value rv-text">+0.5%</div><div class="m-sub">Vs -1.1% estimate · Massive beat</div></div>
+      <div class="metric"><div class="m-label">FY2025 Net Income</div><div class="m-value rv-green">$63.7M</div><div class="m-sub">Second year of GAAP profitability</div></div>
+      <div class="metric"><div class="m-label">FY2025 Adj. EBITDA</div><div class="m-value rv-text">$152.8M</div><div class="m-sub">14.7% margin</div></div>
+      <div class="metric"><div class="m-label">Restaurant Count</div><div class="m-value rv-green">439 locations</div><div class="m-sub">72 net new in FY2025 · 28 states + DC</div></div>
+      <div class="metric"><div class="m-label">FY2026 SSS Guidance</div><div class="m-value rv-amber">3–5%</div><div class="m-sub">Above +3.2% analyst consensus</div></div>
+      <div class="metric"><div class="m-label">FY2026 New Units</div><div class="m-value rv-text">74–76</div><div class="m-sub">Midwest expansion: Cincinnati, St. Louis, Columbus</div></div>
     </div>
   </section>
 
+  <!-- REVENUE GROWTH & VALUATION -->
+  <section id="valuation">
+    <div class="section-head"><div class="section-head-label">Revenue Growth &amp; Valuation</div><div class="section-head-line"></div></div>
+    <div class="g2">
+
+      <!-- Left: Revenue table + chart -->
+      <div class="card">
+        <div class="card-head">Quarterly Revenue Progression</div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Period</th>
+              <th class="right">Total Rev</th>
+              <th class="right">Adj. EBITDA ($B)</th>
+              <th class="right">Mix</th>
+              <th class="right">YoY</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Q1 2025</td><td class="mono right">$226M</td><td class="mono right">$49M</td><td class="mono right">22%</td><td class="mono right" style="color:var(--green)">+28%</td></tr>
+<tr><td>Q2 2025</td><td class="mono right">$261M</td><td class="mono right">$56M</td><td class="mono right">21%</td><td class="mono right" style="color:var(--green)">+28%</td></tr>
+<tr><td>Q3 2025</td><td class="mono right">$292M</td><td class="mono right">$63M</td><td class="mono right">22%</td><td class="mono right" style="color:var(--green)">+19%</td></tr>
+<tr class="hl"><td>Q4 2025</td><td class="mono right">$275M</td><td class="mono right" style="color:var(--accent)">$59M</td><td class="mono right" style="color:var(--accent)">21%</td><td class="mono right" style="color:var(--green)">+21%</td></tr>
+<tr><td>FY2026E</td><td class="mono right">~$1.26B</td><td class="mono right">~$180M</td><td class="mono right">~14%</td><td class="mono right" style="color:var(--green)">+21%</td></tr>
+
+          </tbody>
+        </table>
+        <div style="margin-top:1.25rem">
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#4a84e8;display:inline-block"></span>Total Revenue</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#c9993a;display:inline-block"></span>Adj. EBITDA ($B)</span>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="revChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Peer comparison + profitability bars + balance sheet -->
+      <div class="card">
+        <div class="card-head">Peer Valuation Comparison</div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th class="right">Mkt Cap</th>
+              <th class="right">Fwd P/E</th>
+              <th class="right">Rev Growth</th>
+              <th class="right">FCF Margin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl"><td style="color:var(--accent)"><strong>CAVA</strong></td><td class="mono right">~$9.1B</td><td class="mono right" style="color:var(--accent)">200x</td><td class="mono right" style="color:var(--green)">+22%</td><td class="mono right" style="color:var(--green)">8%</td></tr>
+<tr><td><span>CMG</span></td><td class="mono right">~$80B</td><td class="mono right">50x</td><td class="mono right" style="color:var(--green)">+13%</td><td class="mono right">15%</td></tr>
+<tr><td><span>WING</span></td><td class="mono right">~$7B</td><td class="mono right">40x</td><td class="mono right" style="color:var(--green)">+23%</td><td class="mono right">12%</td></tr>
+<tr><td><span>SG</span></td><td class="mono right">~$2B</td><td class="mono right">80x</td><td class="mono right" style="color:var(--green)">+15%</td><td class="mono right">5%</td></tr>
+<tr><td><span>SHAK</span></td><td class="mono right">~$3B</td><td class="mono right">60x</td><td class="mono right" style="color:var(--green)">+10%</td><td class="mono right">6%</td></tr>
+
+          </tbody>
+        </table>
+
+        <div style="margin-top:1.5rem">
+          <div class="card-head" style="margin-bottom:1rem">Profitability Benchmarks</div>
+          <div class="bar-row"><div class="bar-lbl">Restaurant-level margin (Q4)</div><div class="bar-track"><div class="bar-fill" style="width:21%;background:var(--accent)"></div></div><div class="bar-val">21%</div></div>
+<div class="bar-row"><div class="bar-lbl">FY2025 SSS growth</div><div class="bar-track"><div class="bar-fill" style="width:4%;background:var(--blue)"></div></div><div class="bar-val">4%</div></div>
+<div class="bar-row"><div class="bar-lbl">New unit productivity</div><div class="bar-track"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div><div class="bar-val">100%</div></div>
+<div class="bar-row"><div class="bar-lbl">Brand awareness</div><div class="bar-track"><div class="bar-fill" style="width:62%;background:var(--muted)"></div></div><div class="bar-val">62%</div></div>
+
+        </div>
+
+        <div style="margin-top:1.5rem">
+          <div class="card-head" style="margin-bottom:1rem">Balance Sheet Snapshot</div>
+          <table class="tbl">
+            <tbody>
+              <tr><td class="dim">Cash & investments</td><td class="mono right" style="color:var(--green)">$393M</td></tr>
+<tr><td class="dim">Total debt</td><td class="mono right" style="color:var(--green)">$0</td></tr>
+<tr><td class="dim">Net cash position</td><td class="mono right" style="color:var(--green)">$393M</td></tr>
+<tr><td class="dim">Undrawn revolver</td><td class="mono right" style="color:var(--green)">$75M</td></tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BUSINESS MODEL & MOAT -->
   <section id="moat">
-    <div class="section-head"><div class="section-head-label">Business Description &amp; Moat</div><div class="section-head-line"></div></div>
-    <div class="card" style="margin-bottom:1.25rem">
-      <div class="card-head">Company Overview</div>
-      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">CAVA is the leading Mediterranean fast-casual restaurant chain with 350+ locations across the US. It offers customizable bowls, pitas, and salads built around a proprietary menu of dips, spreads, and proteins. CAVA targets the same cultural moment Chipotle captured for Mexican food — becoming the defining Mediterranean restaurant brand in America.</p>
-    </div>
-    <div class="card">
-      <div class="card-head">Competitive Moat</div>
-      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">CAVA's moat rests on brand equity, supply chain control of its proprietary dips and spreads (difficult to replicate at scale), and a digital-first ordering model. Same-store sales momentum and a long-runway unit expansion story (targeting 1,000 locations) give CAVA a decade+ of visible unit growth. New COO Doug Thompson (formerly Texas Roadhouse) strengthens operational execution.</p>
+    <div class="section-head"><div class="section-head-label">Business Model &amp; Competitive Moat</div><div class="section-head-line"></div></div>
+    <div class="g2">
+
+      <div class="card">
+        <div class="card-head">Revenue Segments</div>
+        <table class="tbl">
+          <thead>
+            <tr><th>Segment</th><th class="right">Mix</th><th>Key Products</th><th>Margin Profile</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>CAVA Restaurants (Core)</strong></td><td class="mono right" style="color:var(--accent)">~98%</td><td class="dim">Mediterranean bowls, pitas, salads — 439 locations across 28 states + DC. Dine-in, takeout, digital ordering, catering</td><td class="mono" style="color:var(--green)">~21% restaurant-level profit</td></tr>
+<tr><td><strong>Digital & Loyalty</strong></td><td class="mono right" style="color:var(--accent)">~2%</td><td class="dim">CAVA loyalty app (sea/sand/sun/Oasis tiers), digital mix growing, KDS in 370 locations, catering pilot</td><td class="mono" style="color:var(--green)">High — digital orders reduce labor cost</td></tr>
+
+          </tbody>
+        </table>
+        <div style="margin-top:1.25rem">
+          <div class="card-head" style="margin-bottom:.75rem">Industry Tailwinds (12–24 Months)</div>
+          <table class="tbl">
+            <thead><tr><th>Trend</th><th>Exposure</th><th class="right">Scale</th></tr></thead>
+            <tbody>
+              <tr><td>Post-earnings 25% stock surge</td><td class="dim">Q4 SSS +0.5% vs -1.1% estimate — massive beat</td><td class="mono right" style="color:var(--green)">Sentiment inflection validates brand resilience</td></tr>
+<tr><td>Midwest expansion</td><td class="dim">Cincinnati, St. Louis, Columbus, Minneapolis new markets</td><td class="mono right" style="color:var(--green)">Whitespace opportunity is enormous</td></tr>
+<tr><td>1,000 unit target by 2032</td><td class="dim">From 439 → 1,000 = 128% unit growth ahead</td><td class="mono right" style="color:var(--green)">Chipotle took 20 years; CAVA has a clearer path</td></tr>
+<tr><td>Salmon menu launch</td><td class="dim">Premium protein adds to AUV and check average</td><td class="mono right" style="color:var(--green)">First new protein since opening</td></tr>
+<tr><td>Gen Z/Millennial brand loyalty</td><td class="dim">Value perception strongest of any fast-casual</td><td class="mono right" style="color:var(--green)">62% brand awareness and rising</td></tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Competitive Moat Analysis</div>
+        <table class="tbl">
+          <thead><tr><th>Moat Source</th><th>Strength</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Mediterranean category ownership</td><td><span class="stars">★★★★★</span></td><td class="dim">CAVA is to Mediterranean what Chipotle is to Mexican — category-defining brand with no credible national competitor</td></tr>
+<tr><td>Unit economics at scale</td><td><span class="stars">★★★★☆</span></td><td class="dim">AUV >$3M, new unit productivity >100%, restaurant margins 21-24% — exceptional for fast-casual</td></tr>
+<tr><td>Proprietary dips & spreads</td><td><span class="stars">★★★★☆</span></td><td class="dim">Hummus, harissa, tzatziki made fresh daily — supply chain moat that cannot be easily replicated</td></tr>
+<tr><td>Valuation (200x P/E)</td><td><span class="stars">⚠ Risk</span></td><td class="dim">200x trailing P/E prices in near-perfection; any SSS miss or unit growth shortfall triggers sharp compression</td></tr>
+<tr><td>Consumer macro risk</td><td><span class="stars">⚠ Risk</span></td><td class="dim">Q4 guest traffic -1.4% YoY despite SSS beat — price increases are covering traffic softness</td></tr>
+
+          </tbody>
+        </table>
+        <div class="quote-block">"We believe our momentum reflects more than just expansion. <strong style='color:var(--accent)'>CAVA's value proposition resonates with increasingly intentional consumers</strong> seeking bold flavors and healthy options across all income cohorts. We are in the early innings of a very long-runway story."<cite>— Brett Schulman, CEO · CAVA Group Q4 2025 Earnings Call, February 24, 2026</cite></div>
+      </div>
+
     </div>
   </section>
 
+  <!-- SCENARIOS -->
   <section id="scenarios">
-    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Scenarios</div><div class="section-head-line"></div></div>
+    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Case Scenarios</div><div class="section-head-line"></div></div>
     <div class="g3">
-      <div class="scenario sc-bull"><div class="sc-label">🐂 Bull Case</div><div class="sc-target">$100</div><div class="sc-upside">+47% upside</div><div class="sc-desc">SSS recover above consensus. Unit expansion hits 16%+ annually. Mediterranean category captures mainstream adoption. Operating leverage drives margin expansion toward Chipotle-like levels.</div></div>
-      <div class="scenario sc-base"><div class="sc-label">📊 Base Case</div><div class="sc-target">$83</div><div class="sc-upside">+22% upside</div><div class="sc-desc">Steady 16% unit growth. SSS return to 3-5% range in 2026. Margins slowly improve. Stock tracks earnings growth.</div></div>
-      <div class="scenario sc-bear"><div class="sc-label">🐻 Bear Case</div><div class="sc-target">$40</div><div class="sc-upside">-41% downside</div><div class="sc-desc">Macro consumer slowdown hits discretionary dining. SSS turn negative. Unit expansion slows. Premium valuation compresses sharply.</div></div>
+      <div class="scenario sc-bull">
+        <div class="sc-label">🐂 Bull Case</div>
+        <div class="sc-target">$100</div>
+        <div class="sc-upside">+20% upside</div>
+        <div class="sc-desc">SSS tracks above the 3-5% guide throughout 2026. Midwest expansion units open with above-100% productivity. Salmon launch drives AUV and check average expansion. TD Cowen $90 and Telsey $85 targets exceeded. Stock re-rates toward Chipotle-era multiples.</div>
+      </div>
+      <div class="scenario sc-base">
+        <div class="sc-label">📊 Base Case</div>
+        <div class="sc-target">$83</div>
+        <div class="sc-upside">+0.4% upside</div>
+        <div class="sc-desc">2026 guidance achieved: 74-76 new units, 3-5% SSS growth, $176-184M adj. EBITDA. Restaurant-level margins 23.7-24.2%. Stock consolidates post-25% post-earnings surge while fundamentals catch up to valuation.</div>
+      </div>
+      <div class="scenario sc-bear">
+        <div class="sc-label">🐻 Bear Case</div>
+        <div class="sc-target">$40</div>
+        <div class="sc-upside">-52% downside</div>
+        <div class="sc-desc">Consumer discretionary spending weakens. SSS turn negative on traffic pressure. Unit expansion slows as macro deteriorates. 200x P/E compresses to 80-100x. Wider fast-casual sector selloff drags CAVA lower.</div>
+      </div>
     </div>
   </section>
 
+  <!-- RISKS & OUTLOOK -->
   <section id="risks">
-    <div class="section-head"><div class="section-head-label">Risk Assessment</div><div class="section-head-line"></div></div>
-    <div class="card"><div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Valuation</div><div class="risk-desc-text">180x trailing P/E; any slowdown triggers sharp multiple compression</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Consumer macro</div><div class="risk-desc-text">Fast casual is discretionary; recession risk is elevated</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Execution</div><div class="risk-desc-text">Rapid expansion requires tight operational discipline</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Balance sheet</div><div class="risk-desc-text">Net cash; no meaningful debt risk</div></div></div>
+    <div class="section-head"><div class="section-head-label">Risk Assessment &amp; Forward Outlook</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Key Risks</div>
+        <div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Valuation</div><div class="risk-desc-text">200x trailing P/E — stock priced for perfection; any guide-down causes severe multiple compression</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Traffic decline</div><div class="risk-desc-text">Q4 guest traffic -1.4% YoY despite SSS beat — price covering traffic, not organic volume growth</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Consumer macro</div><div class="risk-desc-text">Fast casual is discretionary; recession risk elevated; younger consumers showing stress</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Salmon margin headwind</div><div class="risk-desc-text">New protein launch creates ~100bps restaurant margin headwind in H1 2026</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Balance sheet</div><div class="risk-desc-text">$393M cash, zero debt, $75M undrawn revolver — zero financial risk</div></div></div>
+
+      </div>
+      <div class="card">
+        <div class="card-head">Forward Revenue &amp; Earnings Outlook</div>
+        <table class="tbl">
+          <thead><tr><th>Metric</th><th>FY2025A</th><th>FY2026E</th><th>FY2027E</th></tr></thead>
+          <tbody>
+            <tr><td>Total Revenue</td><td class="mono right">$1.04B</td><td class="mono right" style="color:var(--green)">~$1.26B</td><td class="mono right" style="color:var(--green)">~$1.53B</td></tr>
+<tr><td>Restaurants</td><td class="mono right">439</td><td class="mono right" style="color:var(--green)">~515</td><td class="mono right" style="color:var(--green)">~590</td></tr>
+<tr><td>Same-Store Sales</td><td class="mono right">+4.0%</td><td class="mono right" style="color:var(--green)">3–5%</td><td class="mono right" style="color:var(--green)">~4%</td></tr>
+<tr><td>Adj. EBITDA</td><td class="mono right">$152.8M</td><td class="mono right" style="color:var(--green)">$176–184M</td><td class="mono right" style="color:var(--green)">~$240M+</td></tr>
+<tr><td>EBITDA Margin</td><td class="mono right">14.7%</td><td class="mono right" style="color:var(--green)">~14.2%</td><td class="mono right" style="color:var(--green)">~15%+</td></tr>
+<tr><td>Net Income</td><td class="mono right">$63.7M</td><td class="mono right" style="color:var(--green)">~$45M (higher tax rate)</td><td class="mono right" style="color:var(--green)">~$80M+</td></tr>
+
+          </tbody>
+        </table>
+      
+        <div style="margin-top:1.25rem">
+          <div class="card-head" style="margin-bottom:0.75rem">Near-Term Catalysts</div>
+          <div class="risk-row" ><div class="risk-badge rb-high">FY26</div><div><div class="risk-name" style="font-size:0.82rem">500th Restaurant Opening</div><div class="risk-desc-text">Scale milestone confirms unit economic consistency at speed.</div></div></div>
+          <div class="risk-row" ><div class="risk-badge rb-high">FY26</div><div><div class="risk-name" style="font-size:0.82rem">SSS Sustains >8% for 4+ Quarters</div><div class="risk-desc-text">Removes deceleration concern. Multiple expansion toward $115 target.</div></div></div>
+          <div class="risk-row" style="border:none"><div class="risk-badge rb-med">FY27</div><div><div class="risk-name" style="font-size:0.82rem">Catering Revenue >$200M</div><div class="risk-desc-text">Proves off-premise enhances economics. Higher-margin revenue layer.</div></div></div>
+        </div>
 </div>
+    </div>
   </section>
 
+  <!-- VERDICT -->
   <section id="verdict">
     <div class="section-head"><div class="section-head-label">Analyst Verdict</div><div class="section-head-line"></div></div>
     <div class="verdict">
       <div class="verdict-label">Bottom Line · BUY · Target $83.33</div>
-      <div class="verdict-text">CAVA is the most compelling long-term restaurant growth story in the US market — the Mediterranean equivalent of early Chipotle. The brand is resonating, unit economics are strong, and the runway is long. The risk is the valuation, which prices in near-perfection. Patient growth investors should accumulate on any weakness. <strong style='color:var(--green)'>Buy. Target: $83.33.</strong></div>
+      <div class="verdict-text">CAVA's Q4 2025 results triggered a 25% stock surge because the market got the one data point it needed most — same-store sales beat estimates by 160 basis points, proving the brand is resilient against macro headwinds and defying the -1.1% SSS consensus. The first $1B revenue year, zero debt, and clear 1,000-unit runway make CAVA the most compelling long-term restaurant growth story in the US. The risk is that the stock is now trading near the $83 consensus target — most of the post-earnings upside has been captured. Buy on any meaningful pullback toward $65-70. <strong style='color:var(--green)'>Buy. Target: $83.33. Accumulate on dips. Best entry below $70.</strong></div>
     </div>
   </section>
 
   <footer>
     <div><div class="footer-brand">CAVA · EQUITY RESEARCH</div><div>Generated March 15, 2026 · For informational purposes only</div></div>
-    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making any investment decisions.</div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making investment decisions.</div>
   </footer>
-</div>
+
+</div><!-- /wrapper -->
+
 <script>
-const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}});},{threshold:.1});
-document.querySelectorAll('.card,.metric,.scenario,.verdict').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(12px)';el.style.transition='opacity .45s ease,transform .45s ease';observer.observe(el)});
-setTimeout(()=>document.querySelectorAll('.bar-fill[data-target]').forEach(el=>el.style.width=el.getAttribute('data-target')+'%'),300);
+// Chart.js — Revenue bar chart
+window.addEventListener('load', function() {
+  var ctx = document.getElementById('revChart');
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ["Q1 2025", "Q2 2025", "Q3 2025", "Q4 2025", "FY2026E"],
+        datasets: [
+          {
+            label: 'Total Revenue',
+            data: [0.226, 0.261, 0.292, 0.275, 1.26],
+            backgroundColor: 'rgba(74,132,232,0.55)',
+            borderColor: '#4a84e8',
+            borderWidth: 1,
+            borderRadius: 3
+          },
+          {
+            label: 'Adj. EBITDA ($B)',
+            data: [0.049, 0.056, 0.063, 0.059, 0.18],
+            backgroundColor: 'rgba(201,153,58,0.65)',
+            borderColor: '#c9993a',
+            borderWidth: 1,
+            borderRadius: 3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#111720',
+            borderColor: '#1e2836',
+            borderWidth: 1,
+            titleColor: '#6e7d94',
+            bodyColor: '#dde2ea'
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#6e7d94', font: { size: 11 }, maxRotation: 30 },
+            grid: { display: false },
+            border: { color: '#1e2836' }
+          },
+          y: {
+            ticks: { color: '#6e7d94', font: { size: 11 } },
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            border: { color: '#1e2836' },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+});
 </script>
 </body>
 </html>
