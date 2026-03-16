@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ALAB · Deep Financial Breakdown · Dashboard 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#070b10;--surface:#0e1420;--surface2:#141c2a;--surface3:#1a2436;--border:#1a2436;--border2:#243248;--accent:#5b9cf6;--green:#34d399;--red:#f87171;--amber:#fbbf24;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(91,156,246,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(56,189,248,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,11,16,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2);}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-hub{color:var(--accent);border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.08)}.nav-hub:hover{background:rgba(91,156,246,.15)}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(59,191,114,.08);border:1px solid rgba(59,191,114,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#3bbf72;letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#3bbf72}
+.hero-right{text-align:right}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-verdict{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#3bbf72;line-height:1.1}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:220px;text-align:right}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-grade{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+.grade-a{color:var(--green)}.grade-b{color:var(--accent)}.grade-c{color:var(--amber)}.grade-d{color:var(--red)}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:240px;margin-top:1rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:rgba(91,156,246,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.health-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.health-lbl{font-size:.75rem;color:var(--muted);width:150px;flex-shrink:0}
+.health-track{flex:1;height:7px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.health-fill{height:100%;border-radius:4px}
+.health-val{font-family:'IBM Plex Mono',monospace;font-size:.73rem;width:60px;text-align:right;flex-shrink:0}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #3bbf72;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:2px 8px;border-radius:3px;font-weight:500;letter-spacing:.04em}
+.pill-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.pill-amber{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">ALAB · DEEP FINANCIALS</a>
+  <ul class="nav-links">
+    <li><a href="#revenue">Revenue</a></li>
+    <li><a href="#income">Net Income</a></li>
+    <li><a href="#cashflow">FCF</a></li>
+    <li><a href="#margins">Margins</a></li>
+    <li><a href="#debt">Debt</a></li>
+    <li><a href="#roe">ROE</a></li>
+    <li><a href="#verdict">Verdict</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 2 · Deep Financial Breakdown · 5-Year Analysis · March 15, 2026</div>
+        <div class="hero-ticker">ALAB</div>
+        <div class="hero-name">Astera Labs, Inc. — FYFY2022–FYFY2025</div>
+        <div class="hero-badge">FINANCIALLY HYPERGROWTH · PCIe 6 FIRST MOVER</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Financial Health</div>
+        <div class="hero-verdict">A</div>
+        <div class="hero-sub">FY2025 revenue $852M +115%. Non-GAAP op. margin 40%. Amazon $6.5B commitment. Zero debt.</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Revenue Growth</div><div class="score-grade grade-a">A+</div><div class="score-sub">+115% FY2025</div></div>
+    <div class="score-item"><div class="score-label">Net Income</div><div class="score-grade grade-b">B+</div><div class="score-sub">Non-GAAP profitable</div></div>
+    <div class="score-item"><div class="score-label">Free Cash Flow</div><div class="score-grade grade-b">B+</div><div class="score-sub">22% FCF margin</div></div>
+    <div class="score-item"><div class="score-label">Profit Margins</div><div class="score-grade grade-a">A</div><div class="score-sub">76% non-GAAP GM</div></div>
+    <div class="score-item"><div class="score-label">Debt Levels</div><div class="score-grade grade-a">A+</div><div class="score-sub">Zero debt · $1.19B cash</div></div>
+    <div class="score-item"><div class="score-label">Return on Equity</div><div class="score-grade grade-b">B</div><div class="score-sub">GAAP negative · improving</div></div>
+  </div>
+
+  <section id="revenue">
+    <div class="section-head"><div class="section-head-label">1 · Revenue Growth</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Annual Revenue (FYFY2022–FYFY2025)</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Revenue</th><th class="right">YoY Growth</th><th>Key Driver</th></tr></thead>
+        <tbody><tr><td>FY2022</td><td class="mono right">$126M</td><td class="mono right" style="color:var(--green)">+N/M</td><td class="dim">Aries retimers early PCIe 5 adoption</td></tr>
+<tr><td>FY2023</td><td class="mono right">$236M</td><td class="mono right" style="color:var(--green)">+87%</td><td class="dim">Hyperscaler design wins · PCIe 5 mainstream</td></tr>
+<tr><td>FY2024</td><td class="mono right">$396M</td><td class="mono right" style="color:var(--green)">+68%</td><td class="dim">Scorpio P-Series development · Amazon partnership</td></tr>
+<tr class="hl"><td>FY2025</td><td class="mono right">$852M</td><td class="mono right" style="color:var(--green)">+115%</td><td class="dim">Scorpio shipping at volume · Amazon $6.5B commitment</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">3.5 years of public revenue data (IPO March 2024). Revenue more than doubled in FY2025 as the Scorpio PCIe 6 switch achieved hyperscaler adoption.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Revenue Trend</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Total Revenue ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Revenue Analysis</div><div class="analysis-text">Astera Labs revenue doubled in FY2025 — driven by Scorpio P-Series (the only PCIe 6 fabric switch in production volume) achieving hyperscaler adoption. The Amazon $6.5B warrant commitment creates a long-term strategic partnership. As the only PCIe 6 fabric shipping in volume, Astera has a structural first-mover advantage. <strong>Competitors are 12-24 months behind on PCIe 6, and the transition to PCIe 7 (which Astera is already developing) will extend this lead.</strong></div></div>
+  </section>
+
+  <section id="income">
+    <div class="section-head"><div class="section-head-label">2 · Net Income Trends</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">GAAP vs Non-GAAP Net Income</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">GAAP NI</th><th class="right">Non-GAAP NI</th><th class="right">GAAP Margin</th></tr></thead>
+        <tbody><tr><td>FY2022</td><td class="mono right">-$68M</td><td class="mono right">-$28M</td><td class="mono right">-54%</td></tr>
+<tr><td>FY2023</td><td class="mono right">-$113M</td><td class="mono right">$31M</td><td class="mono right">-48%</td></tr>
+<tr><td>FY2024</td><td class="mono right">-$75M</td><td class="mono right">$55M</td><td class="mono right">-19%</td></tr>
+<tr class="hl"><td>FY2025</td><td class="mono right">~-$80M</td><td class="mono right">~$190M</td><td class="mono right">~-9%</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">GAAP losses driven by SBC and amortization. Non-GAAP profitability reached ~$190M in FY2025 (+245% YoY). Amazon warrant creates ~2pt/qtr non-cash GM headwind from Q2 2026.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Net Income Chart</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>GAAP NI</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Non-GAAP NI</span>
+        </div>
+        <div class="chart-wrap"><canvas id="incChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Net Income Analysis</div><div class="analysis-text">Astera's non-GAAP profitability reached ~$190M in FY2025 as Scorpio revenue scaled. GAAP losses reflect SBC and the non-cash Amazon warrant charges. <strong>The non-GAAP trajectory is the economic signal: first GAAP profitable quarters expected FY2026 as the warrant charges amortize and scale benefits compound.</strong></div></div>
+  </section>
+
+  <section id="cashflow">
+    <div class="section-head"><div class="section-head-label">3 · Free Cash Flow</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Free Cash Flow (FYFY2022–FYFY2025)</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">FCF</th><th class="right">Growth</th><th class="right">FCF Margin</th></tr></thead>
+        <tbody><tr><td>FY2022</td><td class="mono right" style="color:var(--green)">$5M</td><td class="mono right" style="color:var(--green)">+N/M</td><td class="mono right">4%</td></tr>
+<tr><td>FY2023</td><td class="mono right" style="color:var(--green)">$12M</td><td class="mono right" style="color:var(--green)">+140%</td><td class="mono right">5%</td></tr>
+<tr><td>FY2024</td><td class="mono right" style="color:var(--green)">$68M</td><td class="mono right" style="color:var(--green)">+467%</td><td class="mono right">17%</td></tr>
+<tr class="hl"><td>FY2025</td><td class="mono right" style="color:var(--green)">~$190M</td><td class="mono right" style="color:var(--green)">+179%</td><td class="mono right">~22%</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">FCF grew from $5M to $190M in 3 years. $1.19B cash, zero debt — fully funded for next growth phase.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">FCF Trend</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Free Cash Flow ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>FCF Margin (%)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="fcfChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Free Cash Flow Analysis</div><div class="analysis-text">FCF grew 38x in three years — from $5M to $190M — as Scorpio revenue scaled. The 22% FCF margin is solid for a high-growth semiconductor company. <strong>With $1.19B in cash and zero debt, Astera has 6+ years of operational runway without needing to raise capital — providing complete strategic freedom.</strong></div></div>
+  </section>
+
+  <section id="margins">
+    <div class="section-head"><div class="section-head-label">4 · Profit Margins</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Margin Evolution</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Gross Margin</th><th class="right">EBITDA Margin</th><th class="right">Net Margin</th><th class="right">FCF Margin</th></tr></thead>
+        <tbody><tr><td>FY2022</td><td class="mono right">72%</td><td class="mono right">-22%</td><td class="mono right">-54%</td><td class="mono right">4%</td></tr>
+<tr><td>FY2023</td><td class="mono right">74%</td><td class="mono right">-13%</td><td class="mono right">-48%</td><td class="mono right">5%</td></tr>
+<tr><td>FY2024</td><td class="mono right">75%</td><td class="mono right">14%</td><td class="mono right">-19%</td><td class="mono right">17%</td></tr>
+<tr class="hl"><td>FY2025</td><td class="mono right">76%</td><td class="mono right">40%</td><td class="mono right">~-9%</td><td class="mono right">~22%</td></tr>
+</tbody></table>
+        <div style="margin-top:1.1rem">
+          <div class="card-head" style="margin-bottom:.85rem">Latest Year Benchmarks</div>
+          <div class="health-row"><div class="health-lbl">Non-GAAP gross margin</div><div class="health-track"><div class="health-fill" style="width:76%;background:#5b9cf6"></div></div><div class="health-val" style="color:#5b9cf6">76%</div></div><div class="health-row"><div class="health-lbl">Non-GAAP op. margin</div><div class="health-track"><div class="health-fill" style="width:40%;background:#34d399"></div></div><div class="health-val" style="color:#34d399">40%</div></div><div class="health-row"><div class="health-lbl">FCF margin</div><div class="health-track"><div class="health-fill" style="width:22%;background:#a78bfa"></div></div><div class="health-val" style="color:#a78bfa">22%</div></div><div class="health-row"><div class="health-lbl">GAAP net margin</div><div class="health-track"><div class="health-fill" style="width:-9%;background:#f87171"></div></div><div class="health-val" style="color:#f87171">-9%</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">Margin Trends Chart</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Gross</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>EBITDA</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>Net (GAAP)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="mgnChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Margin Analysis</div><div class="analysis-text">Non-GAAP gross margin expanded from 72% to 76% as Scorpio volumes drove manufacturing efficiencies. The 40% non-GAAP operating margin in FY2025 is world-class for a growth semiconductor company. <strong>Note: Amazon warrant creates ~2pt/quarter non-cash gross margin headwind beginning Q2 2026 — optically compressing margins without economic impact. Investors must look through this accounting effect.</strong></div></div>
+  </section>
+
+  <section id="debt">
+    <div class="section-head"><div class="section-head-label">5 · Debt Levels</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Debt &amp; Leverage Evolution</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Gross Debt</th><th class="right">Net Debt</th><th class="right">Adj. EBITDA</th><th class="right">ND/EBITDA</th></tr></thead>
+        <tbody><tr><td>FY2022</td><td class="mono right">$0</td><td class="mono right">-$220M</td><td class="mono right">N/M</td><td class="mono right" style="color:var(--green)">Net cash</td></tr>
+<tr><td>FY2023</td><td class="mono right">$0</td><td class="mono right">-$450M</td><td class="mono right">$31M</td><td class="mono right" style="color:var(--green)">Net cash</td></tr>
+<tr><td>FY2024</td><td class="mono right">$0</td><td class="mono right">-$1.0B</td><td class="mono right">$55M</td><td class="mono right" style="color:var(--green)">Net cash</td></tr>
+<tr class="hl"><td>FY2025</td><td class="mono right">$0</td><td class="mono right">-$1.19B</td><td class="mono right">~$190M</td><td class="mono right" style="color:var(--green)">Net cash</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">Zero debt throughout company history. $1.19B cash growing with FCF. Amazon $6.5B commitment provides long-term revenue security.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Debt vs. EBITDA</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#f87171;display:inline-block"></span>Gross Debt ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Adj. EBITDA ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="dbtChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Debt Analysis</div><div class="analysis-text">Astera has never borrowed — entirely self-funded. $1.19B in cash provides 6+ years of runway. Zero financial risk. <strong>The Amazon warrant commitment, while creating accounting headwinds, creates a strategic partnership worth far more in long-term revenue than the short-term margin impact.</strong></div></div>
+  </section>
+
+  <section id="roe">
+    <div class="section-head"><div class="section-head-label">6 · Return on Equity</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">ROE &amp; Capital Returns</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">ROE</th><th class="right">ROIC</th><th class="right">Dividends</th><th class="right">Buybacks</th></tr></thead>
+        <tbody><tr><td>FY2022</td><td class="mono right">N/M</td><td class="mono right">N/M</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+<tr><td>FY2023</td><td class="mono right">-35%</td><td class="mono right">-20%</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+<tr><td>FY2024</td><td class="mono right">-22%</td><td class="mono right">-12%</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+<tr class="hl"><td>FY2025</td><td class="mono right">~-15%</td><td class="mono right">~+15%</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">GAAP ROE negative due to SBC and warrant charges. ROIC turning positive at ~15% reflecting genuine return on capital invested.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">ROE Trend &amp; Capital Return</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>ROE (%)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>Total Capital Return ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="roeChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">ROE &amp; Capital Allocation Analysis</div><div class="analysis-text">ROIC turning from negative to 15%+ in FY2025 demonstrates that capital invested in Scorpio development is generating strong returns. <strong>As GAAP profitability arrives and the equity base grows through retained earnings, ROE will turn decisively positive — the compounding flywheel is beginning.</strong></div></div>
+  </section>
+
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">Overall Financial Verdict</div><div class="section-head-line"></div></div>
+    <div class="g3" style="margin-bottom:1.25rem">
+      <div class="card" style="border-color:rgba(52,211,153,.3)">
+        <div class="card-head">Strengths</div><div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>Only PCIe 6 fabric switch in production — 12-24 months ahead of competition</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>Amazon $6.5B commitment validates platform at the highest level</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>76% non-GAAP gross margin + 40% op. margin — exceptional semiconductor economics</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>$1.19B cash, zero debt — maximum strategic and financial flexibility</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>Scorpio X-Series (scale-up networking) opens next TAM expansion</div>
+      </div>
+      <div class="card" style="border-color:rgba(251,191,36,.3)">
+        <div class="card-head">Watch Items</div><div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>Amazon warrant creates ~2pt/qtr non-cash gross margin headwind from Q2 2026 — confusing optics</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>CFO transition (Mike Tate → Desmond Lynch) — continuity risk during hypergrowth</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>Stock 58% below average analyst targets post-selloff — market skepticism</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>GAAP losses persist — requires patient investors comfortable with accounting vs economics gap</div>
+      </div>
+      <div class="card" style="border-color:rgba(91,156,246,.3)">
+        <div class="card-head">5-Year Summary</div>
+        <table class="tbl"><tbody>
+          <tr><td class="dim">Revenue FY2025</td><td class="mono right" style="color:var(--green)">$852M (+115%)</td></tr><tr><td class="dim">Non-GAAP gross margin</td><td class="mono right" style="color:var(--green)">76%</td></tr><tr><td class="dim">Non-GAAP op. margin</td><td class="mono right" style="color:var(--green)">40%</td></tr><tr><td class="dim">FCF FY2025</td><td class="mono right" style="color:var(--green)">~$190M</td></tr><tr><td class="dim">Cash (zero debt)</td><td class="mono right" style="color:var(--green)">$1.19B</td></tr><tr><td class="dim">Amazon commitment</td><td class="mono right" style="color:var(--green)">$6.5B strategic</td></tr><tr><td class="dim">PCIe 6 moat</td><td class="mono right" style="color:var(--green)">Only one shipping in volume</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div class="verdict-block">
+      <div class="verdict-title">Is Astera Labs, Inc. Financially Strong or Weakening? — Definitive Assessment</div>
+      <div class="verdict-text">Astera Labs is at the beginning of a multi-year compounding cycle. Scorpio PCIe 6 is the only solution shipping in production volume, the Amazon commitment validates the platform at the highest level, and 76% gross margins confirm durable pricing power. The post-earnings selloff created a significant valuation disconnect — stock at 58% below analyst targets — while the fundamental business inflected dramatically. <strong style='color:#34d399'>Financial health: A. Trend: Strongly Accelerating. PCIe 6 first-mover advantage is a structural multi-year opportunity.</strong></div>
+    </div>
+  </section>
+
+  <footer>
+    <div><div class="footer-brand">ALAB · DEEP FINANCIAL BREAKDOWN · DASHBOARD 2</div><div>5-Year Analysis · March 15, 2026</div></div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> For informational purposes only. Not financial advice. Please consult a licensed financial advisor before making investment decisions.</div>
+  </footer>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+  var yrs = ["FY2022", "FY2023", "FY2024", "FY2025"];
+  var opts = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#0e1420',borderColor:'#1a2436',borderWidth:1,titleColor:'#64748b',bodyColor:'#e2e8f0'} },
+    scales:{
+      x:{ ticks:{color:'#64748b',font:{size:11},maxRotation:0}, grid:{display:false}, border:{color:'#1a2436'} },
+      y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'#1a2436'}, beginAtZero:true }
+    }
+  };
+  function $B(v){ return '$'+v+'B'; }
+  function pct(v){ return v+'%'; }
+
+  // Revenue
+  new Chart(document.getElementById('revChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0.126, 0.236, 0.396, 0.852],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // Net income
+  new Chart(document.getElementById('incChart'),{type:'bar',data:{labels:yrs,datasets:[{label:'GAAP',data:[-0.068, -0.113, -0.075, -0.08],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4},{label:'NonGAAP',data:[-0.028, 0.031, 0.055, 0.19],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // FCF dual axis
+  new Chart(document.getElementById('fcfChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0.005, 0.012, 0.068, 0.19],backgroundColor:'rgba(52,211,153,0.6)',borderColor:'#34d399',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[4, 5, 17, 22],borderColor:'#5b9cf6',backgroundColor:'rgba(91,156,246,0.15)',pointBackgroundColor:'#5b9cf6',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#64748b',font:{size:11},callback:pct},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+
+  // Margins
+  new Chart(document.getElementById('mgnChart'),{type:'line',data:{labels:yrs,datasets:[{data:[72, 74, 75, 76],borderColor:'#5b9cf6',backgroundColor:'rgba(91,156,246,0.08)',pointBackgroundColor:'#5b9cf6',borderWidth:2,fill:true,tension:0.3},{data:[-22, -13, 14, 40],borderColor:'#34d399',backgroundColor:'rgba(52,211,153,0.05)',pointBackgroundColor:'#34d399',borderWidth:2,fill:false,tension:0.3},{data:[-54, -48, -19, -9],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.05)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:false,tension:0.3}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct}}}}});
+
+  // Debt
+  new Chart(document.getElementById('dbtChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0, 0, 0, 0],backgroundColor:'rgba(248,113,113,0.5)',borderColor:'#f87171',borderWidth:1,borderRadius:4},{data:[0, 0.031, 0.055, 0.19],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // ROE dual axis
+  new Chart(document.getElementById('roeChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0, -35, -22, -15],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[0, 0, 0, 0],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.1)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#64748b',font:{size:11},callback:$B},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+});
+</script>
+</body>
+</html>
