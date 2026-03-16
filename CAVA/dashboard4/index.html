@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CAVA · Valuation · Dashboard 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--surface3:#182030;--border:#182030;--border2:#1e2d42;--accent:#5b9cf6;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#5b9cf608 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nav-d3{color:#c9993a;border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.06)}
+.nav-hub{color:var(--accent);border-color:#5b9cf644;background:#5b9cf610}.nav-hub:hover{background:#5b9cf620}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#5b9cf610;border:1px solid #5b9cf630;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero-right{text-align:right}
+.verdict-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;color:var(--accent);line-height:1;margin-bottom:4px}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right;line-height:1.5}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-val{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:260px;margin-top:.5rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:#5b9cf608}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #5b9cf6;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">CAVA · VALUATION</a>
+  <ul class="nav-links"><li><a href="#pe">P/E Analysis</a></li><li><a href="#dcf">DCF Model</a></li><li><a href="#industry">Industry Comps</a></li><li><a href="#multiples">Multiples</a></li><li><a href="#verdict">Verdict</a></li></ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-d3" href="../dashboard3/">D3</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 4 · Investment Bank Valuation · March 2026</div>
+        <div class="hero-ticker">CAVA</div>
+        <div class="hero-name">CAVA Group, Inc.</div>
+        <div class="hero-badge">CHIPOTLE PLAYBOOK · PREMIUM JUSTIFIED BY COMPS + AUV</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">IB Valuation Verdict</div>
+        <div class="verdict-big">FAIRLY VALUED</div>
+        <div style="font-size:.7rem;font-family:'IBM Plex Mono',monospace;color:#5b9cf6;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">60x fwd P/E · +10.8% same-store sales · AUV $2.8M · Zero debt $393M cash</div>
+        <div class="hero-sub">Price $76 · Fwd P/E 60x · DCF base $72 · Analyst target $115 · +51% bull case</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SCORECARD -->
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Current Price</div><div class="score-val" style="color:var(--text)">$76</div><div class="score-sub">Mar 2026</div></div>
+    <div class="score-item"><div class="score-label">Fwd P/E</div><div class="score-val" style="color:var(--accent)">60x</div><div class="score-sub">vs 40x fast casual avg</div></div>
+    <div class="score-item"><div class="score-label">EV/EBITDA</div><div class="score-val" style="color:#5b9cf6">50x</div><div class="score-sub">25% restaurant margin</div></div>
+    <div class="score-item"><div class="score-label">DCF Fair Value</div><div class="score-val" style="color:#5b9cf6">$72</div><div class="score-sub">Base case DCF</div></div>
+    <div class="score-item"><div class="score-label">Analyst Target</div><div class="score-val" style="color:#34d399">$115</div><div class="score-sub">+51% upside</div></div>
+  </div>
+
+  <!-- P/E ANALYSIS -->
+  <section id="pe">
+    <div class="section-head"><div class="section-head-label">1 · P/E Ratio Analysis</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Historical P/E — CAVA (5-Year)</div>
+        <table class="tbl">
+          <thead><tr><th>Year</th><th class="right">TTM P/E</th><th class="right">Stock Price</th><th class="right">EPS</th><th>Context</th></tr></thead>
+          <tbody><tr>
+          <td style="font-size:.83rem">2022</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">N/A</td>
+          <td class="mono right">-$0.50</td>
+          <td class="mono right" style="color:var(--muted)">Pre-IPO</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2023</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">$45</td>
+          <td class="mono right">-$0.22</td>
+          <td class="mono right" style="color:var(--muted)">IPO June 2023</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2024</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">$90</td>
+          <td class="mono right">-$0.05</td>
+          <td class="mono right" style="color:var(--muted)">Near breakeven</td>
+        </tr><tr>
+          <td style="font-size:.83rem">FY2025</td>
+          <td class="mono right">60x</td>
+          <td class="mono right">$76</td>
+          <td class="mono right">~$1.27</td>
+          <td class="mono right" style="color:var(--muted)">First GAAP profitable year</td>
+        </tr><tr>
+          <td style="font-size:.83rem">FY2026E</td>
+          <td class="mono right">40x</td>
+          <td class="mono right">$76</td>
+          <td class="mono right">~$1.90</td>
+          <td class="mono right" style="color:var(--muted)">AUV expanding · 520+ restaurants</td>
+        </tr></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-head">P/E Trend Chart</div>
+        <div class="chart-wrap"><canvas id="peChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">P/E Assessment</div>
+      <div class="analysis-text">CAVA at 60x current-year forward P/E is comparable to Chipotle's early days (50-80x) when it was compounding at similar growth rates. <strong>The relevant metric is not today's P/E but the long-term store expansion path: 439 → 1,000+ restaurants at $2.8M AUV generates $2.8B+ in revenue at Chipotle-like margins.</strong> The +10.8% same-store sales growth confirms the brand resonance is improving, not just the store count.</div>
+    </div>
+  </section>
+
+  <!-- DCF -->
+  <section id="dcf">
+    <div class="section-head"><div class="section-head-label">2 · Discounted Cash Flow Model</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">DCF Assumptions &amp; Scenarios</div>
+        <table class="tbl">
+          <thead><tr><th>Scenario</th><th class="right">WACC</th><th class="right">Terminal G</th><th class="right">FCF Yr1 Est.</th><th class="right">Intrinsic Value</th><th class="right">Upside/Down</th></tr></thead>
+          <tbody><tr>
+          <td style="font-size:.83rem">Bear Case</td>
+          <td class="mono right">10%</td>
+          <td class="mono right">3%</td>
+          <td class="mono right">$100M</td>
+          <td class="mono right">$48</td>
+          <td class="mono right" style="color:#f87171">-37%</td>
+        </tr><tr class="hl">
+          <td style="font-size:.83rem">Base Case</td>
+          <td class="mono right">9%</td>
+          <td class="mono right">3%</td>
+          <td class="mono right">$150M</td>
+          <td class="mono right">$72</td>
+          <td class="mono right" style="color:#f87171">-5%</td>
+        </tr><tr>
+          <td style="font-size:.83rem">Bull Case</td>
+          <td class="mono right">8%</td>
+          <td class="mono right">4%</td>
+          <td class="mono right">$250M</td>
+          <td class="mono right">$155</td>
+          <td class="mono right" style="color:#34d399">+104%</td>
+        </tr></tbody>
+        </table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.78rem;color:var(--muted)">Base: 1,000 restaurants by 2028 at $2.8M AUV, 25% restaurant margin. FCF $150M growing 30% for 5yrs. Bull: 1,500 restaurants, AUV expands to $3.2M, catering adds margin.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">DCF Scenario Chart</div>
+        <div class="chart-wrap"><canvas id="dcfChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">DCF Analysis</div>
+      <div class="analysis-text">The base DCF of $72 is <strong>modestly below the current $76</strong> — CAVA is slightly overvalued on pure DCF terms. The premium reflects the 'Chipotle optionality' — the long-term store expansion trajectory to 1,000+ locations. The bull case $155 requires both aggressive store opening and Chipotle-like AUV improvement to $3.2M+. <strong>At 439 stores vs Chipotle's 3,500+, the runway is clear but requires 5-7 years of sustained execution.</strong></div>
+    </div>
+  </section>
+
+  <!-- INDUSTRY COMPS -->
+  <section id="industry">
+    <div class="section-head"><div class="section-head-label">3 · Industry Comparables</div><div class="section-head-line"></div></div>
+    <div style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-head">Peer Valuation Comparison — Fast Casual Restaurants Sector</div>
+        <table class="tbl">
+          <thead><tr><th>Company</th><th class="right">Fwd P/E</th><th class="right">EV/EBITDA</th><th class="right">P/S</th><th class="right">P/B</th><th class="right">Rev Growth</th><th class="right">PEG</th></tr></thead>
+          <tbody><tr class="hl">
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#5b9cf6">CAVA (CAVA)</td>
+          <td class="mono right">60x</td>
+          <td class="mono right">50x</td>
+          <td class="mono right">5x</td>
+          <td class="mono right">8x</td>
+          <td class="mono right">+23%</td>
+          <td class="mono right">2.6</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Chipotle (CMG)</td>
+          <td class="mono right">50x</td>
+          <td class="mono right">40x</td>
+          <td class="mono right">7x</td>
+          <td class="mono right">40x</td>
+          <td class="mono right">+13%</td>
+          <td class="mono right">3.8</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Sweetgreen (SG)</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">3x</td>
+          <td class="mono right">4x</td>
+          <td class="mono right">+14%</td>
+          <td class="mono right">N/M</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Shake Shack (SHAK)</td>
+          <td class="mono right">45x</td>
+          <td class="mono right">38x</td>
+          <td class="mono right">4x</td>
+          <td class="mono right">6x</td>
+          <td class="mono right">+14%</td>
+          <td class="mono right">3.2</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Fast Casual Avg</td>
+          <td class="mono right">40x</td>
+          <td class="mono right">30x</td>
+          <td class="mono right">4x</td>
+          <td class="mono right">10x</td>
+          <td class="mono right">+13%</td>
+          <td class="mono right">3.1</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">Industry Comparison Analysis</div>
+      <div class="analysis-text">CAVA at 60x P/E vs Chipotle at 50x — the premium is modest given CAVA has superior same-store sales momentum (+10.8% vs CMG's +2%). Sweetgreen (N/M on losses) and Shake Shack (45x) comparison reinforces CAVA's premium fast casual positioning. Chipotle's long-term success path is the most relevant comparable for CAVA's long-term potential.</div>
+    </div>
+  </section>
+
+  <!-- MULTIPLES -->
+  <section id="multiples">
+    <div class="section-head"><div class="section-head-label">4 · Valuation Multiples Deep Dive</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Key Valuation Metrics</div>
+        <table class="tbl"><tbody><tr><td style="font-size:.82rem;color:var(--muted)">Current Price</td><td class="mono right" style="color:#5b9cf6">$76</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Fwd P/E</td><td class="mono right" style="color:#5b9cf6">60x</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Same-Store Sales</td><td class="mono right" style="color:#5b9cf6">+10.8%</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">AUV</td><td class="mono right" style="color:#5b9cf6">$2.8M (and growing)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Zero Debt</td><td class="mono right" style="color:#5b9cf6">$393M cash</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Restaurant Count</td><td class="mono right" style="color:#5b9cf6">439 → 1,000+ path</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Analyst Target</td><td class="mono right" style="color:#5b9cf6">~$115 (+51%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">DCF Base Case</td><td class="mono right" style="color:#5b9cf6">$72 (-5%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">GAAP Profitability</td><td class="mono right" style="color:#5b9cf6">FY2025 first year</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Market Cap</td><td class="mono right" style="color:#5b9cf6">~$9B</td></tr></tbody></table>
+      </div>
+      <div class="card">
+        <div class="card-head">Multiples Comparison Chart</div>
+        <div class="chart-wrap"><canvas id="multiplesChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">Multiples Assessment</div>
+      <div class="analysis-text">CAVA's premium to Chipotle is modest given superior same-store sales growth. <strong>The zero debt + $393M cash combination means CAVA can fund 100+ annual store openings at ~$1.5M per store without capital markets dependency — financial freedom that directly supports the growth thesis.</strong></div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">5 · Investment Bank Valuation Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Valuation Verdict · CAVA · FAIRLY VALUED · Current: $76 · DCF Fair Value: $72 · Analyst Target: $115</div>
+      <div class="verdict-text">CAVA is <strong style='color:#5b9cf6'>FAIRLY VALUED</strong> at $76 — the base DCF is modestly below current prices but the 'Chipotle optionality' for 1,000+ restaurants justifies the premium. <strong>+10.8% same-store sales growth confirms the brand is accelerating, not decelerating, which is the single most important metric for a restaurant company at this stage of expansion.</strong> Bull case $155 requires Chipotle-like AUV expansion and 1,500+ stores. <strong style='color:#5b9cf6'>IB Verdict: FAIRLY VALUED. Hold; add on pullback below $65. 12-month target $72-115.</strong></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div><div class="footer-brand">CAVA · Valuation Analysis</div><div>Dashboard 4 · Investment Bank Valuation · March 2026</div></div>
+  <div style="max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. DCF models are illustrative and based on consensus estimates. All valuations are point-in-time estimates subject to change. Consult a financial advisor before investing.</div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#182030';
+
+  // PE Chart
+  new Chart(document.getElementById('peChart'), {
+    type: 'bar',
+    data: {
+      labels: ['2022', '2023', '2024', 'FY2025', 'FY2026E'],
+      datasets: [{
+        label: 'P/E Ratio',
+        data: [80, 90, 100, 60, 40],
+        backgroundColor: '#5b9cf633',
+        borderColor: '#5b9cf6',
+        borderWidth: 2,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display:false}, tooltip: { callbacks: { label: c => 'P/E: ' + c.raw + 'x' } } },
+      scales: { y: { grid: {color:'#182030'}, ticks: {callback: v => v+'x'} }, x: { grid: {display:false} } }
+    }
+  });
+
+  // DCF chart
+  const dcfLabels = ['Bear Case', 'Base Case', 'Bull Case'];
+  const dcfValues = [48.0, 72.0, 155.0];
+  const currentPrice = 76;
+  new Chart(document.getElementById('dcfChart'), {
+    type: 'bar',
+    data: {
+      labels: dcfLabels,
+      datasets: [
+        { label: 'DCF Intrinsic Value', data: dcfValues, backgroundColor: ['#5b9cf644','#5b9cf677','#5b9cf6aa'], borderColor: '#5b9cf6', borderWidth: 2, borderRadius: 4 },
+        { label: 'Current Price', data: dcfLabels.map(()=>currentPrice), type:'line', borderColor:'#f87171', borderWidth:2, borderDash:[5,5], pointRadius:0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { tooltip: { callbacks: { label: c => c.dataset.label+': $'+c.raw.toFixed(0) } } },
+      scales: { y: { grid: {color:'#182030'}, ticks: {callback: v=>'$'+v} }, x: { grid: {display:false} } }
+    }
+  });
+
+  // Multiples chart
+  new Chart(document.getElementById('multiplesChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Fwd P/E', 'EV/EBITDA', 'P/S', 'PEG'],
+      datasets: [
+        { label: 'CAVA', data: [60, 50, 5, 2.6], backgroundColor: '#5b9cf688', borderColor:'#5b9cf6', borderWidth:2, borderRadius:4 },
+        { label: 'Sector Avg', data: [40, 30, 4, 3.1], backgroundColor: '#5b9cf644', borderColor:'#5b9cf6', borderWidth:2, borderRadius:4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {position:'top',labels:{font:{size:11},color:'#94a3b8'}} },
+      scales: { y: { grid: {color:'#182030'} }, x: { grid: {display:false} } }
+    }
+  });
+});
+</script>
+</body>
+</html>
