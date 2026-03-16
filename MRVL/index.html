@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Marvell Technology, Inc. (MRVL) — Wall Street equity research dashboard.">
-<meta property="og:title" content="MRVL · Marvell Technology, Inc. Equity Research">
+<meta name="description" content="Marvell Technology, Inc. (MRVL) — Full Wall Street equity research dashboard.">
 <title>MRVL · Marvell Technology, Inc. Equity Research</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -13,16 +12,16 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#07090c;--bg2:#0d1117;--surface:#111720;--surface2:#171e28;--border:#1e2836;--border2:#253042;--accent:#c9993a;--blue:#4a84e8;--green:#3bbf72;--red:#df5454;--text:#dde2ea;--muted:#6e7d94;--muted2:#3a4a5e}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;padding:0;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,153,58,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(201,153,58,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.12em;text-decoration:none}
-.nav-links{display:flex;gap:0;list-style:none}
+.nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .9rem;height:52px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
 .nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
 .nav-pill{font-family:'IBM Plex Mono',monospace;font-size:.65rem;background:rgba(59,191,114,.12);color:#3bbf72;border:1px solid rgba(59,191,114,.25);padding:3px 10px;border-radius:20px;letter-spacing:.08em}
-.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px}
+.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none}
 .back-link:hover{color:var(--accent)}
 @media(max-width:700px){.nav-links{display:none}}
 .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
@@ -53,7 +52,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem}
 @media(max-width:960px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}}
-.metric{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;position:relative;overflow:hidden}
 .metric:hover{border-color:var(--border2);transform:translateY(-1px)}
 .metric::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0;transition:opacity .2s}
 .metric:hover::after{opacity:1}
@@ -61,17 +60,19 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .m-value{font-family:'IBM Plex Mono',monospace;font-size:1.55rem;font-weight:500;line-height:1}
 .m-sub{font-size:.73rem;color:var(--muted);margin-top:5px}
 .tbl{width:100%;border-collapse:collapse;font-size:.86rem}
-.tbl th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 1rem .65rem 0;border-bottom:1px solid var(--border);font-weight:500}
-.tbl td{padding:.62rem 1rem .62rem 0;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .65rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.62rem .75rem .62rem 0;border-bottom:1px solid var(--border);vertical-align:top}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tr:hover td{background:rgba(255,255,255,.015)}
 .tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.82rem}
 .tbl td.right{text-align:right}
 .tbl td.dim{color:var(--muted);font-size:.79rem}
+.tbl .hl td{background:rgba(201,153,58,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.bar-lbl{font-size:.73rem;color:var(--muted);width:110px;flex-shrink:0}
-.bar-track{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
-.bar-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.bar-lbl{font-size:.73rem;color:var(--muted);width:130px;flex-shrink:0}
+.bar-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
 .bar-val{font-family:'IBM Plex Mono',monospace;font-size:.73rem;width:44px;text-align:right;color:var(--text);flex-shrink:0}
 .scenario{border-radius:10px;padding:1.4rem;border:1px solid;position:relative;overflow:hidden}
 .scenario::before{content:'';position:absolute;inset:0;opacity:.04;pointer-events:none;background:repeating-linear-gradient(-45deg,currentColor 0,currentColor 1px,transparent 0,transparent 50%);background-size:8px 8px}
@@ -86,21 +87,23 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .rb-high{background:rgba(223,84,84,.14);color:var(--red)}.rb-med{background:rgba(201,153,58,.14);color:var(--accent)}.rb-low{background:rgba(59,191,114,.14);color:var(--green)}
 .risk-name{font-size:.87rem;font-weight:400;margin-bottom:3px}
 .risk-desc-text{font-size:.77rem;color:var(--muted);line-height:1.45}
+.stars{color:var(--green);font-size:.78rem;letter-spacing:1px}
+.quote-block{border:1px solid rgba(201,153,58,.28);background:rgba(201,153,58,.05);border-left:3px solid var(--accent);border-radius:6px;padding:1rem 1.2rem;font-size:.87rem;line-height:1.65;color:var(--text);margin-top:1rem}
+.quote-block cite{display:block;font-size:.7rem;color:var(--muted2);font-style:normal;margin-top:.5rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em}
 .verdict{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:6px;padding:1.5rem;margin-bottom:2.5rem}
 .verdict-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.6rem}
 .verdict-text{font-size:.9rem;line-height:1.7}
-.chart-wrap{position:relative;width:100%;height:220px}
-footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;align-items:flex-start}
+.chart-wrap{position:relative;width:100%;height:230px;margin-top:1rem}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between}
 .footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.fade-up{animation:fadeUp .5s ease both}
 </style>
 </head>
 <body>
 <nav>
   <a class="nav-logo" href="#">MRVL · RESEARCH</a>
   <ul class="nav-links">
-    <li><a href="#metrics">Metrics</a></li>
+    <li><a href="#financials">Financials</a></li>
+    <li><a href="#valuation">Valuation</a></li>
     <li><a href="#moat">Moat</a></li>
     <li><a href="#scenarios">Scenarios</a></li>
     <li><a href="#risks">Risks</a></li>
@@ -109,86 +112,324 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
   <span class="nav-pill">STRONG BUY</span>
 </nav>
 <div class="wrapper">
-  <header class="hero fade-up">
+
+  <!-- HERO -->
+  <header class="hero">
     <div class="hero-left">
-      <div class="eyebrow">Wall Street · Equity Research · March 15, 2026</div>
+      <div class="eyebrow"><a class="back-link" href="../">← All Tickers</a> &nbsp;·&nbsp; Wall Street · Equity Research · March 15, 2026</div>
       <div class="hero-ticker">MRVL</div>
       <div class="hero-name">Marvell Technology, Inc.</div>
-      <div class="hero-tags"><span class="tag">NASDAQ</span><span class="tag">AI Silicon</span><span class="tag">Custom ASIC</span><span class="tag">Networking</span><span class="tag">Semiconductors</span></div>
+      <div class="hero-tags"><span class="tag">NASDAQ</span> <span class="tag">Custom AI Silicon</span> <span class="tag">Optical DSP</span> <span class="tag">1.6T Era</span> <span class="tag">AI Networking</span></div>
     </div>
     <div class="hero-right">
-      <div class="hero-price">$81.00</div>
-      <div class="hero-target">12-mo target · $116.34</div>
+      <div class="hero-price">$91.72</div>
+      <div class="hero-target">12-mo target · $117.24</div>
       <div class="hero-date">Report date: 15 Mar 2026</div>
     </div>
   </header>
 
-  <div class="ribbon fade-up">
+  <!-- RIBBON -->
+  <div class="ribbon">
     <div class="ribbon-item"><div class="ribbon-label">Consensus</div><div class="ribbon-value" style="color:#3bbf72">STRONG BUY</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Price Target</div><div class="ribbon-value rv-amber">$116.34</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">High Target</div><div class="ribbon-value rv-amber">$164.00</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Market Cap</div><div class="ribbon-value rv-text">~$68B</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+44%</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Price Target</div><div class="ribbon-value rv-amber">$117.24</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">High Target</div><div class="ribbon-value rv-amber">$135.00</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Market Cap</div><div class="ribbon-value rv-text">~$79B</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+28% to consensus</div></div>
     <div class="ribbon-item"><div class="ribbon-label">Exchange</div><div class="ribbon-value rv-blue">NASDAQ</div></div>
   </div>
 
-  <section id="metrics">
+  <!-- KEY METRICS -->
+  <section id="financials">
     <div class="section-head"><div class="section-head-label">Key Financial Metrics</div><div class="section-head-line"></div></div>
     <div class="g4">
-      <div class="metric fade-up"><div class="m-label">Revenue (TTM)</div><div class="m-value rv-text">~$7.8B</div><div class="m-sub" style="color:var(--green)">+37% YoY</div></div>
-      <div class="metric fade-up"><div class="m-label">Gross Margin</div><div class="m-value rv-green">~58%</div><div class="m-sub">Non-GAAP</div></div>
-      <div class="metric fade-up"><div class="m-label">FCF Margin</div><div class="m-value rv-text">~28%</div><div class="m-sub">Free cash flow %</div></div>
-      <div class="metric fade-up"><div class="m-label">Trailing P/E</div><div class="m-value rv-text">~28x</div><div class="m-sub">Fwd P/E: ~22x</div></div>
+      <div class="metric"><div class="m-label">FY2026 Total Revenue</div><div class="m-value rv-text">$8.19B</div><div class="m-sub" style="color:var(--green)">+42% year-over-year · Record</div></div>
+      <div class="metric"><div class="m-label">Q4 FY2026 Revenue</div><div class="m-value rv-amber">$2.22B</div><div class="m-sub" style="color:var(--green)">+22% YoY · +7% QoQ</div></div>
+      <div class="metric"><div class="m-label">Data Center Revenue (Q4)</div><div class="m-value rv-text">$1.7B</div><div class="m-sub">+21% YoY · 74% of total</div></div>
+      <div class="metric"><div class="m-label">Non-GAAP Gross Margin</div><div class="m-value rv-green">~60%</div><div class="m-sub">Expanding from 59% in Q3</div></div>
+      <div class="metric"><div class="m-label">Q1 FY2027 Revenue Guide</div><div class="m-value rv-text">$2.40B</div><div class="m-sub">+8% QoQ · Above $2.28B consensus</div></div>
+      <div class="metric"><div class="m-label">Non-GAAP EPS (Q4)</div><div class="m-value rv-green">$0.80</div><div class="m-sub">+33% YoY · Beat consensus</div></div>
+      <div class="metric"><div class="m-label">FY2027 Revenue Guidance</div><div class="m-value rv-amber">~$11B</div><div class="m-sub">+34% YoY · Record bookings</div></div>
+      <div class="metric"><div class="m-label">Non-GAAP EPS (FY2026)</div><div class="m-value rv-text">$2.84</div><div class="m-sub">CEO buying shares at open market</div></div>
     </div>
   </section>
 
+  <!-- REVENUE GROWTH & VALUATION -->
+  <section id="valuation">
+    <div class="section-head"><div class="section-head-label">Revenue Growth &amp; Valuation</div><div class="section-head-line"></div></div>
+    <div class="g2">
+
+      <!-- Left: Revenue table + chart -->
+      <div class="card">
+        <div class="card-head">Quarterly Revenue Progression</div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Period</th>
+              <th class="right">Total Rev</th>
+              <th class="right">Data Center Revenue ($B)</th>
+              <th class="right">Mix</th>
+              <th class="right">YoY</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Q1 FY26</td><td class="mono right">$1.16B</td><td class="mono right">$0.61B</td><td class="mono right">53%</td><td class="mono right" style="color:var(--green)">+7%</td></tr>
+<tr><td>Q2 FY26</td><td class="mono right">$1.76B</td><td class="mono right">$1.09B</td><td class="mono right">62%</td><td class="mono right" style="color:var(--green)">+52%</td></tr>
+<tr><td>Q3 FY26</td><td class="mono right">$2.07B</td><td class="mono right">$1.40B</td><td class="mono right">68%</td><td class="mono right" style="color:var(--green)">+91%</td></tr>
+<tr class="hl"><td>Q4 FY26</td><td class="mono right">$2.22B</td><td class="mono right" style="color:var(--accent)">$1.65B</td><td class="mono right" style="color:var(--accent)">74%</td><td class="mono right" style="color:var(--green)">+22%</td></tr>
+<tr><td>Q1 FY27 (guide)</td><td class="mono right">$2.40B</td><td class="mono right">~$1.85B</td><td class="mono right">~77%</td><td class="mono right" style="color:var(--green)">+107%</td></tr>
+
+          </tbody>
+        </table>
+        <div style="margin-top:1.25rem">
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#4a84e8;display:inline-block"></span>Total Revenue</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#c9993a;display:inline-block"></span>Data Center Revenue ($B)</span>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="revChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Peer comparison + profitability bars + balance sheet -->
+      <div class="card">
+        <div class="card-head">Peer Valuation Comparison</div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th class="right">Mkt Cap</th>
+              <th class="right">Fwd P/E</th>
+              <th class="right">Rev Growth</th>
+              <th class="right">FCF Margin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl"><td style="color:var(--accent)"><strong>MRVL</strong></td><td class="mono right">~$79B</td><td class="mono right" style="color:var(--accent)">25x</td><td class="mono right" style="color:var(--green)">+42%</td><td class="mono right" style="color:var(--green)">28%</td></tr>
+<tr><td><span>AVGO</span></td><td class="mono right">$1.64T</td><td class="mono right">26x</td><td class="mono right" style="color:var(--green)">+29%</td><td class="mono right">41%</td></tr>
+<tr><td><span>ALAB</span></td><td class="mono right">~$20B</td><td class="mono right">55x</td><td class="mono right" style="color:var(--green)">+175%</td><td class="mono right">22%</td></tr>
+<tr><td><span>CRDO</span></td><td class="mono right">~$21B</td><td class="mono right">60x</td><td class="mono right" style="color:var(--green)">+200%</td><td class="mono right">25%</td></tr>
+<tr><td><span>NVDA</span></td><td class="mono right">$2.82T</td><td class="mono right">23x</td><td class="mono right" style="color:var(--green)">+65%</td><td class="mono right">55%</td></tr>
+
+          </tbody>
+        </table>
+
+        <div style="margin-top:1.5rem">
+          <div class="card-head" style="margin-bottom:1rem">Profitability Benchmarks</div>
+          <div class="bar-row"><div class="bar-lbl">Gross margin</div><div class="bar-track"><div class="bar-fill" style="width:60%;background:var(--accent)"></div></div><div class="bar-val">60%</div></div>
+<div class="bar-row"><div class="bar-lbl">FCF margin</div><div class="bar-track"><div class="bar-fill" style="width:28%;background:var(--blue)"></div></div><div class="bar-val">28%</div></div>
+<div class="bar-row"><div class="bar-lbl">Op. margin (non-GAAP)</div><div class="bar-track"><div class="bar-fill" style="width:36%;background:var(--green)"></div></div><div class="bar-val">36%</div></div>
+<div class="bar-row"><div class="bar-lbl">Data center mix</div><div class="bar-track"><div class="bar-fill" style="width:74%;background:var(--muted)"></div></div><div class="bar-val">74%</div></div>
+
+        </div>
+
+        <div style="margin-top:1.5rem">
+          <div class="card-head" style="margin-bottom:1rem">Balance Sheet Snapshot</div>
+          <table class="tbl">
+            <tbody>
+              <tr><td class="dim">Cash & equivalents</td><td class="mono right">~$1.1B</td></tr>
+<tr><td class="dim">Debt (post-Infineon deal)</td><td class="mono right" style="color:var(--accent)">~$4B</td></tr>
+<tr><td class="dim">Automotive Ethernet divested</td><td class="mono right" style="color:var(--green)">$2.5B to Infineon</td></tr>
+<tr><td class="dim">CEO open-market purchases</td><td class="mono right" style="color:var(--green)">13,600 shares</td></tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BUSINESS MODEL & MOAT -->
   <section id="moat">
-    <div class="section-head"><div class="section-head-label">Business Description &amp; Moat</div><div class="section-head-line"></div></div>
-    <div class="card" style="margin-bottom:1.25rem">
-      <div class="card-head">Company Overview</div>
-      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">Marvell Technology develops semiconductor solutions for data infrastructure including custom AI accelerators (ASICs), PAM4 interconnects, optical DSPs, and Ethernet networking chips. The company is the #2 custom AI chip designer behind Broadcom, with major hyperscaler partnerships and FY2026 guidance targeting AI revenue of $2.5B+.</p>
-    </div>
-    <div class="card">
-      <div class="card-head">Competitive Moat</div>
-      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">Marvell competes directly with Broadcom in custom AI silicon but at a smaller scale — targeting 20% market share by 2028 vs Broadcom's 70%. Its PAM4 DSP and electro-optical interconnect leadership gives it a differentiated position in AI networking. PCIe 8.0 SerDes technology demonstration at DesignCon 2026 positions Marvell ahead of the next-generation curve.</p>
+    <div class="section-head"><div class="section-head-label">Business Model &amp; Competitive Moat</div><div class="section-head-line"></div></div>
+    <div class="g2">
+
+      <div class="card">
+        <div class="card-head">Revenue Segments</div>
+        <table class="tbl">
+          <thead>
+            <tr><th>Segment</th><th class="right">Mix</th><th>Key Products</th><th>Margin Profile</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Data Center</strong></td><td class="mono right" style="color:var(--accent)">74%</td><td class="dim">Custom AI XPUs/ASICs, PAM4 optical DSPs, 1.6T electro-optics, Ethernet switches (Prestera), CXL</td><td class="mono" style="color:var(--green)">Highest</td></tr>
+<tr><td><strong>Carrier Infrastructure</strong></td><td class="mono right" style="color:var(--accent)">~12%</td><td class="dim">5G base station DSPs, O-RAN processors, cable DOCSIS 4.0 SoCs</td><td class="mono" style="color:var(--green)">High</td></tr>
+<tr><td><strong>Enterprise Networking</strong></td><td class="mono right" style="color:var(--accent)">~8%</td><td class="dim">Gigabit Ethernet controllers, PCIe switches, data center-on-chip (DPU)</td><td class="mono" style="color:var(--green)">Good</td></tr>
+<tr><td><strong>Consumer & Auto</strong></td><td class="mono right" style="color:var(--accent)">~6%</td><td class="dim">Storage controllers, automotive (divested Ethernet to Infineon)</td><td class="mono" style="color:var(--green)">Declining</td></tr>
+
+          </tbody>
+        </table>
+        <div style="margin-top:1.25rem">
+          <div class="card-head" style="margin-bottom:.75rem">Industry Tailwinds (12–24 Months)</div>
+          <table class="tbl">
+            <thead><tr><th>Trend</th><th>Exposure</th><th class="right">Scale</th></tr></thead>
+            <tbody>
+              <tr><td>1.6T optical interconnect era</td><td class="dim">First-to-market DSP platform</td><td class="mono right" style="color:var(--green)">CPO transition in CY28+</td></tr>
+<tr><td>Custom XPU/ASIC programs</td><td class="dim">Microsoft XPU transition in FY27</td><td class="mono right" style="color:var(--green)">Amazon XPU also ramping</td></tr>
+<tr><td>AI scale-up networking</td><td class="dim">Interconnect +50% expansion FY27</td><td class="mono right" style="color:var(--green)">Bookings at record pace</td></tr>
+<tr><td>Celestial AI acquisition</td><td class="dim">Co-packaged optics capability</td><td class="mono right" style="color:var(--green)">Positions for CY28 CPO wave</td></tr>
+<tr><td>2nm custom silicon wins</td><td class="dim">First-to-market 2nm interconnect</td><td class="mono right" style="color:var(--green)">Deep hyperscaler pipeline</td></tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Competitive Moat Analysis</div>
+        <table class="tbl">
+          <thead><tr><th>Moat Source</th><th>Strength</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>1.6T optical DSP leadership</td><td><span class="stars">★★★★★</span></td><td class="dim">First-to-market in 1.6T era; March 2026 platform expansion announced</td></tr>
+<tr><td>Custom ASIC expertise</td><td><span class="stars">★★★★☆</span></td><td class="dim">Microsoft XPU and Amazon XPU programs ramping; #2 behind Broadcom</td></tr>
+<tr><td>CEO capital allocation</td><td><span class="stars">★★★★★</span></td><td class="dim">Matt Murphy: disciplined M&A (Celestial AI, XConn); insider buying at open market</td></tr>
+<tr><td>Bookings momentum</td><td><span class="stars">★★★★☆</span></td><td class="dim">Record bookings and backlog layering; FY2027 guidance of ~$11B raised</td></tr>
+<tr><td>Broadcom competition</td><td><span class="stars">⚠ Risk</span></td><td class="dim">Broadcom holds ~70% custom AI chip share; Marvell targeting 20% by 2028</td></tr>
+
+          </tbody>
+        </table>
+        <div class="quote-block">"Marvell delivered record fiscal 2026 revenue of $8.2 billion, growing 42% YoY. <strong style='color:var(--accent)'>We expect YoY revenue growth to accelerate each quarter in fiscal 2027</strong>, driven by continued strength in our data center business, with bookings continuing to grow at a record pace."<cite>— Matt Murphy, Chairman & CEO · Marvell Q4 FY2026 Earnings Call, March 5, 2026</cite></div>
+      </div>
+
     </div>
   </section>
 
+  <!-- SCENARIOS -->
   <section id="scenarios">
-    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Scenarios</div><div class="section-head-line"></div></div>
+    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Case Scenarios</div><div class="section-head-line"></div></div>
     <div class="g3">
-      <div class="scenario sc-bull"><div class="sc-label">🐂 Bull Case</div><div class="sc-target">$164</div><div class="sc-upside">+102% upside</div><div class="sc-desc">Custom AI chip wins expand beyond current hyperscaler partnerships. Optical interconnect captures significant market share. Revenue doubles to $15B by FY2028.</div></div>
-      <div class="scenario sc-base"><div class="sc-label">📊 Base Case</div><div class="sc-target">$116</div><div class="sc-upside">+44% upside</div><div class="sc-desc">AI revenue grows to $4B+ in FY2027. Custom ASIC program expansions announced. Operating leverage drives margin improvement. 45% upside to consensus.</div></div>
-      <div class="scenario sc-bear"><div class="sc-label">🐻 Bear Case</div><div class="sc-target">$67</div><div class="sc-upside">-17% downside</div><div class="sc-desc">Broadcom dominates custom AI silicon leaving limited share for Marvell. Hyperscaler capex slows. NVIDIA maintains GPU dominance longer than expected.</div></div>
+      <div class="scenario sc-bull">
+        <div class="sc-label">🐂 Bull Case</div>
+        <div class="sc-target">$164</div>
+        <div class="sc-upside">+79% upside</div>
+        <div class="sc-desc">Custom AI ASIC wins expand beyond Microsoft and Amazon to additional hyperscalers. 1.6T optical interconnect platform captures dominant market share. Celestial AI CPO acquisition pays off in CY28. FY2028 revenue approaches $20B. Stock re-rates to 30x earnings.</div>
+      </div>
+      <div class="scenario sc-base">
+        <div class="sc-label">📊 Base Case</div>
+        <div class="sc-target">$117</div>
+        <div class="sc-upside">+28% upside</div>
+        <div class="sc-desc">FY2027 guidance of ~$11B achieved. Microsoft and Amazon XPU programs ramp on schedule. Data center revenue reaches 80%+ of total. Non-GAAP EPS hits $3.82 in FY2027. Stock re-rates as the clear #2 custom AI silicon player.</div>
+      </div>
+      <div class="scenario sc-bear">
+        <div class="sc-label">🐻 Bear Case</div>
+        <div class="sc-target">$67</div>
+        <div class="sc-upside">-27% downside</div>
+        <div class="sc-desc">Broadcom's lock-in proves deeper than expected; hyperscalers don't diversify supply. Microsoft or Amazon XPU programs delayed by 1-2 quarters. NAND/storage legacy business declines faster. Goldman Sachs Neutral thesis plays out.</div>
+      </div>
     </div>
   </section>
 
+  <!-- RISKS & OUTLOOK -->
   <section id="risks">
-    <div class="section-head"><div class="section-head-label">Risk Assessment</div><div class="section-head-line"></div></div>
-    <div class="card"><div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Broadcom competition</div><div class="risk-desc-text">Broadcom holds ~70% custom AI chip share vs Marvell's ~5%; closing that gap is uncertain</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Execution</div><div class="risk-desc-text">Custom chip development is complex; delays can shift revenue by multiple quarters</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Customer concentration</div><div class="risk-desc-text">Hyperscaler concentration creates revenue lumpiness</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Balance sheet</div><div class="risk-desc-text">Conservative balance sheet with manageable debt</div></div></div>
+    <div class="section-head"><div class="section-head-label">Risk Assessment &amp; Forward Outlook</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Key Risks</div>
+        <div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Broadcom dominance</div><div class="risk-desc-text">Broadcom holds ~70% custom AI chip share; closing that gap requires flawless execution</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Customer concentration</div><div class="risk-desc-text">Microsoft and Amazon XPU transitions dominate near-term growth; lumpy if delayed</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Goldman Sachs Neutral</div><div class="risk-desc-text">Goldman maintained Neutral ($100 target) citing elevated expectations — a credible bear case</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Balance sheet</div><div class="risk-desc-text">Infineon deal proceeds de-risked balance sheet; CEO open-market buying is a positive signal</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Technology</div><div class="risk-desc-text">1.6T DSP and 2nm silicon leadership is confirmed by multiple analyst upgrades post Q4</div></div></div>
+
+      </div>
+      <div class="card">
+        <div class="card-head">Forward Revenue &amp; Earnings Outlook</div>
+        <table class="tbl">
+          <thead><tr><th>Metric</th><th>FY2025A</th><th>FY2026E</th><th>FY2027E</th></tr></thead>
+          <tbody>
+            <tr><td>Total Revenue</td><td class="mono right">$8.19B</td><td class="mono right" style="color:var(--green)">~$11B</td><td class="mono right" style="color:var(--green)">~$15B+</td></tr>
+<tr><td>Data Center Revenue</td><td class="mono right">~$6.1B</td><td class="mono right" style="color:var(--green)">~$8.5B+</td><td class="mono right" style="color:var(--green)">~$12B+</td></tr>
+<tr><td>Non-GAAP EPS</td><td class="mono right">$2.84</td><td class="mono right" style="color:var(--green)">~$3.82</td><td class="mono right" style="color:var(--green)">~$5.43</td></tr>
+<tr><td>Non-GAAP Gross Margin</td><td class="mono right">~60%</td><td class="mono right" style="color:var(--green)">~61%</td><td class="mono right" style="color:var(--green)">~63%</td></tr>
+<tr><td>Custom AI Chip Revenue</td><td class="mono right">~$3B</td><td class="mono right" style="color:var(--green)">~$6B+</td><td class="mono right" style="color:var(--green)">~$12B (doubled)</td></tr>
+
+          </tbody>
+        </table>
+      
+        <div style="margin-top:1.25rem">
+          <div class="card-head" style="margin-bottom:0.75rem">Near-Term Catalysts</div>
+          <div class="risk-row" ><div class="risk-badge rb-high">Jun'26</div><div><div class="risk-name" style="font-size:0.82rem">FY2027 Q1 — $11B Trajectory</div><div class="risk-desc-text">First quarter confirming $11B annual pace. CEO open-market buy signal.</div></div></div>
+          <div class="risk-row" ><div class="risk-badge rb-med">H2'26</div><div><div class="risk-name" style="font-size:0.82rem">Microsoft XPU Design Win Announcement</div><div class="risk-desc-text">2nd confirmed hyperscaler adds $3-5B to annual revenue pipeline.</div></div></div>
+          <div class="risk-row" style="border:none"><div class="risk-badge rb-low">FY28</div><div><div class="risk-name" style="font-size:0.82rem">GAAP Profitability — Amortization Rolloff</div><div class="risk-desc-text">Expands buyer universe. Removes key institutional avoidance factor.</div></div></div>
+        </div>
 </div>
+    </div>
   </section>
 
+  <!-- VERDICT -->
   <section id="verdict">
     <div class="section-head"><div class="section-head-label">Analyst Verdict</div><div class="section-head-line"></div></div>
     <div class="verdict">
-      <div class="verdict-label">Bottom Line · STRONG BUY · Target $116.34</div>
-      <div class="verdict-text">Marvell is a compelling Broadcom alternative play — if hyperscalers diversify their custom silicon supply chain, Marvell is the primary beneficiary. With 45% consensus upside and strong Q4 momentum, it offers an attractive entry point. The risk is that Broadcom's lock-in is deeper than expected. <strong style='color:var(--green)'>Strong Buy. Target: $116.34.</strong></div>
+      <div class="verdict-label">Bottom Line · STRONG BUY · Target $117.24</div>
+      <div class="verdict-text">Marvell's Q4 FY2026 results and FY2027 guidance of ~$11B (+34%) represent a watershed moment — the company has definitively become the #2 custom AI silicon player. The post-earnings 21% stock surge to $91.72 validates the thesis. CEO Matt Murphy bought 13,600 shares in the open market — a powerful signal of insider conviction. The 1.6T optical DSP platform, Celestial AI acquisition, and Microsoft/Amazon XPU ramps are compounding catalysts. BofA upgraded to Buy with $110 target, JPMorgan raised to $135. At 28% upside to consensus, with a clear accelerating growth trajectory through FY2027-2028, Marvell offers compelling risk/reward. <strong style='color:var(--green)'>Strong Buy. Target: $117.24. Street high: $135.</strong></div>
     </div>
   </section>
 
   <footer>
     <div><div class="footer-brand">MRVL · EQUITY RESEARCH</div><div>Generated March 15, 2026 · For informational purposes only</div></div>
-    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making any investment decisions.</div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making investment decisions.</div>
   </footer>
-</div>
+
+</div><!-- /wrapper -->
+
 <script>
-const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}});},{threshold:.1});
-document.querySelectorAll('.card,.metric,.scenario,.verdict').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(12px)';el.style.transition='opacity .45s ease,transform .45s ease';observer.observe(el)});
-setTimeout(()=>document.querySelectorAll('.bar-fill[data-target]').forEach(el=>el.style.width=el.getAttribute('data-target')+'%'),300);
+// Chart.js — Revenue bar chart
+window.addEventListener('load', function() {
+  var ctx = document.getElementById('revChart');
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ["Q1 FY26", "Q2 FY26", "Q3 FY26", "Q4 FY26", "Q1 FY27 (guide)"],
+        datasets: [
+          {
+            label: 'Total Revenue',
+            data: [1.16, 1.76, 2.07, 2.22, 2.4],
+            backgroundColor: 'rgba(74,132,232,0.55)',
+            borderColor: '#4a84e8',
+            borderWidth: 1,
+            borderRadius: 3
+          },
+          {
+            label: 'Data Center Revenue ($B)',
+            data: [0.61, 1.09, 1.4, 1.65, 1.85],
+            backgroundColor: 'rgba(201,153,58,0.65)',
+            borderColor: '#c9993a',
+            borderWidth: 1,
+            borderRadius: 3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#111720',
+            borderColor: '#1e2836',
+            borderWidth: 1,
+            titleColor: '#6e7d94',
+            bodyColor: '#dde2ea'
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#6e7d94', font: { size: 11 }, maxRotation: 30 },
+            grid: { display: false },
+            border: { color: '#1e2836' }
+          },
+          y: {
+            ticks: { color: '#6e7d94', font: { size: 11 } },
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            border: { color: '#1e2836' },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+});
 </script>
 </body>
 </html>
