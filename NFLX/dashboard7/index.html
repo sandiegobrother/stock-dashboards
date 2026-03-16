@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NFLX · Institutional Perspective · Dashboard 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--border:#182030;--border2:#1e2d42;--text:#e2e8f0;--muted:#64748b;--muted2:#334155;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--purple:#a78bfa}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#a78bfa08 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:#a78bfa;letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:#a78bfa}
+.nav-btns{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:4px 10px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nb1{color:var(--muted);border-color:var(--border2)}.nb1:hover{background:rgba(255,255,255,.05)}
+.nb2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nb3{color:#c9993a;border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.06)}
+.nb4{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
+.nb5{color:#f97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.06)}
+.nb6{color:#34d399;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06)}
+.nb-hub{color:#a78bfa;border-color:#a78bfa44;background:#a78bfa10}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:#a78bfa;line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#a78bfa10;border:1px solid #a78bfa30;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#a78bfa;letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#a78bfa}
+.hero-right{text-align:right}
+.verdict-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;line-height:1;margin-bottom:4px;color:#5b9cf6}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:280px;text-align:right;line-height:1.5}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-val{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.reason-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin-bottom:.85rem}
+.reason-header{display:grid;grid-template-columns:auto 1fr auto;gap:.85rem;align-items:center;margin-bottom:.75rem}
+.reason-num{font-family:'IBM Plex Mono',monospace;font-size:1.2rem;font-weight:600;min-width:28px}
+.reason-title{font-size:.88rem;font-weight:500;color:var(--text)}
+.reason-tag{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:3px 10px;border-radius:4px;letter-spacing:.06em;white-space:nowrap}
+.buy-tag{background:#34d39915;color:#34d399;border:1px solid #34d39930}
+.avoid-tag{background:#f8717115;color:#f87171;border:1px solid #f8717130}
+.reason-body{font-size:.86rem;line-height:1.72;color:var(--text)}
+.reason-body strong{color:#a78bfa;font-weight:500}
+.buy-card{border-left:2px solid #34d39940}
+.avoid-card{border-left:2px solid #f8717140}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle;font-size:.82rem}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace}
+.tbl td.right{text-align:right}
+.score-grid{display:grid;gap:.65rem}
+.score-row{display:flex;align-items:center;gap:1rem}
+.score-label-txt{font-size:.75rem;color:var(--muted);min-width:150px}
+.score-bar-wrap{flex:1;display:flex;align-items:center;gap:.75rem;background:var(--surface2);border-radius:4px;padding:4px 8px}
+.score-bar{height:8px;border-radius:3px;transition:width .8s ease}
+.score-num{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--text);min-width:32px}
+.thesis-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #a78bfa;border-radius:8px;padding:1.5rem;margin-bottom:2rem}
+.thesis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.thesis-body{font-size:.9rem;line-height:1.75;color:var(--text)}
+.thesis-body strong{color:#a78bfa;font-weight:500}
+.verdict-box{background:var(--surface);border:1px solid #5b9cf644;border-left:3px solid #5b9cf6;border-radius:8px;padding:1.5rem;margin-bottom:2rem}
+.verdict-inner-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-inner-body{font-size:.9rem;line-height:1.75;color:var(--text)}
+.verdict-inner-body strong{color:#5b9cf6;font-weight:500}
+.inst-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+@media(max-width:700px){.inst-grid{grid-template-columns:repeat(2,1fr)}}
+.inst-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
+.inst-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:5px}
+.inst-val{font-family:'IBM Plex Mono',monospace;font-size:1.1rem;font-weight:500;color:#a78bfa;line-height:1}
+.inst-sub{font-size:.68rem;color:var(--muted);margin-top:3px}
+.chart-wrap{position:relative;width:100%;height:240px}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:#a78bfa;font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">NFLX · INSTITUTIONAL VIEW</a>
+  <ul class="nav-links">
+    <li><a href="#reasons">Buy vs Avoid</a></li>
+    <li><a href="#catalysts">Catalysts</a></li>
+    <li><a href="#scores">Scores</a></li>
+    <li><a href="#thesis">Thesis</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a class="nav-btn nb1" href="../">D1</a>
+    <a class="nav-btn nb2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nb3" href="../dashboard3/">D3</a>
+    <a class="nav-btn nb4" href="../dashboard4/">D4</a>
+    <a class="nav-btn nb5" href="../dashboard5/">D5</a>
+    <a class="nav-btn nb6" href="../dashboard6/">D6</a>
+    <a class="nav-btn nb-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 7 · Hedge Fund Perspective · March 2026</div>
+        <div class="hero-ticker">NFLX</div>
+        <div class="hero-name">Netflix, Inc.</div>
+        <div class="hero-badge">Streaming Entertainment</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Institutional Verdict</div>
+        <div class="verdict-big">BUY</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#5b9cf6;letter-spacing:.08em;margin-bottom:6px">Steady compounder · 30% op. margin · Ad tier scaling · 301M subscribers</div>
+        <div class="hero-sub">~80% institutional ownership · $1,250+ price targets · Live sports + ads dual growth driver</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- INST METRICS -->
+  <div class="inst-grid">
+    <div class="inst-card"><div class="inst-label">Institutional Own.</div><div class="inst-val">~80%</div><div class="inst-sub">Institutional owned</div></div>
+    <div class="inst-card"><div class="inst-label">Largest Holder</div><div class="inst-val" style="font-size:.9rem">Vanguard Group</div><div class="inst-sub">~8% stake</div></div>
+    <div class="inst-card"><div class="inst-label">Analyst Consensus</div><div class="inst-val" style="font-size:.9rem;color:#34d399">Strong Buy</div><div class="inst-sub">45+ analysts · $1,250+ target</div></div>
+    <div class="inst-card"><div class="inst-label">Short Interest</div><div class="inst-val" style="color:#34d399">1.2%</div><div class="inst-sub">Very low short interest</div></div>
+  </div>
+
+  <!-- SCORECARD -->
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Conviction Score</div><div class="score-val" style="color:#a78bfa">8/10</div><div class="score-sub">Overall HF rating</div></div>
+    <div class="score-item"><div class="score-label">Business Quality</div><div class="score-val" style="color:#34d399">8/10</div><div class="score-sub">Moat + mgmt</div></div>
+    <div class="score-item"><div class="score-label">Growth Score</div><div class="score-val" style="color:#5b9cf6">7/10</div><div class="score-sub">2-4yr trajectory</div></div>
+    <div class="score-item"><div class="score-val" style="color:#fbbf24">6/10</div><div class="score-label">Valuation</div><div class="score-sub">Price vs value</div></div>
+    <div class="score-item"><div class="score-val" style="color:#f87171">4/10</div><div class="score-label">Risk Level</div><div class="score-sub">Lower = safer</div></div>
+  </div>
+
+  <!-- BUY / AVOID -->
+  <section id="reasons">
+    <div class="section-head"><div class="section-head-label">Why Institutions Buy</div><div class="section-head-line"></div></div>
+    <div class="reason-card buy-card">
+          <div class="reason-header">
+            <div class="reason-num" style="color:#34d399">B1</div>
+            <div class="reason-title">301M Subscribers + Advertising — Dual Revenue Compounding</div>
+            <div class="reason-tag buy-tag">GROWTH</div>
+          </div>
+          <div class="reason-body"><strong>Netflix has 301M subscribers AND is building a $5-8B annual advertising business simultaneously — two distinct revenue drivers that compound independently.</strong> The advertising tier (40M+ MAU) monetizes subscribers who previously contributed $0 in advertising revenue. Each 10M new ad-supported subscribers at 40M+ MAU growing adds approximately $500M-1B in incremental high-margin revenue.</div>
+        </div><div class="reason-card buy-card">
+          <div class="reason-header">
+            <div class="reason-num" style="color:#34d399">B2</div>
+            <div class="reason-title">30% Operating Margin — Best in Media</div>
+            <div class="reason-tag buy-tag">QUALITY</div>
+          </div>
+          <div class="reason-body"><strong>Netflix generates 30% operating margins on $43B revenue — the highest operating margin of any global entertainment company.</strong> Traditional media (Disney 15%, WBD 10%) cannot match Netflix's cost structure because Netflix's content investment is optimized for global viewer hours rather than linear scheduling. Institutional media investors view Netflix's margin profile as structurally superior.</div>
+        </div><div class="reason-card buy-card">
+          <div class="reason-header">
+            <div class="reason-num" style="color:#34d399">B3</div>
+            <div class="reason-title">Password Crackdown Complete — Clean Growth Going Forward</div>
+            <div class="reason-tag buy-tag">MOMENTUM</div>
+          </div>
+          <div class="reason-body"><strong>The password sharing crackdown added 40M+ paid subscribers in 2023-2024 and is now complete — future growth is genuine new subscriber acquisition.</strong> Institutional investors who were cautious about the crackdown's sustainability were proven wrong by the sustained engagement metrics. The cleanliness of the future growth profile (no more one-time conversion benefit) makes revenue modeling more transparent.</div>
+        </div>
+    <div class="section-head"><div class="section-head-label">Why Institutions Avoid</div><div class="section-head-line"></div></div>
+    <div class="reason-card avoid-card">
+          <div class="reason-header">
+            <div class="reason-num" style="color:#f87171">A1</div>
+            <div class="reason-title">Live Sports Rights Cost Escalation</div>
+            <div class="reason-tag avoid-tag">MARGIN RISK</div>
+          </div>
+          <div class="reason-body"><strong>NFL, WWE, and F1 rights are setting escalation precedents that could impair Netflix's 30% operating margin target.</strong> If Netflix pursues an NFL regular-season deal or NBA streaming rights, content costs surge $1-3B annually — directly compressing the margin expansion narrative that drives the institutional buy thesis.</div>
+        </div><div class="reason-card avoid-card">
+          <div class="reason-header">
+            <div class="reason-num" style="color:#f87171">A2</div>
+            <div class="reason-title">35x P/E — Premium for ~12% Revenue Growth</div>
+            <div class="reason-tag avoid-tag">VALUATION</div>
+          </div>
+          <div class="reason-body"><strong>At 35x forward P/E for 11-13% revenue growth, Netflix is priced at a premium to its entertainment peers.</strong> For institutions running strict GARP screens (P/E < 2x growth rate), Netflix fails at 35x P/E for 12% growth. The 'S-curve saturation' thesis — that 301M subscribers represents near-global penetration in addressable streaming markets — is the bear case for valuation.</div>
+        </div>
+  </section>
+
+  <!-- CATALYSTS -->
+  <section id="catalysts">
+    <div class="section-head"><div class="section-head-label">Key Catalysts</div><div class="section-head-line"></div></div>
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-head">Catalyst Calendar — Near (0-6mo) · Mid (6-18mo) · Long (18mo+)</div>
+      <table class="tbl">
+        <thead><tr><th>Catalyst Event</th><th>Horizon</th><th>Timeline</th><th>Impact</th><th class="right">Upside</th></tr></thead>
+        <tbody><tr>
+          <td style="font-size:.82rem;font-weight:500">Ad-Supported MAU Reaches 60M+</td>
+          <td class="mono" style="font-size:.75rem;color:#34d399">NEAR</td>
+          <td style="font-size:.8rem;color:var(--muted)">H2 2026</td>
+          <td style="font-size:.82rem">Ad revenue run-rate confirms $5B+ annual trajectory</td>
+          <td class="mono right" style="color:#34d399">+15-20%</td>
+        </tr><tr>
+          <td style="font-size:.82rem;font-weight:500">Q3 2026 Earnings — Content Hit Slate</td>
+          <td class="mono" style="font-size:.75rem;color:#34d399">NEAR</td>
+          <td style="font-size:.8rem;color:var(--muted)">October 2026</td>
+          <td style="font-size:.82rem">Squid Game S3, Stranger Things finale drives engagement spike</td>
+          <td class="mono right" style="color:#34d399">+10-15%</td>
+        </tr><tr>
+          <td style="font-size:.82rem;font-weight:500">NFL Regular Season Streaming Deal</td>
+          <td class="mono" style="font-size:.75rem;color:#fbbf24">MID</td>
+          <td style="font-size:.8rem;color:var(--muted)">2026-2027</td>
+          <td style="font-size:.82rem">If economics work: +20M subs. If expensive: -5% margins</td>
+          <td class="mono right" style="color:#fbbf24">±20%</td>
+        </tr><tr>
+          <td style="font-size:.82rem;font-weight:500">Operating Margin >33%</td>
+          <td class="mono" style="font-size:.75rem;color:#fbbf24">MID</td>
+          <td style="font-size:.8rem;color:var(--muted)">FY2027</td>
+          <td style="font-size:.82rem">Margin expansion narrative confirms above-consensus FCF</td>
+          <td class="mono right" style="color:#fbbf24">+15-25%</td>
+        </tr><tr>
+          <td style="font-size:.82rem;font-weight:500">Gaming Monetization — Subscription Upsell</td>
+          <td class="mono" style="font-size:.75rem;color:#5b9cf6">LONG</td>
+          <td style="font-size:.8rem;color:var(--muted)">2027-2028</td>
+          <td style="font-size:.82rem">$5/mo gaming add-on on 50M gamers = $3B incremental</td>
+          <td class="mono right" style="color:#5b9cf6">+10-20%</td>
+        </tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SCORES -->
+  <section id="scores">
+    <div class="section-head"><div class="section-head-label">Investment Scorecard</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Hedge Fund Scoring Criteria</div>
+        <div class="score-grid">
+          <div class="score-row"><span class="score-label-txt">Business Quality / Moat</span><div class="score-bar-wrap"><div class="score-bar" style="width:80%;background:#34d399"></div><span class="score-num">8/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">Subscriber Growth</span><div class="score-bar-wrap"><div class="score-bar" style="width:70%;background:#fbbf24"></div><span class="score-num">7/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">Content Investment Efficiency</span><div class="score-bar-wrap"><div class="score-bar" style="width:80%;background:#34d399"></div><span class="score-num">8/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">Advertising Revenue Ramp</span><div class="score-bar-wrap"><div class="score-bar" style="width:80%;background:#34d399"></div><span class="score-num">8/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">Valuation Attractiveness</span><div class="score-bar-wrap"><div class="score-bar" style="width:60%;background:#fbbf24"></div><span class="score-num">6/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">Live Sports Cost Escalation</span><div class="score-bar-wrap"><div class="score-bar" style="width:50%;background:#f87171"></div><span class="score-num">5/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">FCF Generation</span><div class="score-bar-wrap"><div class="score-bar" style="width:80%;background:#34d399"></div><span class="score-num">8/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">Operating Margin Expansion</span><div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:#34d399"></div><span class="score-num">9/10</span></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">Comparative Scoring Chart</div>
+        <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THESIS -->
+  <section id="thesis">
+    <div class="section-head"><div class="section-head-label">Investment Thesis</div><div class="section-head-line"></div></div>
+    <div class="thesis-block">
+      <div class="thesis-title">Long-Term Investment Thesis · NFLX · Portfolio Manager Perspective</div>
+      <div class="thesis-body"><strong>Netflix is the steady compounder that institutional allocators rely on for predictable, low-volatility entertainment sector exposure.</strong> The 30% operating margin, 301M subscriber base, and $8B+ FCF make it the closest thing to a 'growth utility' in consumer technology. The advertising tier is the primary upside optionality — 40M ad-supported MAU growing to 80M+ by 2027 at 65% CPMs represents $2-4B in incremental annual revenue that consensus models underestimate. The live sports strategy is more controversial: NFL and WWE have been successful, but escalating rights costs for broader sports could impair the margin expansion story that's central to the institutional buy thesis. <strong>Netflix is a core 2-4% position in consumer technology-focused portfolios — with the advertising tier the key catalyst to watch for multiple expansion above 35x.</strong></div>
+    </div>
+    <div class="verdict-box">
+      <div class="verdict-inner-title">Institutional Verdict · NFLX · BUY · Steady compounder · 30% op. margin · Ad tier scaling · 301M subscribers</div>
+      <div class="verdict-inner-body"><strong style='color:#5b9cf6'>BUY — Steady Compounder with Advertising Optionality.</strong> Netflix at 35x forward P/E is fair for the highest-margin entertainment business globally. The advertising tier scaling to $5-8B represents the key upside catalyst not fully priced in. Base DCF slightly below current prices but $1,250+ analyst targets reflect advertising optionality. <strong style='color:#5b9cf6'>Recommended allocation: 2-3% position. Add below $900. Target $920-1,250 over 18 months.</strong></div>
+    </div>
+  </section>
+
+</div>
+<footer>
+  <div><div class="footer-brand">NFLX · Institutional Investor Perspective</div><div>Dashboard 7 · Hedge Fund Analysis · March 2026</div></div>
+  <div style="max-width:480px;font-size:.7rem">Simulated hedge fund analysis for educational purposes only. Not investment advice. Past performance does not guarantee future results.</div>
+</footer>
+<script>
+window.addEventListener('load', function() {
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#182030';
+  const labels = ['Business Quality','Growth Potential','Valuation','Risk-Adjusted Ret.','Catalyst Density','Moat Durability'];
+  const scores = [8, 7, 6, 8, 5, 8];
+  new Chart(document.getElementById('radarChart'), {
+    type: 'radar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'NFLX',
+        data: scores,
+        backgroundColor: '#a78bfa22',
+        borderColor: '#a78bfa',
+        borderWidth: 2,
+        pointBackgroundColor: '#a78bfa',
+        pointRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display:false} },
+      scales: { r: {
+        min: 0, max: 10,
+        grid: {color:'#182030'},
+        ticks: {display:false},
+        pointLabels: {color:'#94a3b8',font:{size:10}}
+      }}
+    }
+  });
+});
+</script>
+</body>
+</html>
