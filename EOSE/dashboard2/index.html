@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EOSE · Deep Financial Breakdown · Dashboard 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#070b10;--surface:#0e1420;--surface2:#141c2a;--surface3:#1a2436;--border:#1a2436;--border2:#243248;--accent:#5b9cf6;--green:#34d399;--red:#f87171;--amber:#fbbf24;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(91,156,246,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(56,189,248,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,11,16,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2);}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-hub{color:var(--accent);border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.08)}.nav-hub:hover{background:rgba(91,156,246,.15)}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#fbbf24;letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#fbbf24}
+.hero-right{text-align:right}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-verdict{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#fbbf24;line-height:1.1}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:220px;text-align:right}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-grade{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+.grade-a{color:var(--green)}.grade-b{color:var(--accent)}.grade-c{color:var(--amber)}.grade-d{color:var(--red)}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:240px;margin-top:1rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:rgba(91,156,246,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.health-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.health-lbl{font-size:.75rem;color:var(--muted);width:150px;flex-shrink:0}
+.health-track{flex:1;height:7px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.health-fill{height:100%;border-radius:4px}
+.health-val{font-family:'IBM Plex Mono',monospace;font-size:.73rem;width:60px;text-align:right;flex-shrink:0}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:2px 8px;border-radius:3px;font-weight:500;letter-spacing:.04em}
+.pill-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.pill-amber{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">EOSE · DEEP FINANCIALS</a>
+  <ul class="nav-links">
+    <li><a href="#revenue">Revenue</a></li>
+    <li><a href="#income">Net Income</a></li>
+    <li><a href="#cashflow">FCF</a></li>
+    <li><a href="#margins">Margins</a></li>
+    <li><a href="#debt">Debt</a></li>
+    <li><a href="#roe">ROE</a></li>
+    <li><a href="#verdict">Verdict</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 2 · Deep Financial Breakdown · 5-Year Analysis · March 15, 2026</div>
+        <div class="hero-ticker">EOSE</div>
+        <div class="hero-name">Eos Energy Enterprises, Inc. — FY2021–FY2025</div>
+        <div class="hero-badge">EARLY STAGE · GOING CONCERN RESOLVED · HIGH RISK/REWARD</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Financial Health</div>
+        <div class="hero-verdict">C+</div>
+        <div class="hero-sub">FY2025 revenue $114M +7x YoY. FY2026 guide $300-400M. $624M cash. Going concern resolved.</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Revenue Growth</div><div class="score-grade grade-a">A</div><div class="score-sub">+7x FY2025 YoY</div></div>
+    <div class="score-item"><div class="score-label">Net Income</div><div class="score-grade grade-d">D</div><div class="score-sub">Gross margin still negative</div></div>
+    <div class="score-item"><div class="score-label">Free Cash Flow</div><div class="score-grade grade-d">D</div><div class="score-sub">FCF deeply negative</div></div>
+    <div class="score-item"><div class="score-label">Profit Margins</div><div class="score-grade grade-c">C</div><div class="score-sub">Gross margin turning positive</div></div>
+    <div class="score-item"><div class="score-label">Debt Levels</div><div class="score-grade grade-b">B</div><div class="score-sub">$624M cash · going concern OK</div></div>
+    <div class="score-item"><div class="score-label">Return on Equity</div><div class="score-grade grade-d">D</div><div class="score-sub">N/M · pre-profitability</div></div>
+  </div>
+
+  <section id="revenue">
+    <div class="section-head"><div class="section-head-label">1 · Revenue Growth</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Annual Revenue (FY2021–FY2025)</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Revenue</th><th class="right">YoY Growth</th><th>Key Driver</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">$72M</td><td class="mono right" style="color:var(--green)">+N/M</td><td class="dim">Early commercial deployments · first utility contracts</td></tr>
+<tr><td>2022</td><td class="mono right">$71M</td><td class="mono right" style="color:var(--red)">-1%</td><td class="dim">Manufacturing challenges · supply chain issues</td></tr>
+<tr><td>2023</td><td class="mono right">$31M</td><td class="mono right" style="color:var(--red)">-56%</td><td class="dim">Production reset · going concern risk emerges</td></tr>
+<tr><td>2024</td><td class="mono right">$16M</td><td class="mono right" style="color:var(--red)">-48%</td><td class="dim">Near-bankruptcy · going concern · $600M notes issued</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">$114M</td><td class="mono right" style="color:var(--green)">+613%</td><td class="dim">Revenue +7x · Q4 $58M record · 2.8 GWh backlog</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">Revenue dropped from $72M to $16M (2021-2024) before recovering sharply to $114M in 2025. The 7x revenue jump follows years of near-bankruptcy.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Revenue Trend</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Total Revenue ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Revenue Analysis</div><div class="analysis-text">Eos Energy's revenue story is one of the most volatile on this list — from $72M (2021) to $16M (2024) and back to $114M (2025). The 2022-2024 decline reflects genuine near-existential challenges: manufacturing scaling failures, going concern warnings, and multiple emergency financing rounds. The 2025 recovery — $58M in Q4 alone exceeding the first three quarters combined — suggests the manufacturing issues may have been resolved. <strong>FY2026 guidance of $300-400M (+163-250%) is ambitious and must be evaluated skeptically given the company's history of production challenges.</strong></div></div>
+  </section>
+
+  <section id="income">
+    <div class="section-head"><div class="section-head-label">2 · Net Income Trends</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">GAAP vs Non-GAAP Net Income</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">GAAP NI</th><th class="right">Non-GAAP NI</th><th class="right">GAAP Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">-$189M</td><td class="mono right">-$150M</td><td class="mono right">N/M</td></tr>
+<tr><td>2022</td><td class="mono right">-$264M</td><td class="mono right">-$190M</td><td class="mono right">N/M</td></tr>
+<tr><td>2023</td><td class="mono right">-$253M</td><td class="mono right">-$175M</td><td class="mono right">N/M</td></tr>
+<tr><td>2024</td><td class="mono right">-$970M</td><td class="mono right">-$200M</td><td class="mono right">N/M</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">~-$250M</td><td class="mono right">~-$180M</td><td class="mono right">N/M</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">FY2024 GAAP loss of $970M includes $746.8M in non-cash items. Underlying cash burn ~$200-250M annually.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Net Income Chart</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>GAAP NI</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Non-GAAP NI</span>
+        </div>
+        <div class="chart-wrap"><canvas id="incChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Net Income Analysis</div><div class="analysis-text">Eos remains deeply unprofitable. The FY2024 $970M GAAP loss was largely non-cash ($746.8M) from warrant fair-value adjustments and other charges. Underlying cash burn of ~$200-250M is the relevant metric. <strong>Profitability requires the FY2026 $300-400M revenue guidance to be achieved AND gross margins to turn meaningfully positive — both are uncertain at this stage.</strong></div></div>
+  </section>
+
+  <section id="cashflow">
+    <div class="section-head"><div class="section-head-label">3 · Free Cash Flow</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Free Cash Flow (FY2021–FY2025)</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">FCF</th><th class="right">Growth</th><th class="right">FCF Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right" style="color:var(--green)">-$150M</td><td class="mono right" style="color:var(--muted)">N/M</td><td class="mono right">N/M</td></tr>
+<tr><td>2022</td><td class="mono right" style="color:var(--green)">-$200M</td><td class="mono right" style="color:var(--muted)">N/M</td><td class="mono right">N/M</td></tr>
+<tr><td>2023</td><td class="mono right" style="color:var(--green)">-$180M</td><td class="mono right" style="color:var(--muted)">N/M</td><td class="mono right">N/M</td></tr>
+<tr><td>2024</td><td class="mono right" style="color:var(--green)">-$220M</td><td class="mono right" style="color:var(--muted)">N/M</td><td class="mono right">N/M</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right" style="color:var(--green)">~-$180M</td><td class="mono right" style="color:var(--muted)">N/M</td><td class="mono right">N/M</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">FCF has been consistently negative. $624M cash (post $600M notes + equity raise) provides 2+ years of runway at current burn.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">FCF Trend</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Free Cash Flow ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>FCF Margin (%)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="fcfChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Free Cash Flow Analysis</div><div class="analysis-text">FCF will remain negative through at least 2026 as manufacturing scale requires continued investment. The $624M cash provides critical runway. <strong>FCF turning positive requires revenue reaching $300M+ with materially improved gross margins — a 2027+ scenario if FY2026 guidance is met.</strong></div></div>
+  </section>
+
+  <section id="margins">
+    <div class="section-head"><div class="section-head-label">4 · Profit Margins</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Margin Evolution</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Gross Margin</th><th class="right">EBITDA Margin</th><th class="right">Net Margin</th><th class="right">FCF Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">20%</td><td class="mono right">N/M</td><td class="mono right">N/M</td><td class="mono right">N/M</td></tr>
+<tr><td>2022</td><td class="mono right">12%</td><td class="mono right">N/M</td><td class="mono right">N/M</td><td class="mono right">N/M</td></tr>
+<tr><td>2023</td><td class="mono right">15%</td><td class="mono right">N/M</td><td class="mono right">N/M</td><td class="mono right">N/M</td></tr>
+<tr><td>2024</td><td class="mono right">-93%</td><td class="mono right">N/M</td><td class="mono right">N/M</td><td class="mono right">N/M</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">~-30%</td><td class="mono right">N/M</td><td class="mono right">N/M</td><td class="mono right">N/M</td></tr>
+</tbody></table>
+        <div style="margin-top:1.1rem">
+          <div class="card-head" style="margin-bottom:.85rem">Latest Year Benchmarks</div>
+          <div class="health-row"><div class="health-lbl">FY2026 gross margin target (guidance)</div><div class="health-track"><div class="health-fill" style="width:15%;background:#5b9cf6"></div></div><div class="health-val" style="color:#5b9cf6">15%</div></div><div class="health-row"><div class="health-lbl">Q4 2025 revenue vs Q1-Q3 combined</div><div class="health-track"><div class="health-fill" style="width:100%;background:#34d399"></div></div><div class="health-val" style="color:#34d399">100%</div></div><div class="health-row"><div class="health-lbl">Cash runway (months at current burn)</div><div class="health-track"><div class="health-fill" style="width:36%;background:#a78bfa"></div></div><div class="health-val" style="color:#a78bfa">36%</div></div><div class="health-row"><div class="health-lbl">FY2025 gross margin (improving)</div><div class="health-track"><div class="health-fill" style="width:-30%;background:#f87171"></div></div><div class="health-val" style="color:#f87171">-30%</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">Margin Trends Chart</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Gross</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>EBITDA</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>Net (GAAP)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="mgnChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Margin Analysis</div><div class="analysis-text">Gross margins have been persistently negative — Q4 2024 saw -$54M gross loss on $58M revenue (-93% gross margin). FY2025 improved to approximately -30% overall. Management guides for positive gross margins in 2026 as scale is achieved. <strong>The zinc-aqueous battery chemistry works — the challenge is manufacturing cost reduction, which requires scale. This is the central challenge and opportunity.</strong></div></div>
+  </section>
+
+  <section id="debt">
+    <div class="section-head"><div class="section-head-label">5 · Debt Levels</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Debt &amp; Leverage Evolution</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Gross Debt</th><th class="right">Net Debt</th><th class="right">Adj. EBITDA</th><th class="right">ND/EBITDA</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">$0.3B</td><td class="mono right">$0.1B</td><td class="mono right">N/M</td><td class="mono right" style="color:var(--red)">N/M</td></tr>
+<tr><td>2022</td><td class="mono right">$0.5B</td><td class="mono right">$0.3B</td><td class="mono right">N/M</td><td class="mono right" style="color:var(--red)">N/M</td></tr>
+<tr><td>2023</td><td class="mono right">$0.4B</td><td class="mono right">$0.3B</td><td class="mono right">N/M</td><td class="mono right" style="color:var(--red)">N/M</td></tr>
+<tr><td>2024</td><td class="mono right">$0.6B</td><td class="mono right">-$0.1B</td><td class="mono right">N/M</td><td class="mono right" style="color:var(--red)">N/M</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">$0.6B</td><td class="mono right">-$0.6B</td><td class="mono right">N/M</td><td class="mono right" style="color:var(--green)">Net cash</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6"><strong style='color:#34d399'>Going concern doubt RESOLVED by management.</strong> $624M cash post $600M senior convertible notes issuance. No immediate liquidity crisis.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Debt vs. EBITDA</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#f87171;display:inline-block"></span>Gross Debt ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Adj. EBITDA ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="dbtChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Debt Analysis</div><div class="analysis-text">The most important balance sheet development is the resolution of the going concern doubt. The $600M in senior convertible notes plus equity raises resulted in $624M cash — sufficient for 2+ years of operations. <strong>Existential risk has been removed — but execution risk on the FY2026 $300-400M revenue guidance and gross margin improvement remains very high.</strong></div></div>
+  </section>
+
+  <section id="roe">
+    <div class="section-head"><div class="section-head-label">6 · Return on Equity</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">ROE &amp; Capital Returns</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">ROE</th><th class="right">ROIC</th><th class="right">Dividends</th><th class="right">Buybacks</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">N/M</td><td class="mono right">N/M</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+<tr><td>2022</td><td class="mono right">N/M</td><td class="mono right">N/M</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+<tr><td>2023</td><td class="mono right">N/M</td><td class="mono right">N/M</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+<tr><td>2024</td><td class="mono right">N/M</td><td class="mono right">N/M</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">N/M</td><td class="mono right">N/M</td><td class="mono right">$0</td><td class="mono right">$0</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">ROE/ROIC not applicable — company is pre-profitability. Key metrics are revenue growth rate and gross margin improvement trajectory.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">ROE Trend &amp; Capital Return</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>ROE (%)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>Total Capital Return ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="roeChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">ROE &amp; Capital Allocation Analysis</div><div class="analysis-text">Traditional ROE/ROIC analysis is not applicable for Eos. The relevant metrics are: (1) FY2026 revenue guidance achievement ($300-400M), (2) Gross margin improvement toward positive territory, (3) Cash burn rate vs $624M cash. <strong>If FY2026 guidance is met and gross margins turn positive, Eos begins a path toward profitability. If not, another financing round will be required.</strong></div></div>
+  </section>
+
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">Overall Financial Verdict</div><div class="section-head-line"></div></div>
+    <div class="g3" style="margin-bottom:1.25rem">
+      <div class="card" style="border-color:rgba(52,211,153,.3)">
+        <div class="card-head">Strengths</div><div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>FY2025 revenue +7x YoY — Q4 $58M exceeded prior 3 quarters combined</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>Going concern doubt formally resolved — existential risk removed</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>$624M cash provides 2+ years of runway at current burn rate</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>Zinc-aqueous chemistry: no lithium, no thermal runaway, 100% US-made</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>$701.5M backlog (2.8 GWh) · $240M Q4 new orders from 8 customers</div>
+      </div>
+      <div class="card" style="border-color:rgba(251,191,36,.3)">
+        <div class="card-head">Watch Items</div><div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>Gross margin still negative (-30% FY2025) — must improve dramatically for viability</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>FY2026 $300-400M revenue guidance requires 163-250% YoY growth — execution history is mixed</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>Stock down 39% post-earnings despite revenue beat — market skepticism</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>Manufacturing scale from 2 GWh to 5+ GWh is operationally complex</div>
+      </div>
+      <div class="card" style="border-color:rgba(91,156,246,.3)">
+        <div class="card-head">5-Year Summary</div>
+        <table class="tbl"><tbody>
+          <tr><td class="dim">Revenue 2021→2025</td><td class="mono right" style="color:var(--green)">$72M → $114M (volatile path)</td></tr><tr><td class="dim">Q4 2025 revenue</td><td class="mono right" style="color:var(--green)">$58M (highest ever)</td></tr><tr><td class="dim">FY2026 guide</td><td class="mono right" style="color:var(--green)">$300-400M (+163-250%)</td></tr><tr><td class="dim">Gross margin</td><td class="mono right" style="color:var(--green)">Still negative · improving</td></tr><tr><td class="dim">Cash</td><td class="mono right" style="color:var(--green)">$624M (going concern resolved)</td></tr><tr><td class="dim">Backlog</td><td class="mono right" style="color:var(--green)">$701.5M / 2.8 GWh</td></tr><tr><td class="dim">Risk level</td><td class="mono right" style="color:var(--green)">Very High</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div class="verdict-block">
+      <div class="verdict-title">Is Eos Energy Enterprises, Inc. Financially Strong or Weakening? — Definitive Assessment</div>
+      <div class="verdict-text">Eos Energy is a high-risk, high-potential story that is genuinely difficult to evaluate. The zinc-aqueous long-duration energy storage technology is real and differentiated. The FY2025 revenue recovery (+7x) and Q4 record of $58M are encouraging. The going concern resolution removes the existential risk. However, gross margins remain deeply negative, FY2026 guidance requires extraordinary execution, and the company's history of manufacturing challenges warrants skepticism. <strong style='color:#fbbf24'>Financial health: C+ (balance sheet OK). Operating metrics: Pre-viable. Speculative investment only — appropriate for small position with high risk tolerance.</strong></div>
+    </div>
+  </section>
+
+  <footer>
+    <div><div class="footer-brand">EOSE · DEEP FINANCIAL BREAKDOWN · DASHBOARD 2</div><div>5-Year Analysis · March 15, 2026</div></div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> For informational purposes only. Not financial advice. Please consult a licensed financial advisor before making investment decisions.</div>
+  </footer>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+  var yrs = ["2021", "2022", "2023", "2024", "2025"];
+  var opts = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#0e1420',borderColor:'#1a2436',borderWidth:1,titleColor:'#64748b',bodyColor:'#e2e8f0'} },
+    scales:{
+      x:{ ticks:{color:'#64748b',font:{size:11},maxRotation:0}, grid:{display:false}, border:{color:'#1a2436'} },
+      y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'#1a2436'}, beginAtZero:true }
+    }
+  };
+  function $B(v){ return '$'+v+'B'; }
+  function pct(v){ return v+'%'; }
+
+  // Revenue
+  new Chart(document.getElementById('revChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0.072, 0.071, 0.031, 0.016, 0.114],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // Net income
+  new Chart(document.getElementById('incChart'),{type:'bar',data:{labels:yrs,datasets:[{label:'GAAP',data:[-0.189, -0.264, -0.253, -0.97, -0.25],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4},{label:'NonGAAP',data:[-0.15, -0.19, -0.175, -0.2, -0.18],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // FCF dual axis
+  new Chart(document.getElementById('fcfChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[-0.15, -0.2, -0.18, -0.22, -0.18],backgroundColor:'rgba(52,211,153,0.6)',borderColor:'#34d399',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[0, 0, 0, 0, 0],borderColor:'#5b9cf6',backgroundColor:'rgba(91,156,246,0.15)',pointBackgroundColor:'#5b9cf6',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#64748b',font:{size:11},callback:pct},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+
+  // Margins
+  new Chart(document.getElementById('mgnChart'),{type:'line',data:{labels:yrs,datasets:[{data:[20, 12, 15, -93, -30],borderColor:'#5b9cf6',backgroundColor:'rgba(91,156,246,0.08)',pointBackgroundColor:'#5b9cf6',borderWidth:2,fill:true,tension:0.3},{data:[0, 0, 0, 0, 0],borderColor:'#34d399',backgroundColor:'rgba(52,211,153,0.05)',pointBackgroundColor:'#34d399',borderWidth:2,fill:false,tension:0.3},{data:[0, 0, 0, 0, 0],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.05)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:false,tension:0.3}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct}}}}});
+
+  // Debt
+  new Chart(document.getElementById('dbtChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0.3, 0.5, 0.4, 0.6, 0.6],backgroundColor:'rgba(248,113,113,0.5)',borderColor:'#f87171',borderWidth:1,borderRadius:4},{data:[0, 0, 0, 0, 0],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // ROE dual axis
+  new Chart(document.getElementById('roeChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0, 0, 0, 0, 0],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[0, 0, 0, 0, 0],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.1)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#64748b',font:{size:11},callback:$B},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+});
+</script>
+</body>
+</html>
