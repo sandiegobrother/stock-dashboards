@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TSLA · Valuation · Dashboard 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--surface3:#182030;--border:#182030;--border2:#1e2d42;--accent:#f87171;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#f8717108 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nav-d3{color:#c9993a;border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.06)}
+.nav-hub{color:var(--accent);border-color:#f8717144;background:#f8717110}.nav-hub:hover{background:#f8717120}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#f8717110;border:1px solid #f8717130;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero-right{text-align:right}
+.verdict-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;color:var(--accent);line-height:1;margin-bottom:4px}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right;line-height:1.5}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-val{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:260px;margin-top:.5rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:#f8717108}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #f87171;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">TSLA · VALUATION</a>
+  <ul class="nav-links"><li><a href="#pe">P/E Analysis</a></li><li><a href="#dcf">DCF Model</a></li><li><a href="#industry">Industry Comps</a></li><li><a href="#multiples">Multiples</a></li><li><a href="#verdict">Verdict</a></li></ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-d3" href="../dashboard3/">D3</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 4 · Investment Bank Valuation · March 2026</div>
+        <div class="hero-ticker">TSLA</div>
+        <div class="hero-name">Tesla, Inc.</div>
+        <div class="hero-badge">PRICED FOR ROBOTAXI OPTIONALITY · NOT CURRENT EARNINGS</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">IB Valuation Verdict</div>
+        <div class="verdict-big">OVERVALUED</div>
+        <div style="font-size:.7rem;font-family:'IBM Plex Mono',monospace;color:#f87171;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">~130x fwd P/E for -8.6% delivery decline · FCF $3.6B vs $850B+ mkt cap</div>
+        <div class="hero-sub">Price $270 · Fwd P/E 130x · DCF base $175 · Analyst target $396 (consensus Hold)</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SCORECARD -->
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Current Price</div><div class="score-val" style="color:var(--text)">$270</div><div class="score-sub">Mar 2026</div></div>
+    <div class="score-item"><div class="score-label">Fwd P/E</div><div class="score-val" style="color:var(--accent)">~130x</div><div class="score-sub">vs 18x auto sector</div></div>
+    <div class="score-item"><div class="score-label">EV/EBITDA</div><div class="score-val" style="color:#5b9cf6">65x</div><div class="score-sub">vs 4x auto sector</div></div>
+    <div class="score-item"><div class="score-label">DCF Fair Value</div><div class="score-val" style="color:#f87171">$175</div><div class="score-sub">Base case (ex-optionality)</div></div>
+    <div class="score-item"><div class="score-label">Analyst Target</div><div class="score-val" style="color:#34d399">$396</div><div class="score-sub">Consensus Hold · wide range</div></div>
+  </div>
+
+  <!-- P/E ANALYSIS -->
+  <section id="pe">
+    <div class="section-head"><div class="section-head-label">1 · P/E Ratio Analysis</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Historical P/E — TSLA (5-Year)</div>
+        <table class="tbl">
+          <thead><tr><th>Year</th><th class="right">TTM P/E</th><th class="right">Stock Price</th><th class="right">EPS</th><th>Context</th></tr></thead>
+          <tbody><tr>
+          <td style="font-size:.83rem">2021</td>
+          <td class="mono right">300x</td>
+          <td class="mono right">$400</td>
+          <td class="mono right">$1.87</td>
+          <td class="mono right" style="color:var(--muted)">COVID EV bubble</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2022</td>
+          <td class="mono right">65x</td>
+          <td class="mono right">$350</td>
+          <td class="mono right">$3.62</td>
+          <td class="mono right" style="color:var(--muted)">Margin peak</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2023</td>
+          <td class="mono right">80x</td>
+          <td class="mono right">$250</td>
+          <td class="mono right">$3.13</td>
+          <td class="mono right" style="color:var(--muted)">Price cut strategy</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2024</td>
+          <td class="mono right">110x</td>
+          <td class="mono right">$400</td>
+          <td class="mono right">$1.49</td>
+          <td class="mono right" style="color:var(--muted)">Margin compression</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2025</td>
+          <td class="mono right">~130x</td>
+          <td class="mono right">$270</td>
+          <td class="mono right">~$2.08</td>
+          <td class="mono right" style="color:var(--muted)">Robotaxi optionality priced</td>
+        </tr></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-head">P/E Trend Chart</div>
+        <div class="chart-wrap"><canvas id="peChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">P/E Assessment</div>
+      <div class="analysis-text">Tesla's ~130x forward P/E is 7x the automotive sector average of 18x — <strong>the stock is not priced on current automotive earnings but entirely on Robotaxi, Optimus, and FSD optionality.</strong> With auto gross margins at 17% (down from 29% in 2021) and deliveries declining -8.6% in FY2025, the P/E multiple cannot be justified by the core auto business. The EV/EBITDA of 65x vs the auto sector's 4x illustrates the extraordinary optionality premium. <strong>This is not a traditional automotive valuation — Tesla requires $5-10B in annual Robotaxi/FSD revenue by 2027-2028 to justify current prices.</strong></div>
+    </div>
+  </section>
+
+  <!-- DCF -->
+  <section id="dcf">
+    <div class="section-head"><div class="section-head-label">2 · Discounted Cash Flow Model</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">DCF Assumptions &amp; Scenarios</div>
+        <table class="tbl">
+          <thead><tr><th>Scenario</th><th class="right">WACC</th><th class="right">Terminal G</th><th class="right">FCF Yr1 Est.</th><th class="right">Intrinsic Value</th><th class="right">Upside/Down</th></tr></thead>
+          <tbody><tr>
+          <td style="font-size:.83rem">Bear (Auto Only)</td>
+          <td class="mono right">10%</td>
+          <td class="mono right">2%</td>
+          <td class="mono right">$4B</td>
+          <td class="mono right">$80</td>
+          <td class="mono right" style="color:#f87171">-70%</td>
+        </tr><tr class="hl">
+          <td style="font-size:.83rem">Base (Auto+Energy+FSD)</td>
+          <td class="mono right">9%</td>
+          <td class="mono right">3%</td>
+          <td class="mono right">$8B</td>
+          <td class="mono right">$175</td>
+          <td class="mono right" style="color:#f87171">-35%</td>
+        </tr><tr>
+          <td style="font-size:.83rem">Bull (Robotaxi+Optimus)</td>
+          <td class="mono right">8%</td>
+          <td class="mono right">5%</td>
+          <td class="mono right">$25B</td>
+          <td class="mono right">$500</td>
+          <td class="mono right" style="color:#34d399">+85%</td>
+        </tr></tbody>
+        </table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.78rem;color:var(--muted)">Base case excludes Robotaxi/Optimus. Bull case requires $15-20B in Robotaxi/FSD revenue by 2028 — equivalent to Uber's entire current revenue from a product not yet commercially launched.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">DCF Scenario Chart</div>
+        <div class="chart-wrap"><canvas id="dcfChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">DCF Analysis</div>
+      <div class="analysis-text">The core Tesla auto + energy DCF of $175 implies <strong>-35% downside from current $270</strong>, confirming the stock is fully priced on optionality premiums. The bull case $500 requires successful Robotaxi launch generating Uber-scale revenues by 2028 — possible but highly speculative. <strong>Tesla is the most binary large-cap stock in the market: Robotaxi succeeds at scale → $500+; Robotaxi delayed or fails → $100-175 range.</strong> At current prices, investors are paying for approximately $275B in 'Robotaxi/Optimus call option' on top of the ~$175 intrinsic auto+energy value.</div>
+    </div>
+  </section>
+
+  <!-- INDUSTRY COMPS -->
+  <section id="industry">
+    <div class="section-head"><div class="section-head-label">3 · Industry Comparables</div><div class="section-head-line"></div></div>
+    <div style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-head">Peer Valuation Comparison — Electric Vehicles / Energy Sector</div>
+        <table class="tbl">
+          <thead><tr><th>Company</th><th class="right">Fwd P/E</th><th class="right">EV/EBITDA</th><th class="right">P/S</th><th class="right">P/B</th><th class="right">Rev Growth</th><th class="right">PEG</th></tr></thead>
+          <tbody><tr class="hl">
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#f87171">Tesla (TSLA)</td>
+          <td class="mono right">~130x</td>
+          <td class="mono right">65x</td>
+          <td class="mono right">9x</td>
+          <td class="mono right">12x</td>
+          <td class="mono right">+3%</td>
+          <td class="mono right">N/M</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">BYD (002594)</td>
+          <td class="mono right">18x</td>
+          <td class="mono right">15x</td>
+          <td class="mono right">1x</td>
+          <td class="mono right">3x</td>
+          <td class="mono right">+22%</td>
+          <td class="mono right">0.8</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Toyota (TM)</td>
+          <td class="mono right">7x</td>
+          <td class="mono right">5x</td>
+          <td class="mono right">0.7x</td>
+          <td class="mono right">1x</td>
+          <td class="mono right">+3%</td>
+          <td class="mono right">2.3</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Rivian (RIVN)</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">4x</td>
+          <td class="mono right">2x</td>
+          <td class="mono right">+30%</td>
+          <td class="mono right">N/M</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Auto Sector Avg</td>
+          <td class="mono right">9x</td>
+          <td class="mono right">4x</td>
+          <td class="mono right">0.8x</td>
+          <td class="mono right">1.5x</td>
+          <td class="mono right">+5%</td>
+          <td class="mono right">1.8</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">Industry Comparison Analysis</div>
+      <div class="analysis-text">Tesla's valuation premiums vs automotive peers are extraordinary: 7x Toyota's P/E, 32x Ford's P/E, 65x the sector EV/EBITDA average. <strong>The only comparable valuation framework is a high-growth tech company — where Tesla trades at modest premiums to Google and Meta despite having lower margins and declining core business growth.</strong> The analyst community is deeply divided: 11% Strong Sell, 11% Sell, 30% Hold, 22% Buy, 26% Strong Buy — the widest distribution of any mega-cap stock, reflecting genuine uncertainty about optionality value.</div>
+    </div>
+  </section>
+
+  <!-- MULTIPLES -->
+  <section id="multiples">
+    <div class="section-head"><div class="section-head-label">4 · Valuation Multiples Deep Dive</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Key Valuation Metrics</div>
+        <table class="tbl"><tbody><tr><td style="font-size:.82rem;color:var(--muted)">Current Price</td><td class="mono right" style="color:#f87171">$270</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Fwd P/E</td><td class="mono right" style="color:#f87171">~130x</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">EV/EBITDA</td><td class="mono right" style="color:#f87171">65x</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">P/S</td><td class="mono right" style="color:#f87171">9x</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Auto Gross Margin</td><td class="mono right" style="color:#f87171">17% (declining)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">FCF Yield</td><td class="mono right" style="color:#f87171">~0.4%</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Analyst Target</td><td class="mono right" style="color:#f87171">$396 (Hold consensus)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">DCF Base (ex-optionality)</td><td class="mono right" style="color:#f87171">$175 (-35%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Net Cash</td><td class="mono right" style="color:#f87171">$36B</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Delivery Growth</td><td class="mono right" style="color:#f87171">-8.6% FY2025</td></tr></tbody></table>
+      </div>
+      <div class="card">
+        <div class="card-head">Multiples Comparison Chart</div>
+        <div class="chart-wrap"><canvas id="multiplesChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">Multiples Assessment</div>
+      <div class="analysis-text">Tesla's P/S of 9x vs the auto sector average of 0.8x is the starkest illustration of the optionality premium. <strong>A justified 9x P/S requires either Tesla becoming a software/services business (Robotaxi revenue at high margins) or a fundamental re-acceleration of auto revenue — neither is visible in current financials.</strong> The $36B net cash balance sheet is the only conventional financial metric that truly impresses — it buys multi-year runway for the Robotaxi bet to prove out.</div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">5 · Investment Bank Valuation Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Valuation Verdict · TSLA · OVERVALUED · Current: $270 · DCF Fair Value: $175 · Analyst Target: $396</div>
+      <div class="verdict-text">Tesla is <strong style='color:#f87171'>OVERVALUED</strong> on conventional automotive metrics — the stock is entirely priced on Robotaxi/Optimus optionality that has not yet generated revenue. Base DCF ex-optionality is $175 (-35% from current $270). The bull case $500 requires successful Robotaxi launch at Uber-scale by 2028. <strong>Tesla is best analyzed as a binary bet: optionality believers price the stock at $400-600, conventional auto analysts price it at $100-175.</strong> For investors paying $270 today, the entire thesis depends on Robotaxi commercial launch timeline. <strong style='color:#f87171'>IB Verdict: OVERVALUED on current financials. Fair value $175-270 depending on Robotaxi probability weight assigned.</strong></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div><div class="footer-brand">TSLA · Valuation Analysis</div><div>Dashboard 4 · Investment Bank Valuation · March 2026</div></div>
+  <div style="max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. DCF models are illustrative and based on consensus estimates. All valuations are point-in-time estimates subject to change. Consult a financial advisor before investing.</div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#182030';
+
+  // PE Chart
+  new Chart(document.getElementById('peChart'), {
+    type: 'bar',
+    data: {
+      labels: ['2021', '2022', '2023', '2024', '2025'],
+      datasets: [{
+        label: 'P/E Ratio',
+        data: [300, 65, 80, 110, 130],
+        backgroundColor: '#f8717133',
+        borderColor: '#f87171',
+        borderWidth: 2,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display:false}, tooltip: { callbacks: { label: c => 'P/E: ' + c.raw + 'x' } } },
+      scales: { y: { grid: {color:'#182030'}, ticks: {callback: v => v+'x'} }, x: { grid: {display:false} } }
+    }
+  });
+
+  // DCF chart
+  const dcfLabels = ['Bear (Auto Only)', 'Base (Auto+Energy+FSD)', 'Bull (Robotaxi+Optimus)'];
+  const dcfValues = [80.0, 175.0, 500.0];
+  const currentPrice = 270;
+  new Chart(document.getElementById('dcfChart'), {
+    type: 'bar',
+    data: {
+      labels: dcfLabels,
+      datasets: [
+        { label: 'DCF Intrinsic Value', data: dcfValues, backgroundColor: ['#f8717144','#f8717177','#f87171aa'], borderColor: '#f87171', borderWidth: 2, borderRadius: 4 },
+        { label: 'Current Price', data: dcfLabels.map(()=>currentPrice), type:'line', borderColor:'#f87171', borderWidth:2, borderDash:[5,5], pointRadius:0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { tooltip: { callbacks: { label: c => c.dataset.label+': $'+c.raw.toFixed(0) } } },
+      scales: { y: { grid: {color:'#182030'}, ticks: {callback: v=>'$'+v} }, x: { grid: {display:false} } }
+    }
+  });
+
+  // Multiples chart
+  new Chart(document.getElementById('multiplesChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Fwd P/E', 'EV/EBITDA', 'P/S', 'PEG'],
+      datasets: [
+        { label: 'TSLA', data: [130, 65, 9, 0], backgroundColor: '#f8717188', borderColor:'#f87171', borderWidth:2, borderRadius:4 },
+        { label: 'Sector Avg', data: [9, 4, 1, 1.8], backgroundColor: '#5b9cf644', borderColor:'#5b9cf6', borderWidth:2, borderRadius:4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {position:'top',labels:{font:{size:11},color:'#94a3b8'}} },
+      scales: { y: { grid: {color:'#182030'} }, x: { grid: {display:false} } }
+    }
+  });
+});
+</script>
+</body>
+</html>
