@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CRWV · Valuation · Dashboard 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--surface3:#182030;--border:#182030;--border2:#1e2d42;--accent:#5b9cf6;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#5b9cf608 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nav-d3{color:#c9993a;border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.06)}
+.nav-hub{color:var(--accent);border-color:#5b9cf644;background:#5b9cf610}.nav-hub:hover{background:#5b9cf620}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#5b9cf610;border:1px solid #5b9cf630;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero-right{text-align:right}
+.verdict-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;color:var(--accent);line-height:1;margin-bottom:4px}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right;line-height:1.5}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-val{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:260px;margin-top:.5rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:#5b9cf608}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #5b9cf6;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">CRWV · VALUATION</a>
+  <ul class="nav-links"><li><a href="#pe">P/E Analysis</a></li><li><a href="#dcf">DCF Model</a></li><li><a href="#industry">Industry Comps</a></li><li><a href="#multiples">Multiples</a></li><li><a href="#verdict">Verdict</a></li></ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-d3" href="../dashboard3/">D3</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 4 · Investment Bank Valuation · March 2026</div>
+        <div class="hero-ticker">CRWV</div>
+        <div class="hero-name">CoreWeave, Inc.</div>
+        <div class="hero-badge">FIRST PURE-PLAY AI HYPERSCALER · LEVERAGE IS THE RISK</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">IB Valuation Verdict</div>
+        <div class="verdict-big">FAIRLY VALUED</div>
+        <div style="font-size:.7rem;font-family:'IBM Plex Mono',monospace;color:#5b9cf6;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">$25B+ backlog · $121 analyst target · Microsoft 62% rev · $7B+ debt · IPO March 2025</div>
+        <div class="hero-sub">Price $95 · P/S 8x FY2025 · DCF base $100 · Analyst target $121 · Buy consensus</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SCORECARD -->
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Current Price</div><div class="score-val" style="color:var(--text)">$95</div><div class="score-sub">Mar 2026</div></div>
+    <div class="score-item"><div class="score-label">Fwd P/E</div><div class="score-val" style="color:var(--accent)">N/M</div><div class="score-sub">Pre-GAAP profitability</div></div>
+    <div class="score-item"><div class="score-label">EV/EBITDA</div><div class="score-val" style="color:#5b9cf6">N/M</div><div class="score-sub">$25B+ backlog</div></div>
+    <div class="score-item"><div class="score-label">DCF Fair Value</div><div class="score-val" style="color:#5b9cf6">$100</div><div class="score-sub">Base case DCF</div></div>
+    <div class="score-item"><div class="score-label">Analyst Target</div><div class="score-val" style="color:#34d399">$121</div><div class="score-sub">+27% upside · 32 analysts</div></div>
+  </div>
+
+  <!-- P/E ANALYSIS -->
+  <section id="pe">
+    <div class="section-head"><div class="section-head-label">1 · P/E Ratio Analysis</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Historical P/E — CRWV (5-Year)</div>
+        <table class="tbl">
+          <thead><tr><th>Year</th><th class="right">TTM P/E</th><th class="right">Stock Price</th><th class="right">EPS</th><th>Context</th></tr></thead>
+          <tbody><tr>
+          <td style="font-size:.83rem">2023</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">N/A</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right" style="color:var(--muted)">Private — GPU cloud ramp</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2024</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">N/A</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right" style="color:var(--muted)">Private — Microsoft deal</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2025 IPO</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">$40 IPO</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right" style="color:var(--muted)">March 2025 IPO at $40</td>
+        </tr><tr>
+          <td style="font-size:.83rem">FY2025E</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">$95</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right" style="color:var(--muted)">Post-IPO · $25B+ backlog revealed</td>
+        </tr><tr>
+          <td style="font-size:.83rem">FY2026E</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">$95</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right" style="color:var(--muted)">Microsoft 62% · $7B+ debt risk</td>
+        </tr></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-head">P/E Trend Chart</div>
+        <div class="chart-wrap"><canvas id="peChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">P/E Assessment</div>
+      <div class="analysis-text">CoreWeave is pre-GAAP profitability — P/E analysis doesn't apply. <strong>The relevant metrics are P/Revenue (~8x FY2025), EV/Backlog (~0.4x on $25B+), and the Microsoft revenue concentration risk (62% of revenue).</strong> At 8x forward revenue with $7B+ in debt, the company must maintain near-100% GPU utilization to service debt while investing in next-generation hardware. The $121 analyst target implies 27% upside — modest relative to the risks.</div>
+    </div>
+  </section>
+
+  <!-- DCF -->
+  <section id="dcf">
+    <div class="section-head"><div class="section-head-label">2 · Discounted Cash Flow Model</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">DCF Assumptions &amp; Scenarios</div>
+        <table class="tbl">
+          <thead><tr><th>Scenario</th><th class="right">WACC</th><th class="right">Terminal G</th><th class="right">FCF Yr1 Est.</th><th class="right">Intrinsic Value</th><th class="right">Upside/Down</th></tr></thead>
+          <tbody><tr>
+          <td style="font-size:.83rem">Bear Case</td>
+          <td class="mono right">14%</td>
+          <td class="mono right">2%</td>
+          <td class="mono right">$500M</td>
+          <td class="mono right">$30</td>
+          <td class="mono right" style="color:#f87171">-68%</td>
+        </tr><tr class="hl">
+          <td style="font-size:.83rem">Base Case</td>
+          <td class="mono right">11%</td>
+          <td class="mono right">3%</td>
+          <td class="mono right">$1.5B</td>
+          <td class="mono right">$100</td>
+          <td class="mono right" style="color:#34d399">+5%</td>
+        </tr><tr>
+          <td style="font-size:.83rem">Bull Case</td>
+          <td class="mono right">9%</td>
+          <td class="mono right">4%</td>
+          <td class="mono right">$3B</td>
+          <td class="mono right">$220</td>
+          <td class="mono right" style="color:#34d399">+132%</td>
+        </tr></tbody>
+        </table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.78rem;color:var(--muted)">WACC 11-14% reflects $7B+ debt, Microsoft concentration risk, and GPU hardware obsolescence cycle. Bear: GPU utilization drops; debt service becomes constraining. Bull: Customer diversification + Blackwell ramp drives FCF.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">DCF Scenario Chart</div>
+        <div class="chart-wrap"><canvas id="dcfChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">DCF Analysis</div>
+      <div class="analysis-text">The base DCF of $100 is essentially in line with current $95 — CoreWeave is fairly valued. <strong>The $7B+ debt is the key risk: if GPU utilization drops or Microsoft reduces orders, debt service could become existential.</strong> The $25B+ backlog provides revenue protection but doesn't eliminate the leverage risk if AI infrastructure spending slows.</div>
+    </div>
+  </section>
+
+  <!-- INDUSTRY COMPS -->
+  <section id="industry">
+    <div class="section-head"><div class="section-head-label">3 · Industry Comparables</div><div class="section-head-line"></div></div>
+    <div style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-head">Peer Valuation Comparison — AI Cloud Infrastructure Sector</div>
+        <table class="tbl">
+          <thead><tr><th>Company</th><th class="right">Fwd P/E</th><th class="right">EV/EBITDA</th><th class="right">P/S</th><th class="right">P/B</th><th class="right">Rev Growth</th><th class="right">PEG</th></tr></thead>
+          <tbody><tr class="hl">
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#5b9cf6">CoreWeave (CRWV)</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">8x</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">+230%</td>
+          <td class="mono right">N/M</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Nebius (NBIS)</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">11x (H1)</td>
+          <td class="mono right">3x</td>
+          <td class="mono right">+545% H1</td>
+          <td class="mono right">N/M</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">AWS (AMZN)</td>
+          <td class="mono right">36x corp</td>
+          <td class="mono right">20x</td>
+          <td class="mono right">4x corp</td>
+          <td class="mono right">8x</td>
+          <td class="mono right">+19%</td>
+          <td class="mono right">N/M</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Google Cloud (GOOGL)</td>
+          <td class="mono right">20x corp</td>
+          <td class="mono right">14x</td>
+          <td class="mono right">6x corp</td>
+          <td class="mono right">7x</td>
+          <td class="mono right">+28%</td>
+          <td class="mono right">N/M</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">AI Cloud Avg</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">8x</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">+150%</td>
+          <td class="mono right">N/M</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">Industry Comparison Analysis</div>
+      <div class="analysis-text">CoreWeave at 8x P/S compares to Nebius (~11x on H1 annualized), Lambda Labs (private), and AWS (embedded in Amazon). The Microsoft anchor provides revenue certainty that justifies the premium to Nebius, but the 62% concentration creates vulnerability. The 32-analyst Buy consensus at $121 target reflects genuine AI cloud growth conviction.</div>
+    </div>
+  </section>
+
+  <!-- MULTIPLES -->
+  <section id="multiples">
+    <div class="section-head"><div class="section-head-label">4 · Valuation Multiples Deep Dive</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Key Valuation Metrics</div>
+        <table class="tbl"><tbody><tr><td style="font-size:.82rem;color:var(--muted)">Current Price</td><td class="mono right" style="color:#5b9cf6">$95</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">P/Revenue</td><td class="mono right" style="color:#5b9cf6">~8x FY2025</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Backlog</td><td class="mono right" style="color:#5b9cf6">$25B+</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Microsoft Revenue</td><td class="mono right" style="color:#5b9cf6">62% concentration</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Debt</td><td class="mono right" style="color:#5b9cf6">$7B+ (leverage risk)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">GPU Fleet</td><td class="mono right" style="color:#5b9cf6">250,000+</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Analyst Target</td><td class="mono right" style="color:#5b9cf6">$121 (+27%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">DCF Base Case</td><td class="mono right" style="color:#5b9cf6">$100 (+5%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">DCF Bear Case</td><td class="mono right" style="color:#5b9cf6">$30 (-68%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">IPO Date</td><td class="mono right" style="color:#5b9cf6">March 2025</td></tr></tbody></table>
+      </div>
+      <div class="card">
+        <div class="card-head">Multiples Comparison Chart</div>
+        <div class="chart-wrap"><canvas id="multiplesChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">Multiples Assessment</div>
+      <div class="analysis-text"><strong>At $95 with a $121 analyst target, CoreWeave offers modest 27% upside in the base case with significant downside risk if debt service becomes strained.</strong> The Microsoft 62% revenue concentration is the primary constraint on multiple expansion — customer diversification to Google, Meta, or enterprise AI customers would be the key re-rating driver.</div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">5 · Investment Bank Valuation Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Valuation Verdict · CRWV · FAIRLY VALUED · Current: $95 · DCF Fair Value: $100 · Analyst Target: $121</div>
+      <div class="verdict-text">CoreWeave is <strong style='color:#5b9cf6'>FAIRLY VALUED</strong> at $95 with modest 5-27% upside in the base/analyst case. The $25B+ backlog and NVIDIA preferred GPU access are genuine competitive advantages, but the $7B+ debt load and Microsoft 62% concentration create meaningful downside scenarios. <strong>CoreWeave's value proposition is real but the leverage means the margin of safety is narrow at current prices.</strong> <strong style='color:#5b9cf6'>IB Verdict: FAIRLY VALUED. Hold; buy weakness below $80. Customer diversification is the key re-rating catalyst.</strong></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div><div class="footer-brand">CRWV · Valuation Analysis</div><div>Dashboard 4 · Investment Bank Valuation · March 2026</div></div>
+  <div style="max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. DCF models are illustrative and based on consensus estimates. All valuations are point-in-time estimates subject to change. Consult a financial advisor before investing.</div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#182030';
+
+  // PE Chart
+  new Chart(document.getElementById('peChart'), {
+    type: 'bar',
+    data: {
+      labels: ['2023', '2024', '2025 IPO', 'FY2025E', 'FY2026E'],
+      datasets: [{
+        label: 'P/E Ratio',
+        data: [30, 40, 50, 60, 70],
+        backgroundColor: '#5b9cf633',
+        borderColor: '#5b9cf6',
+        borderWidth: 2,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display:false}, tooltip: { callbacks: { label: c => 'P/E: ' + c.raw + 'x' } } },
+      scales: { y: { grid: {color:'#182030'}, ticks: {callback: v => v+'x'} }, x: { grid: {display:false} } }
+    }
+  });
+
+  // DCF chart
+  const dcfLabels = ['Bear Case', 'Base Case', 'Bull Case'];
+  const dcfValues = [30.0, 100.0, 220.0];
+  const currentPrice = 95;
+  new Chart(document.getElementById('dcfChart'), {
+    type: 'bar',
+    data: {
+      labels: dcfLabels,
+      datasets: [
+        { label: 'DCF Intrinsic Value', data: dcfValues, backgroundColor: ['#5b9cf644','#5b9cf677','#5b9cf6aa'], borderColor: '#5b9cf6', borderWidth: 2, borderRadius: 4 },
+        { label: 'Current Price', data: dcfLabels.map(()=>currentPrice), type:'line', borderColor:'#f87171', borderWidth:2, borderDash:[5,5], pointRadius:0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { tooltip: { callbacks: { label: c => c.dataset.label+': $'+c.raw.toFixed(0) } } },
+      scales: { y: { grid: {color:'#182030'}, ticks: {callback: v=>'$'+v} }, x: { grid: {display:false} } }
+    }
+  });
+
+  // Multiples chart
+  new Chart(document.getElementById('multiplesChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Fwd P/E', 'EV/EBITDA', 'P/S', 'PEG'],
+      datasets: [
+        { label: 'CRWV', data: [0, 0, 8, 0], backgroundColor: '#5b9cf688', borderColor:'#5b9cf6', borderWidth:2, borderRadius:4 },
+        { label: 'Sector Avg', data: [0, 0, 8, 0], backgroundColor: '#5b9cf644', borderColor:'#5b9cf6', borderWidth:2, borderRadius:4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {position:'top',labels:{font:{size:11},color:'#94a3b8'}} },
+      scales: { y: { grid: {color:'#182030'} }, x: { grid: {display:false} } }
+    }
+  });
+});
+</script>
+</body>
+</html>
