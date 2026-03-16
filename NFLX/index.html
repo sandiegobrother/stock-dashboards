@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Netflix, Inc. (NFLX) — Full Wall Street equity research dashboard.">
+<meta name="description" content="Netflix, Inc. (NFLX) — Wall Street equity research dashboard.">
+<meta property="og:title" content="NFLX · Netflix, Inc. Equity Research">
 <title>NFLX · Netflix, Inc. Equity Research</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -12,16 +13,16 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#07090c;--bg2:#0d1117;--surface:#111720;--surface2:#171e28;--border:#1e2836;--border2:#253042;--accent:#c9993a;--blue:#4a84e8;--green:#3bbf72;--red:#df5454;--text:#dde2ea;--muted:#6e7d94;--muted2:#3a4a5e}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;padding:0;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,153,58,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(201,153,58,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.12em;text-decoration:none}
-.nav-links{display:flex;list-style:none}
+.nav-links{display:flex;gap:0;list-style:none}
 .nav-links a{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .9rem;height:52px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
 .nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
 .nav-pill{font-family:'IBM Plex Mono',monospace;font-size:.65rem;background:rgba(59,191,114,.12);color:#3bbf72;border:1px solid rgba(59,191,114,.25);padding:3px 10px;border-radius:20px;letter-spacing:.08em}
-.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none}
+.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px}
 .back-link:hover{color:var(--accent)}
 @media(max-width:700px){.nav-links{display:none}}
 .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
@@ -52,7 +53,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem}
 @media(max-width:960px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}}
-.metric{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;position:relative;overflow:hidden}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
 .metric:hover{border-color:var(--border2);transform:translateY(-1px)}
 .metric::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0;transition:opacity .2s}
 .metric:hover::after{opacity:1}
@@ -60,19 +61,17 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .m-value{font-family:'IBM Plex Mono',monospace;font-size:1.55rem;font-weight:500;line-height:1}
 .m-sub{font-size:.73rem;color:var(--muted);margin-top:5px}
 .tbl{width:100%;border-collapse:collapse;font-size:.86rem}
-.tbl th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .65rem 0;border-bottom:1px solid var(--border);font-weight:500}
-.tbl td{padding:.62rem .75rem .62rem 0;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 1rem .65rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.62rem 1rem .62rem 0;border-bottom:1px solid var(--border);vertical-align:top}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tr:hover td{background:rgba(255,255,255,.015)}
 .tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.82rem}
 .tbl td.right{text-align:right}
 .tbl td.dim{color:var(--muted);font-size:.79rem}
-.tbl .hl td{background:rgba(201,153,58,.06)}
-.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.bar-lbl{font-size:.73rem;color:var(--muted);width:130px;flex-shrink:0}
-.bar-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
-.bar-fill{height:100%;border-radius:3px}
+.bar-lbl{font-size:.73rem;color:var(--muted);width:110px;flex-shrink:0}
+.bar-track{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
 .bar-val{font-family:'IBM Plex Mono',monospace;font-size:.73rem;width:44px;text-align:right;color:var(--text);flex-shrink:0}
 .scenario{border-radius:10px;padding:1.4rem;border:1px solid;position:relative;overflow:hidden}
 .scenario::before{content:'';position:absolute;inset:0;opacity:.04;pointer-events:none;background:repeating-linear-gradient(-45deg,currentColor 0,currentColor 1px,transparent 0,transparent 50%);background-size:8px 8px}
@@ -87,23 +86,21 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .rb-high{background:rgba(223,84,84,.14);color:var(--red)}.rb-med{background:rgba(201,153,58,.14);color:var(--accent)}.rb-low{background:rgba(59,191,114,.14);color:var(--green)}
 .risk-name{font-size:.87rem;font-weight:400;margin-bottom:3px}
 .risk-desc-text{font-size:.77rem;color:var(--muted);line-height:1.45}
-.stars{color:var(--green);font-size:.78rem;letter-spacing:1px}
-.quote-block{border:1px solid rgba(201,153,58,.28);background:rgba(201,153,58,.05);border-left:3px solid var(--accent);border-radius:6px;padding:1rem 1.2rem;font-size:.87rem;line-height:1.65;color:var(--text);margin-top:1rem}
-.quote-block cite{display:block;font-size:.7rem;color:var(--muted2);font-style:normal;margin-top:.5rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em}
 .verdict{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:6px;padding:1.5rem;margin-bottom:2.5rem}
 .verdict-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.6rem}
 .verdict-text{font-size:.9rem;line-height:1.7}
-.chart-wrap{position:relative;width:100%;height:230px;margin-top:1rem}
-footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between}
+.chart-wrap{position:relative;width:100%;height:220px}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;align-items:flex-start}
 .footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .5s ease both}
 </style>
 </head>
 <body>
 <nav>
   <a class="nav-logo" href="#">NFLX · RESEARCH</a>
   <ul class="nav-links">
-    <li><a href="#financials">Financials</a></li>
-    <li><a href="#valuation">Valuation</a></li>
+    <li><a href="#metrics">Metrics</a></li>
     <li><a href="#moat">Moat</a></li>
     <li><a href="#scenarios">Scenarios</a></li>
     <li><a href="#risks">Risks</a></li>
@@ -112,14 +109,12 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
   <span class="nav-pill">BUY</span>
 </nav>
 <div class="wrapper">
-
-  <!-- HERO -->
-  <header class="hero">
+  <header class="hero fade-up">
     <div class="hero-left">
-      <div class="eyebrow"><a class="back-link" href="../">← All Tickers</a> &nbsp;·&nbsp; Wall Street · Equity Research · March 15, 2026</div>
+      <div class="eyebrow">Wall Street · Equity Research · March 15, 2026</div>
       <div class="hero-ticker">NFLX</div>
       <div class="hero-name">Netflix, Inc.</div>
-      <div class="hero-tags"><span class="tag">NASDAQ</span> <span class="tag">Streaming</span> <span class="tag">Content</span> <span class="tag">Advertising</span> <span class="tag">Live Sports</span> <span class="tag">WWE Raw</span></div>
+      <div class="hero-tags"><span class="tag">NASDAQ</span><span class="tag">Streaming</span><span class="tag">Content</span><span class="tag">Advertising</span><span class="tag">Sports</span></div>
     </div>
     <div class="hero-right">
       <div class="hero-price">$980.00</div>
@@ -128,301 +123,72 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
     </div>
   </header>
 
-  <!-- RIBBON -->
-  <div class="ribbon">
+  <div class="ribbon fade-up">
     <div class="ribbon-item"><div class="ribbon-label">Consensus</div><div class="ribbon-value" style="color:#3bbf72">BUY</div></div>
     <div class="ribbon-item"><div class="ribbon-label">Price Target</div><div class="ribbon-value rv-amber">$1,100.00</div></div>
     <div class="ribbon-item"><div class="ribbon-label">High Target</div><div class="ribbon-value rv-amber">$1,400.00</div></div>
     <div class="ribbon-item"><div class="ribbon-label">Market Cap</div><div class="ribbon-value rv-text">~$420B</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+12% to consensus</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+12%</div></div>
     <div class="ribbon-item"><div class="ribbon-label">Exchange</div><div class="ribbon-value rv-blue">NASDAQ</div></div>
   </div>
 
-  <!-- KEY METRICS -->
-  <section id="financials">
+  <section id="metrics">
     <div class="section-head"><div class="section-head-label">Key Financial Metrics</div><div class="section-head-line"></div></div>
     <div class="g4">
-      <div class="metric"><div class="m-label">FY2025 Revenue</div><div class="m-value rv-text">~$43.0B</div><div class="m-sub" style="color:var(--green)">+15% year-over-year</div></div>
-      <div class="metric"><div class="m-label">Q4 2025 Subscribers</div><div class="m-value rv-amber">300M+</div><div class="m-sub" style="color:var(--green)">Record paid memberships</div></div>
-      <div class="metric"><div class="m-label">Advertising Revenue Growth</div><div class="m-value rv-text">Accelerating</div><div class="m-sub">On track for $1B+ run rate</div></div>
-      <div class="metric"><div class="m-label">FY2025 Operating Margin</div><div class="m-value rv-green">~29%</div><div class="m-sub">Significant expansion from 2024</div></div>
-      <div class="metric"><div class="m-label">FY2025 Free Cash Flow</div><div class="m-value rv-text">~$8B+</div><div class="m-sub">Guidance: $8B for FY2026</div></div>
-      <div class="metric"><div class="m-label">Q4 Earnings Beat</div><div class="m-value rv-green">Consistent</div><div class="m-sub">EPS and revenue above consensus</div></div>
-      <div class="metric"><div class="m-label">NFL Christmas Games</div><div class="m-value rv-amber">~65M viewers</div><div class="m-sub">Record streaming sports audiences</div></div>
-      <div class="metric"><div class="m-label">WWE Raw on Netflix</div><div class="m-value rv-text">Launched Jan 2025</div><div class="m-sub">Year 1 performance strong</div></div>
+      <div class="metric fade-up"><div class="m-label">Revenue (TTM)</div><div class="m-value rv-text">~$43B</div><div class="m-sub" style="color:var(--green)">+15% YoY</div></div>
+      <div class="metric fade-up"><div class="m-label">Gross Margin</div><div class="m-value rv-green">~45%</div><div class="m-sub">Non-GAAP</div></div>
+      <div class="metric fade-up"><div class="m-label">FCF Margin</div><div class="m-value rv-text">~18%</div><div class="m-sub">Free cash flow %</div></div>
+      <div class="metric fade-up"><div class="m-label">Trailing P/E</div><div class="m-value rv-text">~42x</div><div class="m-sub">Fwd P/E: ~32x</div></div>
     </div>
   </section>
 
-  <!-- REVENUE GROWTH & VALUATION -->
-  <section id="valuation">
-    <div class="section-head"><div class="section-head-label">Revenue Growth &amp; Valuation</div><div class="section-head-line"></div></div>
-    <div class="g2">
-
-      <!-- Left: Revenue table + chart -->
-      <div class="card">
-        <div class="card-head">Quarterly Revenue Progression</div>
-        <table class="tbl">
-          <thead>
-            <tr>
-              <th>Period</th>
-              <th class="right">Total Rev</th>
-              <th class="right">Streaming Revenue ($B)</th>
-              <th class="right">Mix</th>
-              <th class="right">YoY</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Q1 2025</td><td class="mono right">$10.2B</td><td class="mono right">$9.5B</td><td class="mono right">93%</td><td class="mono right" style="color:var(--green)">+13%</td></tr>
-<tr><td>Q2 2025</td><td class="mono right">$10.5B</td><td class="mono right">$9.9B</td><td class="mono right">94%</td><td class="mono right" style="color:var(--green)">+17%</td></tr>
-<tr><td>Q3 2025</td><td class="mono right">$10.9B</td><td class="mono right">$10.3B</td><td class="mono right">94%</td><td class="mono right" style="color:var(--green)">+15%</td></tr>
-<tr class="hl"><td>Q4 2025</td><td class="mono right">$11.4B</td><td class="mono right" style="color:var(--accent)">$10.8B</td><td class="mono right" style="color:var(--accent)">95%</td><td class="mono right" style="color:var(--green)">+16%</td></tr>
-<tr><td>FY2026E</td><td class="mono right">~$47B</td><td class="mono right">~$43.5B</td><td class="mono right">~93%</td><td class="mono right" style="color:var(--green)">+9%</td></tr>
-
-          </tbody>
-        </table>
-        <div style="margin-top:1.25rem">
-          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#4a84e8;display:inline-block"></span>Total Revenue</span>
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#c9993a;display:inline-block"></span>Streaming Revenue ($B)</span>
-          </div>
-          <div class="chart-wrap">
-            <canvas id="revChart"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right: Peer comparison + profitability bars + balance sheet -->
-      <div class="card">
-        <div class="card-head">Peer Valuation Comparison</div>
-        <table class="tbl">
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th class="right">Mkt Cap</th>
-              <th class="right">Fwd P/E</th>
-              <th class="right">Rev Growth</th>
-              <th class="right">FCF Margin</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="hl"><td style="color:var(--accent)"><strong>NFLX</strong></td><td class="mono right">~$420B</td><td class="mono right" style="color:var(--accent)">32x</td><td class="mono right" style="color:var(--green)">+15%</td><td class="mono right" style="color:var(--green)">20%</td></tr>
-<tr><td><span>DIS</span></td><td class="mono right">~$200B</td><td class="mono right">22x</td><td class="mono right" style="color:var(--green)">+5%</td><td class="mono right">10%</td></tr>
-<tr><td><span>WBD</span></td><td class="mono right">~$25B</td><td class="mono right">12x</td><td class="mono right" style="color:var(--green)">+1%</td><td class="mono right">8%</td></tr>
-<tr><td><span>PARA</span></td><td class="mono right">~$9B</td><td class="mono right">N/M</td><td class="mono right" style="color:var(--green)">-5%</td><td class="mono right">N/M</td></tr>
-<tr><td><span>SPOT</span></td><td class="mono right">~$90B</td><td class="mono right">50x</td><td class="mono right" style="color:var(--green)">+20%</td><td class="mono right">15%</td></tr>
-
-          </tbody>
-        </table>
-
-        <div style="margin-top:1.5rem">
-          <div class="card-head" style="margin-bottom:1rem">Profitability Benchmarks</div>
-          <div class="bar-row"><div class="bar-lbl">Content gross margin</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:var(--accent)"></div></div><div class="bar-val">45%</div></div>
-<div class="bar-row"><div class="bar-lbl">FCF margin</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:var(--blue)"></div></div><div class="bar-val">20%</div></div>
-<div class="bar-row"><div class="bar-lbl">Op. margin</div><div class="bar-track"><div class="bar-fill" style="width:29%;background:var(--green)"></div></div><div class="bar-val">29%</div></div>
-<div class="bar-row"><div class="bar-lbl">Subscriber growth</div><div class="bar-track"><div class="bar-fill" style="width:7%;background:var(--muted)"></div></div><div class="bar-val">7%</div></div>
-
-        </div>
-
-        <div style="margin-top:1.5rem">
-          <div class="card-head" style="margin-bottom:1rem">Balance Sheet Snapshot</div>
-          <table class="tbl">
-            <tbody>
-              <tr><td class="dim">Cash & short-term investments</td><td class="mono right" style="color:var(--green)">~$8B</td></tr>
-<tr><td class="dim">Total debt</td><td class="mono right" style="color:var(--accent)">~$14B</td></tr>
-<tr><td class="dim">Annual content spend</td><td class="mono right" style="color:var(--accent)">~$17B</td></tr>
-<tr><td class="dim">FY2026 FCF guidance</td><td class="mono right" style="color:var(--green)">~$8B</td></tr>
-
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- BUSINESS MODEL & MOAT -->
   <section id="moat">
-    <div class="section-head"><div class="section-head-label">Business Model &amp; Competitive Moat</div><div class="section-head-line"></div></div>
-    <div class="g2">
-
-      <div class="card">
-        <div class="card-head">Revenue Segments</div>
-        <table class="tbl">
-          <thead>
-            <tr><th>Segment</th><th class="right">Mix</th><th>Key Products</th><th>Margin Profile</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><strong>Streaming Subscriptions</strong></td><td class="mono right" style="color:var(--accent)">~93%</td><td class="dim">Standard, Standard w/ Ads, Premium plans across 190 countries · 300M+ subscribers</td><td class="mono" style="color:var(--green)">~30% op. margin</td></tr>
-<tr><td><strong>Advertising</strong></td><td class="mono right" style="color:var(--accent)">~5%</td><td class="dim">Ad-supported tier + FreeWheel partnership + live sports advertising inventory</td><td class="mono" style="color:var(--green)">High · Scaling fast</td></tr>
-<tr><td><strong>Other / Live Events</strong></td><td class="mono right" style="color:var(--accent)">~2%</td><td class="dim">Netflix House experiences, limited live events, merchandise</td><td class="mono" style="color:var(--green)">Emerging</td></tr>
-
-          </tbody>
-        </table>
-        <div style="margin-top:1.25rem">
-          <div class="card-head" style="margin-bottom:.75rem">Industry Tailwinds (12–24 Months)</div>
-          <table class="tbl">
-            <thead><tr><th>Trend</th><th>Exposure</th><th class="right">Scale</th></tr></thead>
-            <tbody>
-              <tr><td>Live sports rights</td><td class="dim">NFL Christmas + WWE Raw anchor</td><td class="mono right" style="color:var(--green)">~65M viewers NFL record</td></tr>
-<tr><td>Ad-supported tier growth</td><td class="dim">On track for $1B+ run rate</td><td class="mono right" style="color:var(--green)">FreeWheel integration strengthening</td></tr>
-<tr><td>Password sharing crackdown</td><td class="dim">~100M+ households converted</td><td class="mono right" style="color:var(--green)">Most accretive initiative in company history</td></tr>
-<tr><td>International expansion</td><td class="dim">Strong momentum in APAC, MENA</td><td class="mono right" style="color:var(--green)">Local language content scaling</td></tr>
-<tr><td>AI content tools</td><td class="dim">Reducing production costs</td><td class="mono right" style="color:var(--green)">AI-assisted localization and editing</td></tr>
-
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-head">Competitive Moat Analysis</div>
-        <table class="tbl">
-          <thead><tr><th>Moat Source</th><th>Strength</th><th>Notes</th></tr></thead>
-          <tbody>
-            <tr><td>Content library & originals</td><td><span class="stars">★★★★★</span></td><td class="dim">$17B+ annual spend creates deepest streaming content library globally</td></tr>
-<tr><td>Recommendation algorithm</td><td><span class="stars">★★★★★</span></td><td class="dim">Best-in-class personalization drives engagement and retention</td></tr>
-<tr><td>Live sports exclusives</td><td><span class="stars">★★★★☆</span></td><td class="dim">NFL + WWE + Formula E creates appointment viewing that rivals can't easily replicate</td></tr>
-<tr><td>Global scale</td><td><span class="stars">★★★★☆</span></td><td class="dim">190 countries, 300M+ subscribers — local content flywheel compounds globally</td></tr>
-<tr><td>Password sharing complete</td><td><span class="stars">★★★★☆</span></td><td class="dim">~100M household conversion is done; revenue contribution now recurring</td></tr>
-
-          </tbody>
-        </table>
-        <div class="quote-block">"We're very pleased with our first year of live sports. The NFL Christmas games drew record streaming audiences. Live is becoming a more important part of our programming strategy, and <strong style='color:var(--accent)'>the advertising business is scaling faster than we expected</strong>."<cite>— Greg Peters, Co-CEO · Netflix Q4 2025 Earnings Call (paraphrased)</cite></div>
-      </div>
-
+    <div class="section-head"><div class="section-head-label">Business Description &amp; Moat</div><div class="section-head-line"></div></div>
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-head">Company Overview</div>
+      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">Netflix is the world's largest streaming service with 300M+ paid subscribers globally. The company has successfully pivoted to advertising-supported tiers, live sports (NFL Christmas games, WWE Raw), and password-sharing crackdown monetization. Netflix is now focused on expanding its advertising business into a $1B+ revenue stream.</p>
+    </div>
+    <div class="card">
+      <div class="card-head">Competitive Moat</div>
+      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">Netflix's content moat — $17B+ annual content spend, global library, and original IP — creates the highest quality streaming library. Its recommendation algorithm and personalization are best-in-class. Live sports rights (NFL, WWE) create appointment viewing that streaming competitors cannot replicate at scale.</p>
     </div>
   </section>
 
-  <!-- SCENARIOS -->
   <section id="scenarios">
-    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Case Scenarios</div><div class="section-head-line"></div></div>
+    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Scenarios</div><div class="section-head-line"></div></div>
     <div class="g3">
-      <div class="scenario sc-bull">
-        <div class="sc-label">🐂 Bull Case</div>
-        <div class="sc-target">$1,400</div>
-        <div class="sc-upside">+43% upside</div>
-        <div class="sc-desc">Ad-supported tier becomes a $5B revenue stream by 2027. Live sports rights expand to NBA or college football. International markets accelerate to 500M+ subscribers. FCF exceeds $12B annually. Multiple re-rates as advertising business is fully valued.</div>
-      </div>
-      <div class="scenario sc-base">
-        <div class="sc-label">📊 Base Case</div>
-        <div class="sc-target">$1,100</div>
-        <div class="sc-upside">+12% upside</div>
-        <div class="sc-desc">15% revenue growth continues. Advertising tier reaches $2B run rate. FCF sustains $8B+. Subscriber growth moderates but ARPU rises through pricing and advertising. Consensus analyst target of $1,100 achieved within 12 months.</div>
-      </div>
-      <div class="scenario sc-bear">
-        <div class="sc-label">🐻 Bear Case</div>
-        <div class="sc-target">$600</div>
-        <div class="sc-upside">-39% downside</div>
-        <div class="sc-desc">Streaming market reaches saturation faster than expected. Ad-supported revenue disappoints vs projections. Content costs spiral beyond $20B. Disney+, Max, and Apple TV+ gain meaningful engagement share. Valuation de-rates to 20x earnings.</div>
-      </div>
+      <div class="scenario sc-bull"><div class="sc-label">🐂 Bull Case</div><div class="sc-target">$1,400</div><div class="sc-upside">+43% upside</div><div class="sc-desc">Ad-supported tier becomes a $5B revenue stream. Live sports drive subscriber retention. International markets accelerate to 500M subs. FCF exceeds $12B annually.</div></div>
+      <div class="scenario sc-base"><div class="sc-label">📊 Base Case</div><div class="sc-target">$1,100</div><div class="sc-upside">+12% upside</div><div class="sc-desc">15% revenue growth continues. Advertising tier reaches $2B. Free cash flow expands to $8B+. Subscriber growth moderates but ARPU rises.</div></div>
+      <div class="scenario sc-bear"><div class="sc-label">🐻 Bear Case</div><div class="sc-target">$600</div><div class="sc-upside">-39% downside</div><div class="sc-desc">Streaming market reaches saturation. Ad-supported revenue disappoints. Content costs spiral. Disney+, Max, and Apple TV+ gain meaningful share.</div></div>
     </div>
   </section>
 
-  <!-- RISKS & OUTLOOK -->
   <section id="risks">
-    <div class="section-head"><div class="section-head-label">Risk Assessment &amp; Forward Outlook</div><div class="section-head-line"></div></div>
-    <div class="g2">
-      <div class="card">
-        <div class="card-head">Key Risks</div>
-        <div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Content costs</div><div class="risk-desc-text">$17B+ annually requires consistent quality execution; one bad content year impacts subscriber growth</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Competition</div><div class="risk-desc-text">Disney+, Max, Apple TV+, and YouTube compete meaningfully for viewing hours</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Valuation</div><div class="risk-desc-text">32x forward P/E for a maturing business — requires consistent 15%+ revenue execution</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Ad ramp</div><div class="risk-desc-text">Advertising tier is scaling well; FreeWheel integration strengthens CPM and fill rate</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Live sports</div><div class="risk-desc-text">NFL + WWE rights secured for multiple years; provides programming stability</div></div></div>
-
-      </div>
-      <div class="card">
-        <div class="card-head">Forward Revenue &amp; Earnings Outlook</div>
-        <table class="tbl">
-          <thead><tr><th>Metric</th><th>FY2025A</th><th>FY2026E</th><th>FY2027E</th></tr></thead>
-          <tbody>
-            <tr><td>Total Revenue</td><td class="mono right">~$43B</td><td class="mono right" style="color:var(--green)">~$47B</td><td class="mono right" style="color:var(--green)">~$53B+</td></tr>
-<tr><td>Subscribers</td><td class="mono right">300M+</td><td class="mono right" style="color:var(--green)">~320M</td><td class="mono right" style="color:var(--green)">~340M+</td></tr>
-<tr><td>Ad Revenue</td><td class="mono right">~$2B</td><td class="mono right" style="color:var(--green)">~$3.5B+</td><td class="mono right" style="color:var(--green)">~$6B+</td></tr>
-<tr><td>Operating Margin</td><td class="mono right">~29%</td><td class="mono right" style="color:var(--green)">~30%</td><td class="mono right" style="color:var(--green)">~32%</td></tr>
-<tr><td>Free Cash Flow</td><td class="mono right">~$8B</td><td class="mono right" style="color:var(--green)">~$8B</td><td class="mono right" style="color:var(--green)">~$10B+</td></tr>
-<tr><td>EPS (Non-GAAP)</td><td class="mono right">~$22</td><td class="mono right" style="color:var(--green)">~$25+</td><td class="mono right" style="color:var(--green)">~$30+</td></tr>
-
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <div class="section-head"><div class="section-head-label">Risk Assessment</div><div class="section-head-line"></div></div>
+    <div class="card"><div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Content costs</div><div class="risk-desc-text">$17B+ annual content spend requires constant quality execution</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Competition</div><div class="risk-desc-text">Disney+, Max, Apple TV+, and YouTube compete for viewing time</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Valuation</div><div class="risk-desc-text">42x trailing P/E for a maturing business requires continued execution</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Ad revenue</div><div class="risk-desc-text">Advertising ramp is progressing well; FreeWheel integration strengthens capabilities</div></div></div>
+</div>
   </section>
 
-  <!-- VERDICT -->
   <section id="verdict">
     <div class="section-head"><div class="section-head-label">Analyst Verdict</div><div class="section-head-line"></div></div>
     <div class="verdict">
       <div class="verdict-label">Bottom Line · BUY · Target $1,100.00</div>
-      <div class="verdict-text">Netflix has successfully transitioned from growth-at-all-costs to a disciplined, profitable streaming giant with multiple compounding growth vectors. The advertising business, live sports strategy, and global penetration represent durable revenue growth levers. The password sharing crackdown is complete and converted — that tailwind is now fully annualized. At 12% upside to consensus the stock is fairly valued but not cheap, making it a quality compounder for long-term portfolios rather than a high-conviction near-term trade. <strong style='color:var(--green)'>Buy. Target: $1,100. Bull case $1,400 if advertising scales faster than expected.</strong></div>
+      <div class="verdict-text">Netflix has successfully transitioned from growth-at-all-costs to a disciplined, profitable streaming giant. The advertising business, live sports, and global penetration provide multiple growth vectors. At 12% upside to consensus, the stock is fairly valued to modestly attractive — a quality compounder for long-term portfolios. <strong style='color:var(--green)'>Buy. Target: $1,100.00.</strong></div>
     </div>
   </section>
 
   <footer>
     <div><div class="footer-brand">NFLX · EQUITY RESEARCH</div><div>Generated March 15, 2026 · For informational purposes only</div></div>
-    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making investment decisions.</div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making any investment decisions.</div>
   </footer>
-
-</div><!-- /wrapper -->
-
+</div>
 <script>
-// Chart.js — Revenue bar chart
-window.addEventListener('load', function() {
-  var ctx = document.getElementById('revChart');
-  if (ctx) {
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ["Q1 2025", "Q2 2025", "Q3 2025", "Q4 2025", "FY2026E"],
-        datasets: [
-          {
-            label: 'Total Revenue',
-            data: [10.2, 10.5, 10.9, 11.4, 47.0],
-            backgroundColor: 'rgba(74,132,232,0.55)',
-            borderColor: '#4a84e8',
-            borderWidth: 1,
-            borderRadius: 3
-          },
-          {
-            label: 'Streaming Revenue ($B)',
-            data: [9.5, 9.9, 10.3, 10.8, 43.5],
-            backgroundColor: 'rgba(201,153,58,0.65)',
-            borderColor: '#c9993a',
-            borderWidth: 1,
-            borderRadius: 3
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: '#111720',
-            borderColor: '#1e2836',
-            borderWidth: 1,
-            titleColor: '#6e7d94',
-            bodyColor: '#dde2ea'
-          }
-        },
-        scales: {
-          x: {
-            ticks: { color: '#6e7d94', font: { size: 11 }, maxRotation: 30 },
-            grid: { display: false },
-            border: { color: '#1e2836' }
-          },
-          y: {
-            ticks: { color: '#6e7d94', font: { size: 11 } },
-            grid: { color: 'rgba(255,255,255,0.04)' },
-            border: { color: '#1e2836' },
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  }
-});
+const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}});},{threshold:.1});
+document.querySelectorAll('.card,.metric,.scenario,.verdict').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(12px)';el.style.transition='opacity .45s ease,transform .45s ease';observer.observe(el)});
+setTimeout(()=>document.querySelectorAll('.bar-fill[data-target]').forEach(el=>el.style.width=el.getAttribute('data-target')+'%'),300);
 </script>
 </body>
 </html>
