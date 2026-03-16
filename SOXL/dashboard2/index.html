@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SOXL · Deep Financial Breakdown · Dashboard 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#070b10;--surface:#0e1420;--surface2:#141c2a;--surface3:#1a2436;--border:#1a2436;--border2:#243248;--accent:#5b9cf6;--green:#34d399;--red:#f87171;--amber:#fbbf24;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(91,156,246,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(56,189,248,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,11,16,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2);}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-hub{color:var(--accent);border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.08)}.nav-hub:hover{background:rgba(91,156,246,.15)}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#fbbf24;letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#fbbf24}
+.hero-right{text-align:right}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-verdict{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#fbbf24;line-height:1.1}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:220px;text-align:right}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-grade{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+.grade-a{color:var(--green)}.grade-b{color:var(--accent)}.grade-c{color:var(--amber)}.grade-d{color:var(--red)}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:240px;margin-top:1rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:rgba(91,156,246,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.health-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.health-lbl{font-size:.75rem;color:var(--muted);width:150px;flex-shrink:0}
+.health-track{flex:1;height:7px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.health-fill{height:100%;border-radius:4px}
+.health-val{font-family:'IBM Plex Mono',monospace;font-size:.73rem;width:60px;text-align:right;flex-shrink:0}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #fbbf24;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:2px 8px;border-radius:3px;font-weight:500;letter-spacing:.04em}
+.pill-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.pill-amber{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">SOXL · DEEP FINANCIALS</a>
+  <ul class="nav-links">
+    <li><a href="#revenue">Revenue</a></li>
+    <li><a href="#income">Net Income</a></li>
+    <li><a href="#cashflow">FCF</a></li>
+    <li><a href="#margins">Margins</a></li>
+    <li><a href="#debt">Debt</a></li>
+    <li><a href="#roe">ROE</a></li>
+    <li><a href="#verdict">Verdict</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 2 · Deep Financial Breakdown · 5-Year Analysis · March 15, 2026</div>
+        <div class="hero-ticker">SOXL</div>
+        <div class="hero-name">Direxion Daily Semiconductor 3X Bull ETF — FY2021–FY2025</div>
+        <div class="hero-badge">LEVERAGED ETF · NOT A COMPANY · TRADING INSTRUMENT ONLY</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Financial Health</div>
+        <div class="hero-verdict">C</div>
+        <div class="hero-sub">3x daily leveraged exposure to Philadelphia Semiconductor Index (SOX). Not a long-term investment vehicle.</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Revenue Growth</div><div class="score-grade grade-c">C</div><div class="score-sub">ETF: tracks SOX 3x daily</div></div>
+    <div class="score-item"><div class="score-label">Net Income</div><div class="score-grade grade-c">C</div><div class="score-sub">Decays in sideways markets</div></div>
+    <div class="score-item"><div class="score-label">Free Cash Flow</div><div class="score-grade grade-c">C</div><div class="score-sub">N/A for ETF structure</div></div>
+    <div class="score-item"><div class="score-label">Profit Margins</div><div class="score-grade grade-c">C</div><div class="score-sub">~0.89% expense ratio</div></div>
+    <div class="score-item"><div class="score-label">Debt Levels</div><div class="score-grade grade-c">C</div><div class="score-sub">Uses swaps/futures leverage</div></div>
+    <div class="score-item"><div class="score-label">Return on Equity</div><div class="score-grade grade-c">C</div><div class="score-sub">N/A — tracking instrument</div></div>
+  </div>
+
+  <section id="revenue">
+    <div class="section-head"><div class="section-head-label">1 · Revenue Growth</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Annual Revenue (FY2021–FY2025)</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Revenue</th><th class="right">YoY Growth</th><th>Key Driver</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">SOX +73%</td><td class="mono right" style="color:var(--red)">N/A</td><td class="dim">Semiconductor supercycle · COVID demand</td></tr>
+<tr><td>2022</td><td class="mono right">SOX -36%</td><td class="mono right" style="color:var(--red)">N/A</td><td class="dim">Fed rate hike · inventory correction · SOXL -82%</td></tr>
+<tr><td>2023</td><td class="mono right">SOX +61%</td><td class="mono right" style="color:var(--red)">N/A</td><td class="dim">AI semiconductor recovery · SOXL +197%</td></tr>
+<tr><td>2024</td><td class="mono right">SOX +20%</td><td class="mono right" style="color:var(--red)">N/A</td><td class="dim">NVDA dominance · SOXL +50%</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">SOX -12%</td><td class="mono right" style="color:var(--red)">N/A</td><td class="dim">Volatility · export restrictions · SOXL ~-30%</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">SOXL tracks 3x daily return of SOX. <strong style='color:#f87171'>Key warning: due to daily rebalancing, SOXL experiences 'volatility decay' — long-term returns are worse than 3x the SOX return in volatile/sideways markets.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Revenue Trend</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Total Revenue ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Revenue Analysis</div><div class="analysis-text">SOXL is a leveraged ETF, not a company — traditional financial analysis does not apply. The 'revenue' rows above show the Philadelphia Semiconductor Index (SOX) annual returns and SOXL's approximate amplified returns. <strong>Critical warning: SOXL is designed for SHORT-TERM tactical trading (days/weeks), NOT long-term investing. In a trending-up bull market it generates extraordinary returns (+197% in 2023). In a volatile or down market it loses dramatically more than 3x the index (-82% in 2022 vs SOX -36%).</strong></div></div>
+  </section>
+
+  <section id="income">
+    <div class="section-head"><div class="section-head-label">2 · Net Income Trends</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">GAAP vs Non-GAAP Net Income</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">GAAP NI</th><th class="right">Non-GAAP NI</th><th class="right">GAAP Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">SOXL +189%</td><td class="mono right">N/A</td><td class="mono right">N/A</td></tr>
+<tr><td>2022</td><td class="mono right">SOXL -82%</td><td class="mono right">N/A</td><td class="mono right">N/A</td></tr>
+<tr><td>2023</td><td class="mono right">SOXL +197%</td><td class="mono right">N/A</td><td class="mono right">N/A</td></tr>
+<tr><td>2024</td><td class="mono right">SOXL +50%</td><td class="mono right">N/A</td><td class="mono right">N/A</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">SOXL ~-30%</td><td class="mono right">N/A</td><td class="mono right">N/A</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">SOXL returns show amplified semiconductor sector performance. NOT a measure of company earnings.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Net Income Chart</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>GAAP NI</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Non-GAAP NI</span>
+        </div>
+        <div class="chart-wrap"><canvas id="incChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Net Income Analysis</div><div class="analysis-text">SOXL's return history illustrates both the extraordinary upside and devastating downside of 3x leverage. The 2022 drawdown of -82% would require a +456% gain just to recover — illustrating why compounding losses in a leveraged instrument are so destructive. <strong>Only investors with very short time horizons, precise directional conviction, and rigorous stop-loss discipline should use SOXL.</strong></div></div>
+  </section>
+
+  <section id="cashflow">
+    <div class="section-head"><div class="section-head-label">3 · Free Cash Flow</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Free Cash Flow (FY2021–FY2025)</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">FCF</th><th class="right">Growth</th><th class="right">FCF Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right" style="color:var(--green)">N/A</td><td class="mono right" style="color:var(--muted)">N/A</td><td class="mono right">N/A</td></tr>
+<tr><td>2022</td><td class="mono right" style="color:var(--green)">N/A</td><td class="mono right" style="color:var(--muted)">N/A</td><td class="mono right">N/A</td></tr>
+<tr><td>2023</td><td class="mono right" style="color:var(--green)">N/A</td><td class="mono right" style="color:var(--muted)">N/A</td><td class="mono right">N/A</td></tr>
+<tr><td>2024</td><td class="mono right" style="color:var(--green)">N/A</td><td class="mono right" style="color:var(--muted)">N/A</td><td class="mono right">N/A</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right" style="color:var(--green)">N/A</td><td class="mono right" style="color:var(--muted)">N/A</td><td class="mono right">N/A</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">ETF structure — no traditional financial metrics apply. Key cost: 0.89% annual expense ratio.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">FCF Trend</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Free Cash Flow ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>FCF Margin (%)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="fcfChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Free Cash Flow Analysis</div><div class="analysis-text">FCF analysis does not apply to an ETF. The only 'cost' to the investor is the 0.89% annual expense ratio plus the structural volatility decay from daily rebalancing. <strong>Even a small amount of daily volatility compounding erodes returns over time in a non-trending market — SOXL held over 6+ months in a sideways market will underperform a 3x static calculation of SOX performance.</strong></div></div>
+  </section>
+
+  <section id="margins">
+    <div class="section-head"><div class="section-head-label">4 · Profit Margins</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Margin Evolution</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Gross Margin</th><th class="right">EBITDA Margin</th><th class="right">Net Margin</th><th class="right">FCF Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td></tr>
+<tr><td>2022</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td></tr>
+<tr><td>2023</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td></tr>
+<tr><td>2024</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td></tr>
+</tbody></table>
+        <div style="margin-top:1.1rem">
+          <div class="card-head" style="margin-bottom:.85rem">Latest Year Benchmarks</div>
+          <div class="health-row"><div class="health-lbl">Annual expense ratio</div><div class="health-track"><div class="health-fill" style="width:1%;background:#f87171"></div></div><div class="health-val" style="color:#f87171">1%</div></div><div class="health-row"><div class="health-lbl">Leverage multiplier</div><div class="health-track"><div class="health-fill" style="width:3%;background:#5b9cf6"></div></div><div class="health-val" style="color:#5b9cf6">3%</div></div><div class="health-row"><div class="health-lbl">SOX 5yr avg annual return</div><div class="health-track"><div class="health-fill" style="width:18%;background:#34d399"></div></div><div class="health-val" style="color:#34d399">18%</div></div><div class="health-row"><div class="health-lbl">Volatility decay risk (conceptual)</div><div class="health-track"><div class="health-fill" style="width:25%;background:#amber"></div></div><div class="health-val" style="color:#amber">25%</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">Margin Trends Chart</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Gross</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>EBITDA</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>Net (GAAP)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="mgnChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Margin Analysis</div><div class="analysis-text">Margin analysis does not apply to SOXL. The key metrics are: (1) SOX index direction and magnitude, (2) Semiconductor sector volatility level, (3) Time horizon. <strong>SOXL works best in a strong, trending semiconductor bull market with low day-to-day volatility. AI supercycle thesis (if correct) is the bull case for SOXL.</strong></div></div>
+  </section>
+
+  <section id="debt">
+    <div class="section-head"><div class="section-head-label">5 · Debt Levels</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Debt &amp; Leverage Evolution</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Gross Debt</th><th class="right">Net Debt</th><th class="right">Adj. EBITDA</th><th class="right">ND/EBITDA</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right" style="color:var(--green)">3x daily</td></tr>
+<tr><td>2022</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right" style="color:var(--green)">3x daily</td></tr>
+<tr><td>2023</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right" style="color:var(--green)">3x daily</td></tr>
+<tr><td>2024</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right" style="color:var(--green)">3x daily</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right" style="color:var(--green)">3x daily</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">SOXL achieves leverage through total return swap agreements and futures contracts, not traditional debt. The fund is not the borrower.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Debt vs. EBITDA</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#f87171;display:inline-block"></span>Gross Debt ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Adj. EBITDA ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="dbtChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Debt Analysis</div><div class="analysis-text">SOXL achieves its 3x exposure through derivatives (total return swaps and futures) rather than traditional debt. The fund itself does not carry balance sheet debt. <strong>The leverage risk is implicit in the product structure — investors are exposed to 3x daily gains AND losses.</strong></div></div>
+  </section>
+
+  <section id="roe">
+    <div class="section-head"><div class="section-head-label">6 · Return on Equity</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">ROE &amp; Capital Returns</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">ROE</th><th class="right">ROIC</th><th class="right">Dividends</th><th class="right">Buybacks</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">$0</td><td class="mono right">N/A</td></tr>
+<tr><td>2022</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">$0</td><td class="mono right">N/A</td></tr>
+<tr><td>2023</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">$0</td><td class="mono right">N/A</td></tr>
+<tr><td>2024</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">$0</td><td class="mono right">N/A</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">N/A</td><td class="mono right">N/A</td><td class="mono right">$0</td><td class="mono right">N/A</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">ROE/ROIC not applicable to ETF structure. Return is entirely driven by SOX index performance times ~3x daily leverage.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">ROE Trend &amp; Capital Return</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>ROE (%)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>Total Capital Return ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="roeChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">ROE &amp; Capital Allocation Analysis</div><div class="analysis-text"><strong>SOXL is not analyzed using traditional equity metrics. It is a tactical trading instrument that provides 3x daily semiconductor sector exposure. Use only if you have high conviction on short-term semiconductor direction, a defined exit strategy, and full understanding of volatility decay mechanics.</strong></div></div>
+  </section>
+
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">Overall Financial Verdict</div><div class="section-head-line"></div></div>
+    <div class="g3" style="margin-bottom:1.25rem">
+      <div class="card" style="border-color:rgba(52,211,153,.3)">
+        <div class="card-head">Strengths</div><div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>Extraordinary upside in trending semiconductor bull markets (+197% in 2023)</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>Simple, liquid way to gain leveraged semiconductor exposure without margin accounts</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>AI supercycle thesis: if semiconductors trend strongly upward, SOXL amplifies gains</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>$~5B AUM — liquid, tight bid/ask spreads, easy to enter/exit</div>
+      </div>
+      <div class="card" style="border-color:rgba(251,191,36,.3)">
+        <div class="card-head">Watch Items</div><div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>Volatility decay: -82% in 2022 required +456% recovery — devastating in down markets</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>0.89% expense ratio erodes returns over time</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>Daily rebalancing creates decay in sideways/volatile markets</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>NOT suitable for buy-and-hold investing — designed for short-term tactical trades only</div>
+      </div>
+      <div class="card" style="border-color:rgba(91,156,246,.3)">
+        <div class="card-head">5-Year Summary</div>
+        <table class="tbl"><tbody>
+          <tr><td class="dim">Instrument type</td><td class="mono right" style="color:var(--green)">3x Daily Leveraged ETF (NOT a company)</td></tr><tr><td class="dim">Index tracked</td><td class="mono right" style="color:var(--green)">Philadelphia Semiconductor Index (SOX)</td></tr><tr><td class="dim">Expense ratio</td><td class="mono right" style="color:var(--green)">0.89% annually</td></tr><tr><td class="dim">2022 return</td><td class="mono right" style="color:var(--green)">SOXL -82% (SOX -36%)</td></tr><tr><td class="dim">2023 return</td><td class="mono right" style="color:var(--green)">SOXL +197% (SOX +61%)</td></tr><tr><td class="dim">Suitable for</td><td class="mono right" style="color:var(--green)">Short-term tactical trades only</td></tr><tr><td class="dim">NOT suitable for</td><td class="mono right" style="color:var(--green)">Long-term buy-and-hold investors</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div class="verdict-block">
+      <div class="verdict-title">Is Direxion Daily Semiconductor 3X Bull ETF Financially Strong or Weakening? — Definitive Assessment</div>
+      <div class="verdict-text">SOXL is a powerful trading instrument, not a long-term investment. The 3x daily leverage creates extraordinary upside in trending semiconductor bull markets — but catastrophic losses in down or volatile markets. The 2022 experience (-82%) is the permanent reminder: leverage cuts both ways. If you have high conviction that the AI semiconductor supercycle will continue trending strongly in 2026-2027, SOXL can amplify those gains. But it requires precise timing, stop-losses, and short time horizons. <strong style='color:#fbbf24'>Not a company — traditional financial analysis inapplicable. Trading instrument only. Use with full awareness of volatility decay and leverage risks.</strong></div>
+    </div>
+  </section>
+
+  <footer>
+    <div><div class="footer-brand">SOXL · DEEP FINANCIAL BREAKDOWN · DASHBOARD 2</div><div>5-Year Analysis · March 15, 2026</div></div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> For informational purposes only. Not financial advice. Please consult a licensed financial advisor before making investment decisions.</div>
+  </footer>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+  var yrs = ["2021", "2022", "2023", "2024", "2025"];
+  var opts = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#0e1420',borderColor:'#1a2436',borderWidth:1,titleColor:'#64748b',bodyColor:'#e2e8f0'} },
+    scales:{
+      x:{ ticks:{color:'#64748b',font:{size:11},maxRotation:0}, grid:{display:false}, border:{color:'#1a2436'} },
+      y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'#1a2436'}, beginAtZero:true }
+    }
+  };
+  function $B(v){ return '$'+v+'B'; }
+  function pct(v){ return v+'%'; }
+
+  // Revenue
+  new Chart(document.getElementById('revChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[73, 36, 61, 20, -12],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // Net income
+  new Chart(document.getElementById('incChart'),{type:'bar',data:{labels:yrs,datasets:[{label:'GAAP',data:[189, -82, 197, 50, -30],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4},{label:'NonGAAP',data:[189, -82, 197, 50, -30],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // FCF dual axis
+  new Chart(document.getElementById('fcfChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0, 0, 0, 0, 0],backgroundColor:'rgba(52,211,153,0.6)',borderColor:'#34d399',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[0, 0, 0, 0, 0],borderColor:'#5b9cf6',backgroundColor:'rgba(91,156,246,0.15)',pointBackgroundColor:'#5b9cf6',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#64748b',font:{size:11},callback:pct},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+
+  // Margins
+  new Chart(document.getElementById('mgnChart'),{type:'line',data:{labels:yrs,datasets:[{data:[0, 0, 0, 0, 0],borderColor:'#5b9cf6',backgroundColor:'rgba(91,156,246,0.08)',pointBackgroundColor:'#5b9cf6',borderWidth:2,fill:true,tension:0.3},{data:[0, 0, 0, 0, 0],borderColor:'#34d399',backgroundColor:'rgba(52,211,153,0.05)',pointBackgroundColor:'#34d399',borderWidth:2,fill:false,tension:0.3},{data:[0, 0, 0, 0, 0],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.05)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:false,tension:0.3}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct}}}}});
+
+  // Debt
+  new Chart(document.getElementById('dbtChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0, 0, 0, 0, 0],backgroundColor:'rgba(248,113,113,0.5)',borderColor:'#f87171',borderWidth:1,borderRadius:4},{data:[0, 0, 0, 0, 0],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // ROE dual axis
+  new Chart(document.getElementById('roeChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0, 0, 0, 0, 0],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[0, 0, 0, 0, 0],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.1)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#64748b',font:{size:11},callback:$B},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+});
+</script>
+</body>
+</html>
