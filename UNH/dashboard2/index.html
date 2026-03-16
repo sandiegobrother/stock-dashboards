@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>UNH · Deep Financial Breakdown · Dashboard 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#070b10;--surface:#0e1420;--surface2:#141c2a;--surface3:#1a2436;--border:#1a2436;--border2:#243248;--accent:#5b9cf6;--green:#34d399;--red:#f87171;--amber:#fbbf24;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(91,156,246,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(56,189,248,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,11,16,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2);}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-hub{color:var(--accent);border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.08)}.nav-hub:hover{background:rgba(91,156,246,.15)}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(74,132,232,.08);border:1px solid rgba(74,132,232,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#4a84e8;letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#4a84e8}
+.hero-right{text-align:right}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-verdict{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#4a84e8;line-height:1.1}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:220px;text-align:right}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-grade{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+.grade-a{color:var(--green)}.grade-b{color:var(--accent)}.grade-c{color:var(--amber)}.grade-d{color:var(--red)}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:240px;margin-top:1rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:rgba(91,156,246,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.health-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.health-lbl{font-size:.75rem;color:var(--muted);width:150px;flex-shrink:0}
+.health-track{flex:1;height:7px;background:var(--surface2);border-radius:4px;overflow:hidden}
+.health-fill{height:100%;border-radius:4px}
+.health-val{font-family:'IBM Plex Mono',monospace;font-size:.73rem;width:60px;text-align:right;flex-shrink:0}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #4a84e8;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:2px 8px;border-radius:3px;font-weight:500;letter-spacing:.04em}
+.pill-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.pill-amber{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">UNH · DEEP FINANCIALS</a>
+  <ul class="nav-links">
+    <li><a href="#revenue">Revenue</a></li>
+    <li><a href="#income">Net Income</a></li>
+    <li><a href="#cashflow">FCF</a></li>
+    <li><a href="#margins">Margins</a></li>
+    <li><a href="#debt">Debt</a></li>
+    <li><a href="#roe">ROE</a></li>
+    <li><a href="#verdict">Verdict</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 2 · Deep Financial Breakdown · 5-Year Analysis · March 15, 2026</div>
+        <div class="hero-ticker">UNH</div>
+        <div class="hero-name">UnitedHealth Group Incorporated — FY2021–FY2025</div>
+        <div class="hero-badge">FINANCIALLY STRONG · RECOVERING FROM 2024 DISRUPTION</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Financial Health</div>
+        <div class="hero-verdict">B+</div>
+        <div class="hero-sub">$400B+ revenue. $23B FCF. 13x fwd P/E — historically cheap. Optum flywheel.</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Revenue Growth</div><div class="score-grade grade-a">A</div><div class="score-sub">+10% CAGR · $400B+</div></div>
+    <div class="score-item"><div class="score-label">Net Income</div><div class="score-grade grade-b">B+</div><div class="score-sub">MLR pressure recovering</div></div>
+    <div class="score-item"><div class="score-label">Free Cash Flow</div><div class="score-grade grade-a">A</div><div class="score-sub">$23B annual FCF</div></div>
+    <div class="score-item"><div class="score-label">Profit Margins</div><div class="score-grade grade-b">B</div><div class="score-sub">6-10% operating margin</div></div>
+    <div class="score-item"><div class="score-label">Debt Levels</div><div class="score-grade grade-b">B</div><div class="score-sub">1.4x ND/EBITDA</div></div>
+    <div class="score-item"><div class="score-label">Return on Equity</div><div class="score-grade grade-b">B+</div><div class="score-sub">22-28% ROE</div></div>
+  </div>
+
+  <section id="revenue">
+    <div class="section-head"><div class="section-head-label">1 · Revenue Growth</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Annual Revenue (FY2021–FY2025)</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Revenue</th><th class="right">YoY Growth</th><th>Key Driver</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">$287.6B</td><td class="mono right" style="color:var(--green)">+12%</td><td class="dim">Medicare Advantage growth · Optum expansion</td></tr>
+<tr><td>2022</td><td class="mono right">$324.2B</td><td class="mono right" style="color:var(--green)">+13%</td><td class="dim">Optum Health + Optum Rx + UHC membership growth</td></tr>
+<tr><td>2023</td><td class="mono right">$371.6B</td><td class="mono right" style="color:var(--green)">+15%</td><td class="dim">Change Healthcare · MA enrollment grows</td></tr>
+<tr><td>2024</td><td class="mono right">$400.3B</td><td class="mono right" style="color:var(--green)">+8%</td><td class="dim">Elevated MLR · cyberattack costs · CEO tragedy</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">~$415B</td><td class="mono right" style="color:var(--green)">+4%</td><td class="dim">Post-disruption recovery · political scrutiny</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">Revenue compounding at 10% per year at $400B+ scale — among the most durable revenue streams of any US company.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Revenue Trend</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Total Revenue ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Revenue Analysis</div><div class="analysis-text">UnitedHealth's $400B+ in revenue makes it one of the largest companies in the US by revenue. The consistent 8-15% annual growth is driven by Medicare Advantage enrollment expansion and Optum's deepening health services penetration. The 2024 growth deceleration reflects Change Healthcare cyberattack costs and elevated medical cost ratios — both extraordinary, non-recurring events. <strong>The Optum flywheel — combining care delivery, pharmacy, analytics, and insurance — creates compounding competitive advantages that grow more valuable annually.</strong></div></div>
+  </section>
+
+  <section id="income">
+    <div class="section-head"><div class="section-head-label">2 · Net Income Trends</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">GAAP vs Non-GAAP Net Income</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">GAAP NI</th><th class="right">Non-GAAP NI</th><th class="right">GAAP Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">$17.3B</td><td class="mono right">$19.0B</td><td class="mono right">6.0%</td></tr>
+<tr><td>2022</td><td class="mono right">$20.1B</td><td class="mono right">$22.2B</td><td class="mono right">6.2%</td></tr>
+<tr><td>2023</td><td class="mono right">$22.4B</td><td class="mono right">$24.7B</td><td class="mono right">6.0%</td></tr>
+<tr><td>2024</td><td class="mono right">$14.4B</td><td class="mono right">$17.4B</td><td class="mono right">3.6%</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">~$17B</td><td class="mono right">~$22B</td><td class="mono right">~4.1%</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">FY2024 GAAP net income declined due to $2.9B Change Healthcare costs and elevated MLR. Recovery underway in 2025.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Net Income Chart</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>GAAP NI</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Non-GAAP NI</span>
+        </div>
+        <div class="chart-wrap"><canvas id="incChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Net Income Analysis</div><div class="analysis-text">UNH's 2024 earnings compression was the largest disruption in a decade — Change Healthcare costs, elevated medical utilization, and a $2.9B charge impacted results. Non-GAAP recovery in 2025 to ~$22B demonstrates the underlying earnings power. <strong>The Optum integrated model creates structural earnings power that the 2024 disruption only temporarily masked — the business never stopped generating cash.</strong></div></div>
+  </section>
+
+  <section id="cashflow">
+    <div class="section-head"><div class="section-head-label">3 · Free Cash Flow</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Free Cash Flow (FY2021–FY2025)</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">FCF</th><th class="right">Growth</th><th class="right">FCF Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right" style="color:var(--green)">$21.2B</td><td class="mono right" style="color:var(--green)">+N/M</td><td class="mono right">7.4%</td></tr>
+<tr><td>2022</td><td class="mono right" style="color:var(--green)">$22.0B</td><td class="mono right" style="color:var(--green)">+4%</td><td class="mono right">6.8%</td></tr>
+<tr><td>2023</td><td class="mono right" style="color:var(--green)">$24.5B</td><td class="mono right" style="color:var(--green)">+11%</td><td class="mono right">6.6%</td></tr>
+<tr><td>2024</td><td class="mono right" style="color:var(--green)">$17.2B</td><td class="mono right" style="color:var(--red)">-30%</td><td class="mono right">4.3%</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right" style="color:var(--green)">~$23B</td><td class="mono right" style="color:var(--green)">+34%</td><td class="mono right">~5.5%</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">FY2024 FCF impacted by $2.9B one-time costs. Recovery to $23B in 2025 confirms the FCF engine is intact.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">FCF Trend</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Free Cash Flow ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>FCF Margin (%)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="fcfChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Free Cash Flow Analysis</div><div class="analysis-text">Despite the 2024 disruption, UNH averaged $21B+ FCF per year over 5 years. The recovery to $23B in 2025 confirms the Optum flywheel is intact. <strong>$23B annual FCF funds the $8.8B dividend, $5B+ buybacks, AND strategic M&A — one of the most powerful capital allocation machines in healthcare.</strong></div></div>
+  </section>
+
+  <section id="margins">
+    <div class="section-head"><div class="section-head-label">4 · Profit Margins</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Margin Evolution</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Gross Margin</th><th class="right">EBITDA Margin</th><th class="right">Net Margin</th><th class="right">FCF Margin</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">25%</td><td class="mono right">10%</td><td class="mono right">6.0%</td><td class="mono right">7.4%</td></tr>
+<tr><td>2022</td><td class="mono right">25%</td><td class="mono right">10%</td><td class="mono right">6.2%</td><td class="mono right">6.8%</td></tr>
+<tr><td>2023</td><td class="mono right">25%</td><td class="mono right">10%</td><td class="mono right">6.0%</td><td class="mono right">6.6%</td></tr>
+<tr><td>2024</td><td class="mono right">24%</td><td class="mono right">8%</td><td class="mono right">3.6%</td><td class="mono right">4.3%</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">~25%</td><td class="mono right">~9%</td><td class="mono right">~4.1%</td><td class="mono right">~5.5%</td></tr>
+</tbody></table>
+        <div style="margin-top:1.1rem">
+          <div class="card-head" style="margin-bottom:.85rem">Latest Year Benchmarks</div>
+          <div class="health-row"><div class="health-lbl">Gross margin</div><div class="health-track"><div class="health-fill" style="width:25%;background:#5b9cf6"></div></div><div class="health-val" style="color:#5b9cf6">25%</div></div><div class="health-row"><div class="health-lbl">EBITDA margin (normal)</div><div class="health-track"><div class="health-fill" style="width:10%;background:#34d399"></div></div><div class="health-val" style="color:#34d399">10%</div></div><div class="health-row"><div class="health-lbl">Net margin (GAAP 2025)</div><div class="health-track"><div class="health-fill" style="width:4%;background:#fbbf24"></div></div><div class="health-val" style="color:#fbbf24">4%</div></div><div class="health-row"><div class="health-lbl">FCF margin</div><div class="health-track"><div class="health-fill" style="width:6%;background:#a78bfa"></div></div><div class="health-val" style="color:#a78bfa">6%</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">Margin Trends Chart</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Gross</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>EBITDA</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>Net (GAAP)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="mgnChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Margin Analysis</div><div class="analysis-text">Insurance margins are inherently thin (6-10% operating) but the Optum vertical integration drives superior returns vs standalone insurers. The 2024 margin compression was a one-time disruption. <strong>At normalized conditions, UNH generates $17-22B+ in non-GAAP earnings on $400B revenue — exceptional for a regulated insurance business.</strong></div></div>
+  </section>
+
+  <section id="debt">
+    <div class="section-head"><div class="section-head-label">5 · Debt Levels</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Debt &amp; Leverage Evolution</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">Gross Debt</th><th class="right">Net Debt</th><th class="right">Adj. EBITDA</th><th class="right">ND/EBITDA</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">$42.0B</td><td class="mono right">$28B</td><td class="mono right">$28.8B</td><td class="mono right" style="color:var(--green)">1.0x</td></tr>
+<tr><td>2022</td><td class="mono right">$53.3B</td><td class="mono right">$38B</td><td class="mono right">$32.5B</td><td class="mono right" style="color:var(--green)">1.2x</td></tr>
+<tr><td>2023</td><td class="mono right">$62.9B</td><td class="mono right">$48B</td><td class="mono right">$37.0B</td><td class="mono right" style="color:var(--green)">1.3x</td></tr>
+<tr><td>2024</td><td class="mono right">$65.7B</td><td class="mono right">$50B</td><td class="mono right">$32.0B</td><td class="mono right" style="color:var(--green)">1.6x</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">$67.0B</td><td class="mono right">~$50B</td><td class="mono right">~$36B</td><td class="mono right" style="color:var(--green)">~1.4x</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6">Leverage manageable at 1.4x EBITDA — appropriate for investment-grade healthcare company. A+ credit rating. Interest coverage 15x+.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Debt vs. EBITDA</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#f87171;display:inline-block"></span>Gross Debt ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Adj. EBITDA ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="dbtChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">Debt Analysis</div><div class="analysis-text">UNH's $67B in debt is managed conservatively — 1.4x ND/EBITDA with $23B FCF covering all obligations with room to spare. <strong>UNH's A+ credit rating reflects market confidence in its debt serviceability. The debt is entirely appropriate for the scale and stability of the business.</strong></div></div>
+  </section>
+
+  <section id="roe">
+    <div class="section-head"><div class="section-head-label">6 · Return on Equity</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">ROE &amp; Capital Returns</div>
+        <table class="tbl"><thead><tr><th>Year</th><th class="right">ROE</th><th class="right">ROIC</th><th class="right">Dividends</th><th class="right">Buybacks</th></tr></thead>
+        <tbody><tr><td>2021</td><td class="mono right">28%</td><td class="mono right">14%</td><td class="mono right">$5.3B</td><td class="mono right">$3.5B</td></tr>
+<tr><td>2022</td><td class="mono right">29%</td><td class="mono right">14%</td><td class="mono right">$5.8B</td><td class="mono right">$6.0B</td></tr>
+<tr><td>2023</td><td class="mono right">28%</td><td class="mono right">13%</td><td class="mono right">$6.8B</td><td class="mono right">$5.7B</td></tr>
+<tr><td>2024</td><td class="mono right">17%</td><td class="mono right">8%</td><td class="mono right">$7.6B</td><td class="mono right">$4.2B</td></tr>
+<tr class="hl"><td>2025</td><td class="mono right">~22%</td><td class="mono right">~10%</td><td class="mono right">~$8.8B</td><td class="mono right">~$5B</td></tr>
+</tbody></table>
+        <div style="margin-top:.85rem;padding:.85rem;background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.2);border-radius:6px;font-size:.8rem;color:var(--muted);line-height:1.6"><strong style='color:#34d399'>5-Year capital returned: ~$73B</strong> · Dividends + buybacks. 12%+ annual dividend growth rate.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">ROE Trend &amp; Capital Return</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;font-size:12px;color:var(--muted)">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>ROE (%)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>Total Capital Return ($B)</span>
+        </div>
+        <div class="chart-wrap"><canvas id="roeChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis"><div class="analysis-title">ROE &amp; Capital Allocation Analysis</div><div class="analysis-text">UNH's ROE averaged 25%+ over 5 years — excellent for a regulated insurance company. $73B returned in dividends and buybacks over 5 years while expanding Optum. <strong>At 13x forward P/E — the cheapest valuation in a decade — the market is pricing in regulatory risk that history suggests will not materialize into structural legislation.</strong></div></div>
+  </section>
+
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">Overall Financial Verdict</div><div class="section-head-line"></div></div>
+    <div class="g3" style="margin-bottom:1.25rem">
+      <div class="card" style="border-color:rgba(52,211,153,.3)">
+        <div class="card-head">Strengths</div><div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>$400B+ revenue with 10% CAGR — extraordinary scale compounding</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>$23B annual FCF — exceptional for regulated healthcare</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>Optum creates 4-layer vertical integration moat</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>$73B returned to shareholders in 5 years</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-green">+</span>13x forward P/E — historically cheapest valuation — potential re-rating opportunity</div>
+      </div>
+      <div class="card" style="border-color:rgba(251,191,36,.3)">
+        <div class="card-head">Watch Items</div><div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>Political/regulatory risk highest in decade post-CEO tragedy</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>Change Healthcare cyberattack liability still not fully quantified</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>CMS Medicare Advantage rate pressure a structural headwind</div>
+<div style="display:flex;gap:8px;align-items:flex-start;font-size:.83rem;margin-bottom:6px"><span class="pill pill-amber">!</span>2024 elevated MLR must normalize — still under scrutiny</div>
+      </div>
+      <div class="card" style="border-color:rgba(91,156,246,.3)">
+        <div class="card-head">5-Year Summary</div>
+        <table class="tbl"><tbody>
+          <tr><td class="dim">Revenue 5yr</td><td class="mono right" style="color:var(--green)">$287.6B → $400B+</td></tr><tr><td class="dim">FCF avg (5yr)</td><td class="mono right" style="color:var(--green)">~$21B/yr</td></tr><tr><td class="dim">Capital returned (5yr)</td><td class="mono right" style="color:var(--green)">~$73B</td></tr><tr><td class="dim">Forward P/E</td><td class="mono right" style="color:var(--green)">13x (historically cheap)</td></tr><tr><td class="dim">EBITDA margin</td><td class="mono right" style="color:var(--green)">8-10%</td></tr><tr><td class="dim">ROE</td><td class="mono right" style="color:var(--green)">22-28%</td></tr><tr><td class="dim">ND/EBITDA</td><td class="mono right" style="color:var(--green)">1.4x</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div class="verdict-block">
+      <div class="verdict-title">Is UnitedHealth Group Incorporated Financially Strong or Weakening? — Definitive Assessment</div>
+      <div class="verdict-text">UnitedHealth is one of the most financially durable healthcare franchises ever built — $400B revenue, $23B FCF, and $73B returned to shareholders in 5 years. The 2024 disruption was genuine but temporary. At 13x forward earnings — the cheapest valuation in a decade — the market is pricing persistent political headwinds. History suggests these concerns are overstated. The Optum flywheel compounds in value annually regardless of political noise. <strong style='color:#34d399'>Financial health: B+. Trend: Recovering from 2024 disruption. Compelling value at current multiples.</strong></div>
+    </div>
+  </section>
+
+  <footer>
+    <div><div class="footer-brand">UNH · DEEP FINANCIAL BREAKDOWN · DASHBOARD 2</div><div>5-Year Analysis · March 15, 2026</div></div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> For informational purposes only. Not financial advice. Please consult a licensed financial advisor before making investment decisions.</div>
+  </footer>
+</div>
+
+<script>
+window.addEventListener('load', function() {
+  var yrs = ["2021", "2022", "2023", "2024", "2025"];
+  var opts = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#0e1420',borderColor:'#1a2436',borderWidth:1,titleColor:'#64748b',bodyColor:'#e2e8f0'} },
+    scales:{
+      x:{ ticks:{color:'#64748b',font:{size:11},maxRotation:0}, grid:{display:false}, border:{color:'#1a2436'} },
+      y:{ ticks:{color:'#64748b',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'#1a2436'}, beginAtZero:true }
+    }
+  };
+  function $B(v){ return '$'+v+'B'; }
+  function pct(v){ return v+'%'; }
+
+  // Revenue
+  new Chart(document.getElementById('revChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[287.6, 324.2, 371.6, 400.3, 415.0],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // Net income
+  new Chart(document.getElementById('incChart'),{type:'bar',data:{labels:yrs,datasets:[{label:'GAAP',data:[17.3, 20.1, 22.4, 14.4, 17.0],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4},{label:'NonGAAP',data:[19.0, 22.2, 24.7, 17.4, 22.0],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // FCF dual axis
+  new Chart(document.getElementById('fcfChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[21.2, 22.0, 24.5, 17.2, 23.0],backgroundColor:'rgba(52,211,153,0.6)',borderColor:'#34d399',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[7, 7, 7, 4, 6],borderColor:'#5b9cf6',backgroundColor:'rgba(91,156,246,0.15)',pointBackgroundColor:'#5b9cf6',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#64748b',font:{size:11},callback:pct},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+
+  // Margins
+  new Chart(document.getElementById('mgnChart'),{type:'line',data:{labels:yrs,datasets:[{data:[25, 25, 25, 24, 25],borderColor:'#5b9cf6',backgroundColor:'rgba(91,156,246,0.08)',pointBackgroundColor:'#5b9cf6',borderWidth:2,fill:true,tension:0.3},{data:[10, 10, 10, 8, 9],borderColor:'#34d399',backgroundColor:'rgba(52,211,153,0.05)',pointBackgroundColor:'#34d399',borderWidth:2,fill:false,tension:0.3},{data:[6, 6, 6, 4, 4],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.05)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:false,tension:0.3}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct}}}}});
+
+  // Debt
+  new Chart(document.getElementById('dbtChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[42.0, 53.3, 62.9, 65.7, 67.0],backgroundColor:'rgba(248,113,113,0.5)',borderColor:'#f87171',borderWidth:1,borderRadius:4},{data:[28.8, 32.5, 37.0, 32.0, 36.0],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#34d399',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
+
+  // ROE dual axis
+  new Chart(document.getElementById('roeChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[28, 29, 28, 17, 22],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#5b9cf6',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[8.8, 11.8, 12.5, 11.8, 13.8],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.1)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#64748b',font:{size:11},callback:$B},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+});
+</script>
+</body>
+</html>
