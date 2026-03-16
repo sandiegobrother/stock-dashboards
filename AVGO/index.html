@@ -16,20 +16,20 @@
 /* ─── RESET & ROOT ─────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg:       #07090c;
-  --bg2:      #0d1117;
-  --surface:  #111720;
-  --surface2: #171e28;
-  --border:   #1e2836;
-  --border2:  #253042;
-  --accent:   #c9993a;
+  --bg:       #263040;
+  --bg2:      #2e3a4e;
+  --surface:  #2e3a4e;
+  --surface2: #36435a;
+  --border:   #38455c;
+  --border2:  #445268;
+  --accent:   #38bdf8;
   --accent-d: #9e7728;
   --blue:     #4a84e8;
   --green:    #3bbf72;
   --red:      #df5454;
-  --text:     #dde2ea;
-  --muted:    #6e7d94;
-  --muted2:   #3a4a5e;
+  --text:     #e0eef8;
+  --muted:    #6888a8;
+  --muted2:   #445268;
   --font-display: 'Playfair Display', Georgia, serif;
   --font-mono:    'IBM Plex Mono', 'Courier New', monospace;
   --font-body:    'DM Sans', system-ui, sans-serif;
@@ -55,8 +55,8 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(201,153,58,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201,153,58,0.02) 1px, transparent 1px);
+    linear-gradient(rgba(56,189,248,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,189,248,0.02) 1px, transparent 1px);
   background-size: 40px 40px;
   pointer-events: none;
   z-index: 0;
@@ -72,7 +72,7 @@ nav {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(7,9,12,0.92);
+  background: rgba(38,48,64,0.92);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   padding: 0 2rem;
@@ -326,7 +326,7 @@ nav {
 .tbl td.mono { font-family: var(--font-mono); font-size: 0.82rem; }
 .tbl td.right { text-align: right; }
 .tbl td.dim { color: var(--muted); font-size: 0.79rem; }
-.tbl .hl td { background: rgba(201,153,58,0.06); }
+.tbl .hl td { background: rgba(56,189,248,0.06); }
 .tbl .hl td:first-child { border-left: 2px solid var(--accent); padding-left: calc(1rem - 2px); }
 
 /* ─── BAR ───────────────────────────────────────────────────── */
@@ -379,7 +379,7 @@ nav {
   white-space: nowrap; margin-top: 2px; flex-shrink: 0; width: 46px; text-align: center;
 }
 .rb-high { background: rgba(223,84,84,0.14); color: var(--red); }
-.rb-med  { background: rgba(201,153,58,0.14); color: var(--accent); }
+.rb-med  { background: rgba(56,189,248,0.14); color: var(--accent); }
 .rb-low  { background: rgba(59,191,114,0.14); color: var(--green); }
 .risk-name { font-size: 0.87rem; font-weight: 400; margin-bottom: 3px; }
 .risk-desc-text { font-size: 0.77rem; color: var(--muted); line-height: 1.45; }
@@ -389,8 +389,8 @@ nav {
 
 /* ─── QUOTE BLOCK ───────────────────────────────────────────── */
 .quote-block {
-  border: 1px solid rgba(201,153,58,0.28);
-  background: rgba(201,153,58,0.05);
+  border: 1px solid rgba(56,189,248,0.28);
+  background: rgba(56,189,248,0.05);
   border-left: 3px solid var(--accent);
   border-radius: var(--radius);
   padding: 1rem 1.2rem;
@@ -803,8 +803,8 @@ new Chart(document.getElementById('revenueChart'), {
       {
         label: 'AI Revenue ($B)',
         data: [4.1, 4.4, 5.2, 6.2, 8.4, 14.8],
-        backgroundColor: 'rgba(201,153,58,0.65)',
-        borderColor: '#c9993a',
+        backgroundColor: 'rgba(56,189,248,0.65)',
+        borderColor: '#38bdf8',
         borderWidth: 1,
         borderRadius: 3,
       }
@@ -816,24 +816,24 @@ new Chart(document.getElementById('revenueChart'), {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#111720',
-        borderColor: '#1e2836',
+        backgroundColor: '#2e3a4e',
+        borderColor: '#38455c',
         borderWidth: 1,
-        titleColor: '#6e7d94',
-        bodyColor: '#dde2ea',
+        titleColor: '#6888a8',
+        bodyColor: '#e0eef8',
         callbacks: { label: ctx => ' ' + ctx.dataset.label + ': $' + ctx.parsed.y + 'B' }
       }
     },
     scales: {
       x: {
-        ticks: { color: '#6e7d94', font: { size: 11 }, maxRotation: 30 },
+        ticks: { color: '#6888a8', font: { size: 11 }, maxRotation: 30 },
         grid: { display: false },
-        border: { color: '#1e2836' }
+        border: { color: '#38455c' }
       },
       y: {
-        ticks: { color: '#6e7d94', font: { size: 11 }, callback: v => '$' + v + 'B' },
+        ticks: { color: '#6888a8', font: { size: 11 }, callback: v => '$' + v + 'B' },
         grid: { color: 'rgba(255,255,255,0.04)' },
-        border: { color: '#1e2836' },
+        border: { color: '#38455c' },
         beginAtZero: true
       }
     }
