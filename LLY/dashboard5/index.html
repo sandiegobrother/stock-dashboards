@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>LLY · Risk Analysis · Dashboard 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--surface3:#182030;--border:#182030;--border2:#1e2d42;--accent:#f97316;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#f9731608 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nav-d3{color:#c9993a;border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.06)}
+.nav-d4{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
+.nav-hub{color:var(--accent);border-color:#f9731644;background:#f9731610}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#f9731610;border:1px solid #f9731630;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-right{text-align:right}
+.risk-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;color:var(--accent);line-height:1;margin-bottom:4px}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right;line-height:1.5}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.8rem}}
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.sum-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.sum-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.sum-val{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;line-height:1}
+.sum-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.summary-grid{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.cat-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.cat-pill{font-size:.7rem;padding:3px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border2);color:var(--muted)}
+.cat-pill b{color:var(--text)}
+.risk-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1rem;transition:border-color .2s}
+.risk-card:hover{border-color:var(--border2)}
+.risk-header{display:grid;grid-template-columns:auto 1fr auto auto;gap:1rem;align-items:center;margin-bottom:.85rem}
+.risk-rank{font-family:'IBM Plex Mono',monospace;font-size:.75rem;font-weight:600;padding:4px 10px;border-radius:4px;white-space:nowrap}
+.risk-name{font-family:'IBM Plex Mono',monospace;font-size:.9rem;font-weight:500;color:var(--text);margin-bottom:2px}
+.risk-category{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2)}
+.risk-badge{font-family:'IBM Plex Mono',monospace;font-size:.65rem;padding:3px 10px;border-radius:4px;font-weight:600;letter-spacing:.06em;white-space:nowrap}
+.risk-score-wrap{text-align:right}
+.risk-score{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:600;line-height:1}
+.risk-prob{margin-top:2px}
+.risk-body{padding-top:.75rem;border-top:1px solid var(--border)}
+.risk-desc{font-size:.87rem;line-height:1.72;color:var(--text);margin-bottom:.6rem}
+.risk-desc strong{color:var(--accent);font-weight:500}
+.risk-mitigant{font-size:.8rem;color:var(--muted);padding:.6rem .85rem;background:var(--surface2);border-radius:5px;line-height:1.6}
+.mitigant-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-right:6px}
+@media(max-width:600px){.risk-header{grid-template-columns:auto 1fr auto}  .risk-score-wrap{display:none}}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.chart-wrap{position:relative;width:100%;height:280px}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #f97316;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">LLY · RISK ANALYSIS</a>
+  <ul class="nav-links">
+    <li><a href="#ranked">Ranked Risks</a></li>
+    <li><a href="#matrix">Risk Matrix</a></li>
+    <li><a href="#verdict">Verdict</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-d3" href="../dashboard3/">D3</a>
+    <a class="nav-btn nav-d4" href="../dashboard4/">D4</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 5 · Investment Risk Analysis · March 2026</div>
+        <div class="hero-ticker">LLY</div>
+        <div class="hero-name">Eli Lilly and Company</div>
+        <div class="hero-badge">Pharmaceuticals / GLP-1</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Risk Rating</div>
+        <div class="risk-big">ELEVATED RISK</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#f97316;letter-spacing:.08em;margin-bottom:6px">1 CRITICAL · 3 HIGH · Avg Score 7.0/10</div>
+        <div class="hero-sub">IRA drug pricing, GLP-1 competition from Novo Nordisk, and manufacturing bottlenecks are the three strategic risks</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SUMMARY -->
+  <div class="summary-grid">
+    <div class="sum-item"><div class="sum-label">Total Risks</div><div class="sum-val" style="color:var(--text)">6</div><div class="sum-sub">Identified</div></div>
+    <div class="sum-item"><div class="sum-label">Critical</div><div class="sum-val" style="color:#ef4444">1</div><div class="sum-sub">Severity 8-10/10</div></div>
+    <div class="sum-item"><div class="sum-label">High</div><div class="sum-val" style="color:#f97316">3</div><div class="sum-sub">Severity 6-7/10</div></div>
+    <div class="sum-item"><div class="sum-label">Top Risk Score</div><div class="sum-val" style="color:#f97316">9/10</div><div class="sum-sub">IRA Medicare Drug …</div></div>
+    <div class="sum-item"><div class="sum-label">Risk Horizon</div><div class="sum-val" style="color:#5b9cf6" >24–60 mo</div><div class="sum-sub">Primary timeframe</div></div>
+  </div>
+
+  <!-- RANKED RISKS -->
+  <section id="ranked">
+    <div class="section-head"><div class="section-head-label">Risks Ranked — Most to Least Dangerous</div><div class="section-head-line"></div></div>
+    <div class="cat-pills"><span class="cat-pill">Regulatory <b>1</b></span><span class="cat-pill">Competition <b>2</b></span><span class="cat-pill">Industry Disruption <b>3</b></span></div>
+    
+        <div class="risk-card" style="border-left:3px solid #ef4444">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#ef444422;color:#ef4444;border:1px solid #ef444444">#1</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">IRA Medicare Drug Price Negotiation</div>
+              <div class="risk-category">Regulatory</div>
+            </div>
+            <div class="risk-badge" style="background:#ef444422;color:#ef4444;border:1px solid #ef444444">CRITICAL</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#ef4444">9<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">65%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>The Inflation Reduction Act empowers CMS to negotiate prices directly for drugs in Medicare Part D.</strong> Tirzepatide (Mounjaro/Zepbound) is eligible for 2026 or 2027 negotiation given its launch date and sales volume. Price reductions of 25-60% for Medicare patients are possible — CMS has negotiated 60-79% discounts in initial rounds for other drugs. With GLP-1 driving $20B+ annually, any negotiated price cut would materially impair revenue.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> Lilly is challenging IRA pricing provisions legally. Medicare GLP-1 coverage is still limited — negotiation applies only to Medicare Part D, not commercial insurance.</div>
+          </div>
+        </div>
+        <div class="risk-card" style="border-left:3px solid #f97316">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">#2</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">Novo Nordisk Competition (Semaglutide)</div>
+              <div class="risk-category">Competition</div>
+            </div>
+            <div class="risk-badge" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">HIGH</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#f97316">8<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">70%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>Novo Nordisk's Ozempic/Wegovy (semaglutide) directly competes with Mounjaro/Zepbound (tirzepatide) for the same GLP-1 obesity and diabetes market.</strong> Novo has superior manufacturing scale and a longer commercial track record. SURMOUNT-5 trial data showed Zepbound superior to Wegovy for weight loss, but Novo Nordisk is not standing still — semaglutide pills (Rybelsus) and next-generation compounds are in development.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> SURMOUNT-5 superiority data gives Lilly clinical differentiation. Tirzepatide's dual GIP/GLP-1 mechanism appears to be more efficacious than single GLP-1 agonism.</div>
+          </div>
+        </div>
+        <div class="risk-card" style="border-left:3px solid #f97316">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">#3</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">GLP-1 Manufacturing Capacity Constraints</div>
+              <div class="risk-category">Industry Disruption</div>
+            </div>
+            <div class="risk-badge" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">HIGH</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#f97316">7<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">45%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>Lilly is investing $23B+ in new manufacturing capacity, but GLP-1 supply shortages have already impacted revenue and prescription fulfillment.</strong> If manufacturing ramp is delayed or yields are below target, revenue guidance could be missed. The complexity of injectable biologic manufacturing means capacity additions take 2-3 years from investment to production.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> Lilly has 7 new manufacturing sites under construction globally. US CHIPS Act-equivalent incentives for domestic pharma manufacturing are supporting the build-out.</div>
+          </div>
+        </div>
+        <div class="risk-card" style="border-left:3px solid #f97316">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">#4</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">GLP-1 Side Effects / Safety Signal</div>
+              <div class="risk-category">Industry Disruption</div>
+            </div>
+            <div class="risk-badge" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">HIGH</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#f97316">7<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">20%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>A serious undiscovered long-term safety signal in GLP-1 agonists — muscle mass loss, thyroid cancer risk, or other chronic effects — could trigger FDA warning letters or market withdrawal.</strong> With 30M+ patients on GLP-1s globally, even a 0.1% serious adverse event rate represents 30,000+ patients and regulatory attention.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> GLP-1 class has been in use since 2005 (Byetta) with extensive real-world safety data. Cardiovascular benefit data (SURMOUNT-MMO) adds to the positive risk-benefit profile.</div>
+          </div>
+        </div>
+        <div class="risk-card" style="border-left:3px solid #fbbf24">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#fbbf2422;color:#fbbf24;border:1px solid #fbbf2444">#5</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">Donanemab (Alzheimer's) Commercial Execution</div>
+              <div class="risk-category">Industry Disruption</div>
+            </div>
+            <div class="risk-badge" style="background:#fbbf2422;color:#fbbf24;border:1px solid #fbbf2444">MEDIUM</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#fbbf24">6<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">45%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>Donanemab (Kisunla) received FDA approval in July 2024 for early Alzheimer's, but commercial uptake has been slower than expected</strong> due to the complex ARIA monitoring requirement (MRI scans every 6 months) and limited infusion center capacity. If Donanemab fails to reach $5B+ peak revenue, Lilly's diversification thesis is impaired.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> Alzheimer's treatment is a de novo market — 6.9M US patients with no existing treatment. Even modest penetration represents enormous revenue.</div>
+          </div>
+        </div>
+        <div class="risk-card" style="border-left:3px solid #fbbf24">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#fbbf2422;color:#fbbf24;border:1px solid #fbbf2444">#6</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">Biosimilar GLP-1 Entry</div>
+              <div class="risk-category">Competition</div>
+            </div>
+            <div class="risk-badge" style="background:#fbbf2422;color:#fbbf24;border:1px solid #fbbf2444">MEDIUM</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#fbbf24">5<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">30%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>Tirzepatide's US patent protection runs to approximately 2036, but compounding pharmacies have been formulating 'semaglutide' copies during shortage periods.</strong> FDA's crackdown on compounded GLP-1s is ongoing but enforcement is imperfect. Longer-term, biosimilar entry in the late 2030s would compress margins.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> 2036+ patent timeline provides 10+ years of exclusivity. By then, next-generation GLP-1/GIP compounds will be the commercial product.</div>
+          </div>
+        </div>
+  </section>
+
+  <!-- MATRIX -->
+  <section id="matrix">
+    <div class="section-head"><div class="section-head-label">Risk Matrix & Visualisation</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Risk Score by Category (Severity 0-10)</div>
+        <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Severity vs Probability Matrix</div>
+        <div class="chart-wrap"><canvas id="bubbleChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">Risk Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Risk Summary · LLY · ELEVATED RISK · 1 Critical · 3 High Risk Factors</div>
+      <div class="verdict-text">Lilly's risk profile is <strong style='color:#fbbf24'>moderate to elevated</strong>. The IRA drug pricing risk is real and probably inevitable — the question is magnitude, not whether it occurs. The Novo Nordisk competition is a permanent feature of the GLP-1 landscape but the SURMOUNT-5 superiority data provides durable clinical differentiation. Manufacturing constraints are the most immediate near-term risk to FY2026 revenue guidance. <strong style='color:#fbbf24'>Most dangerous risk: IRA negotiated price cut of 40%+ on tirzepatide combined with manufacturing capacity miss in the same year.</strong></div>
+    </div>
+  </section>
+
+</div>
+<footer>
+  <div><div class="footer-brand">LLY · Risk Analysis Dashboard</div><div>Dashboard 5 · Investment Risk Analysis · March 2026</div></div>
+  <div style="max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. Risk assessments are qualitative and subjective. All investments carry risk of loss. Consult a financial advisor before investing.</div>
+</footer>
+<script>
+window.addEventListener('load', function() {
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#182030';
+
+  const names   = ['IRA Medicare Drug Pric…', 'Novo Nordisk Competiti…', 'GLP-1 Manufacturing Ca…', 'GLP-1 Side Effects / S…', "Donanemab (Alzheimer's…", 'Biosimilar GLP-1 Entry'];
+  const scores  = [9, 8, 7, 7, 6, 5];
+  const colors  = ['#ef4444', '#f97316', '#f97316', '#f97316', '#fbbf24', '#fbbf24'];
+  const probs   = [65.0, 70.0, 45.0, 20.0, 45.0, 30.0];
+
+  // Bar chart
+  new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: names,
+      datasets: [{ label: 'Risk Score', data: scores,
+        backgroundColor: colors.map(c => c + '55'),
+        borderColor: colors, borderWidth: 2, borderRadius: 4 }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display:false},
+        tooltip: { callbacks: { label: c => ` Score: ${c.raw}/10` } } },
+      scales: {
+        x: { min:0, max:10, grid: {color:'#182030'}, ticks: {callback: v => v+'/10'} },
+        y: { grid: {display:false}, ticks: {font:{size:10}} }
+      }
+    }
+  });
+
+  // Bubble chart (severity vs probability)
+  const bubbleData = names.map((n,i) => ({
+    x: scores[i], y: probs[i],
+    r: Math.max(6, scores[i] * 1.8),
+    label: n
+  }));
+  new Chart(document.getElementById('bubbleChart'), {
+    type: 'bubble',
+    data: {
+      datasets: names.map((n,i) => ({
+        label: n,
+        data: [{ x: scores[i], y: probs[i], r: Math.max(6, scores[i]*1.5) }],
+        backgroundColor: colors[i] + '55',
+        borderColor: colors[i], borderWidth: 2
+      }))
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display:false},
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: Score ${ctx.raw.x}/10 · Prob ${ctx.raw.y}%` } } },
+      scales: {
+        x: { min:0, max:10, title: {display:true, text:'Severity (0-10)', color:'#64748b'}, grid: {color:'#182030'} },
+        y: { min:0, max:100, title: {display:true, text:'Probability (%)', color:'#64748b'}, grid: {color:'#182030'} }
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
