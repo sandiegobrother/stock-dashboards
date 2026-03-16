@@ -234,13 +234,20 @@ function upsideColor(u){
 }
 
 function buildDashCard(ticker, d){
-  const isAvgo = ticker === "AVGO";
+  const tickerData = tickers.find(x => x.t === ticker) || {};
 
-  // Determine live status
+  // Determine live status — check the d1/d2/d3... flags on the ticker object
   let status = d.status;
-  if(d.num === 1) status = "live";           // D1 live for ALL
-  if(d.num === 2 && isAvgo) status = "live"; // D2 live for AVGO only
-  if(d.num === 2 && !isAvgo) status = "coming";
+  if(d.num === 1) status = "live";                              // D1 live for ALL
+  if(d.num === 2) status = tickerData.d2 ? "live" : "coming";  // D2 live if d2:true
+  if(d.num === 3) status = tickerData.d3 ? "live" : "coming";
+  if(d.num === 4) status = tickerData.d4 ? "live" : "coming";
+  if(d.num === 5) status = tickerData.d5 ? "live" : "coming";
+  if(d.num === 6) status = tickerData.d6 ? "live" : "coming";
+  if(d.num === 7) status = tickerData.d7 ? "live" : "locked";
+  if(d.num === 8) status = tickerData.d8 ? "live" : "locked";
+  if(d.num === 9) status = tickerData.d9 ? "live" : "locked";
+  if(d.num === 10) status = tickerData.d10 ? "live" : "locked";
 
   const url = d.num === 1
     ? BASE + ticker + "/"
