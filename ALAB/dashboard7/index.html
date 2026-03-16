@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ALAB · Institutional Perspective · Dashboard 7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--border:#182030;--border2:#1e2d42;--text:#e2e8f0;--muted:#64748b;--muted2:#334155;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--purple:#a78bfa}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#a78bfa08 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:#a78bfa;letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:#a78bfa}
+.nav-btns{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:4px 10px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nb1{color:var(--muted);border-color:var(--border2)}.nb1:hover{background:rgba(255,255,255,.05)}
+.nb2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nb3{color:#c9993a;border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.06)}
+.nb4{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
+.nb5{color:#f97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.06)}
+.nb6{color:#34d399;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06)}
+.nb-hub{color:#a78bfa;border-color:#a78bfa44;background:#a78bfa10}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:#a78bfa;line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#a78bfa10;border:1px solid #a78bfa30;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#a78bfa;letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#a78bfa}
+.hero-right{text-align:right}
+.verdict-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;line-height:1;margin-bottom:4px;color:#34d399}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:280px;text-align:right;line-height:1.5}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-val{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.reason-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin-bottom:.85rem}
+.reason-header{display:grid;grid-template-columns:auto 1fr auto;gap:.85rem;align-items:center;margin-bottom:.75rem}
+.reason-num{font-family:'IBM Plex Mono',monospace;font-size:1.2rem;font-weight:600;min-width:28px}
+.reason-title{font-size:.88rem;font-weight:500;color:var(--text)}
+.reason-tag{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:3px 10px;border-radius:4px;letter-spacing:.06em;white-space:nowrap}
+.buy-tag{background:#34d39915;color:#34d399;border:1px solid #34d39930}
+.avoid-tag{background:#f8717115;color:#f87171;border:1px solid #f8717130}
+.reason-body{font-size:.86rem;line-height:1.72;color:var(--text)}
+.reason-body strong{color:#a78bfa;font-weight:500}
+.buy-card{border-left:2px solid #34d39940}
+.avoid-card{border-left:2px solid #f8717140}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle;font-size:.82rem}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace}
+.tbl td.right{text-align:right}
+.score-grid{display:grid;gap:.65rem}
+.score-row{display:flex;align-items:center;gap:1rem}
+.score-label-txt{font-size:.75rem;color:var(--muted);min-width:150px}
+.score-bar-wrap{flex:1;display:flex;align-items:center;gap:.75rem;background:var(--surface2);border-radius:4px;padding:4px 8px}
+.score-bar{height:8px;border-radius:3px;transition:width .8s ease}
+.score-num{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--text);min-width:32px}
+.thesis-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #a78bfa;border-radius:8px;padding:1.5rem;margin-bottom:2rem}
+.thesis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.thesis-body{font-size:.9rem;line-height:1.75;color:var(--text)}
+.thesis-body strong{color:#a78bfa;font-weight:500}
+.verdict-box{background:var(--surface);border:1px solid #34d39944;border-left:3px solid #34d399;border-radius:8px;padding:1.5rem;margin-bottom:2rem}
+.verdict-inner-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-inner-body{font-size:.9rem;line-height:1.75;color:var(--text)}
+.verdict-inner-body strong{color:#34d399;font-weight:500}
+.inst-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
+@media(max-width:700px){.inst-grid{grid-template-columns:repeat(2,1fr)}}
+.inst-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
+.inst-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:5px}
+.inst-val{font-family:'IBM Plex Mono',monospace;font-size:1.1rem;font-weight:500;color:#a78bfa;line-height:1}
+.inst-sub{font-size:.68rem;color:var(--muted);margin-top:3px}
+.chart-wrap{position:relative;width:100%;height:240px}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:#a78bfa;font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">ALAB · INSTITUTIONAL VIEW</a>
+  <ul class="nav-links">
+    <li><a href="#reasons">Buy vs Avoid</a></li>
+    <li><a href="#catalysts">Catalysts</a></li>
+    <li><a href="#scores">Scores</a></li>
+    <li><a href="#thesis">Thesis</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a class="nav-btn nb1" href="../">D1</a>
+    <a class="nav-btn nb2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nb3" href="../dashboard3/">D3</a>
+    <a class="nav-btn nb4" href="../dashboard4/">D4</a>
+    <a class="nav-btn nb5" href="../dashboard5/">D5</a>
+    <a class="nav-btn nb6" href="../dashboard6/">D6</a>
+    <a class="nav-btn nb-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 7 · Hedge Fund Perspective · March 2026</div>
+        <div class="hero-ticker">ALAB</div>
+        <div class="hero-name">Astera Labs, Inc.</div>
+        <div class="hero-badge">AI Connectivity Semiconductors</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Institutional Verdict</div>
+        <div class="verdict-big">STRONG BUY</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#34d399;letter-spacing:.08em;margin-bottom:6px">$6.5B Amazon · PCIe 6 monopoly · 58% below targets · 76% gross margin</div>
+        <div class="hero-sub">~65% institutional ownership · 58% below analyst avg $195 · Amazon $6.5B commitment</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- INST METRICS -->
+  <div class="inst-grid">
+    <div class="inst-card"><div class="inst-label">Institutional Own.</div><div class="inst-val">~65%</div><div class="inst-sub">Institutional owned</div></div>
+    <div class="inst-card"><div class="inst-label">Largest Holder</div><div class="inst-val" style="font-size:.9rem">Vanguard Group</div><div class="inst-sub">~7% stake</div></div>
+    <div class="inst-card"><div class="inst-label">Analyst Consensus</div><div class="inst-val" style="font-size:.9rem;color:#34d399">Strong Buy</div><div class="inst-sub">15+ analysts · avg $195</div></div>
+    <div class="inst-card"><div class="inst-label">Short Interest</div><div class="inst-val" style="color:#34d399">2.8%</div><div class="inst-sub">Elevated short interest</div></div>
+  </div>
+
+  <!-- SCORECARD -->
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Conviction Score</div><div class="score-val" style="color:#a78bfa">9/10</div><div class="score-sub">Overall HF rating</div></div>
+    <div class="score-item"><div class="score-label">Business Quality</div><div class="score-val" style="color:#34d399">9/10</div><div class="score-sub">Moat + mgmt</div></div>
+    <div class="score-item"><div class="score-label">Growth Score</div><div class="score-val" style="color:#5b9cf6">10/10</div><div class="score-sub">2-4yr trajectory</div></div>
+    <div class="score-item"><div class="score-val" style="color:#fbbf24">10/10</div><div class="score-label">Valuation</div><div class="score-sub">Price vs value</div></div>
+    <div class="score-item"><div class="score-val" style="color:#f87171">6/10</div><div class="score-label">Risk Level</div><div class="score-sub">Lower = safer</div></div>
+  </div>
+
+  <!-- BUY / AVOID -->
+  <section id="reasons">
+    <div class="section-head"><div class="section-head-label">Why Institutions Buy</div><div class="section-head-line"></div></div>
+    <div class="reason-card buy-card">
+          <div class="reason-header">
+            <div class="reason-num" style="color:#34d399">B1</div>
+            <div class="reason-title">Amazon $6.5B Committed Purchase — World's Best Customer Validation</div>
+            <div class="reason-tag buy-tag">CUSTOMER ANCHOR</div>
+          </div>
+          <div class="reason-body"><strong>Amazon's $6.5B pre-committed purchase agreement for Astera's Scorpio PCIe 6 fabric switch is the strongest customer validation available in AI infrastructure.</strong> When the world's largest cloud provider commits $6.5B to one company's product, the technology quality and market need are confirmed at the highest possible institutional level. No amount of analyst skepticism about GAAP losses can override Amazon's multi-year capital commitment.</div>
+        </div><div class="reason-card buy-card">
+          <div class="reason-header">
+            <div class="reason-num" style="color:#34d399">B2</div>
+            <div class="reason-title">58% Discount to Analyst Consensus — Largest Gap on This List</div>
+            <div class="reason-tag buy-tag">VALUATION</div>
+          </div>
+          <div class="reason-body"><strong>Astera at $80 vs average analyst price target of $195 is a 58% discount to consensus — the most extreme mispricing gap on this watchlist.</strong> 15+ analysts covering AI connectivity semiconductors collectively assign $195 fair value while the stock trades at $80. The warrant accounting complexity (non-cash COGS from Amazon warrants) is the primary reason for the discount — not business fundamentals.</div>
+        </div><div class="reason-card buy-card">
+          <div class="reason-header">
+            <div class="reason-num" style="color:#34d399">B3</div>
+            <div class="reason-title">Only PCIe 6 in Production Volume — Zero Competition Until 2027</div>
+            <div class="reason-tag buy-tag">MONOPOLY</div>
+          </div>
+          <div class="reason-body"><strong>Astera's Scorpio PCIe 6 fabric switch is the only such product in production volume globally — Amazon's commitment exists partly because there's no alternative.</strong> Broadcom and Marvell are developing competing products but are 18-24 months behind in production. This monopoly window generates revenue at full pricing power with no competitive pressure.</div>
+        </div>
+    <div class="section-head"><div class="section-head-label">Why Institutions Avoid</div><div class="section-head-line"></div></div>
+    <div class="reason-card avoid-card">
+          <div class="reason-header">
+            <div class="reason-num" style="color:#f87171">A1</div>
+            <div class="reason-title">Amazon Warrant Non-Cash GM Headwind</div>
+            <div class="reason-tag avoid-tag">ACCOUNTING</div>
+          </div>
+          <div class="reason-body"><strong>Amazon warrants create non-cash COGS charges starting Q2 FY2026 — making reported GAAP gross margins appear to deteriorate even as non-GAAP margins remain 76%+.</strong> Investors unfamiliar with warrant accounting will see 'deteriorating' reported GMs and sell, creating technical overhang for 4-6 quarters.</div>
+        </div><div class="reason-card avoid-card">
+          <div class="reason-header">
+            <div class="reason-num" style="color:#f87171">A2</div>
+            <div class="reason-title">2.8% Short Interest + GAAP Complexity</div>
+            <div class="reason-tag avoid-tag">SENTIMENT</div>
+          </div>
+          <div class="reason-body"><strong>The elevated short interest (2.8%) reflects a legitimate short thesis: GAAP losses + warrant complexity + concentration in Amazon = potential multiple compression if any element disappoints.</strong> Short-sellers are specifically targeting the Amazon warrant impact on reported financials as a catalyst for misinterpretation and selling.</div>
+        </div>
+  </section>
+
+  <!-- CATALYSTS -->
+  <section id="catalysts">
+    <div class="section-head"><div class="section-head-label">Key Catalysts</div><div class="section-head-line"></div></div>
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-head">Catalyst Calendar — Near (0-6mo) · Mid (6-18mo) · Long (18mo+)</div>
+      <table class="tbl">
+        <thead><tr><th>Catalyst Event</th><th>Horizon</th><th>Timeline</th><th>Impact</th><th class="right">Upside</th></tr></thead>
+        <tbody><tr>
+          <td style="font-size:.82rem;font-weight:500">Q2 FY2026 Earnings — Warrant Impact Quantified</td>
+          <td class="mono" style="font-size:.75rem;color:#34d399">NEAR</td>
+          <td style="font-size:.8rem;color:var(--muted)">August 2026</td>
+          <td style="font-size:.82rem">Market adjusts to non-cash GM headwind — removes uncertainty</td>
+          <td class="mono right" style="color:#34d399">+20-30%</td>
+        </tr><tr>
+          <td style="font-size:.82rem;font-weight:500">Microsoft/Google Design Win Confirmation</td>
+          <td class="mono" style="font-size:.75rem;color:#fbbf24">MID</td>
+          <td style="font-size:.8rem;color:var(--muted)">H2 2026</td>
+          <td style="font-size:.82rem">Second hyperscaler reduces Amazon concentration</td>
+          <td class="mono right" style="color:#fbbf24">+30-50%</td>
+        </tr><tr>
+          <td style="font-size:.82rem;font-weight:500">PCIe 7 (Scorpio X) Tape-Out Success</td>
+          <td class="mono" style="font-size:.75rem;color:#fbbf24">MID</td>
+          <td style="font-size:.8rem;color:var(--muted)">H2 2026</td>
+          <td style="font-size:.82rem">Next generation confirms technology leadership continuity</td>
+          <td class="mono right" style="color:#fbbf24">+15-25%</td>
+        </tr><tr>
+          <td style="font-size:.82rem;font-weight:500">GAAP Profitability Achievement</td>
+          <td class="mono" style="font-size:.75rem;color:#fbbf24">MID</td>
+          <td style="font-size:.8rem;color:var(--muted)">FY2027</td>
+          <td style="font-size:.82rem">GAAP profit expands buyer universe beyond growth mandates</td>
+          <td class="mono right" style="color:#fbbf24">+15-20%</td>
+        </tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- SCORES -->
+  <section id="scores">
+    <div class="section-head"><div class="section-head-label">Investment Scorecard</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Hedge Fund Scoring Criteria</div>
+        <div class="score-grid">
+          <div class="score-row"><span class="score-label-txt">Business Quality / Moat</span><div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:#34d399"></div><span class="score-num">9/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">PCIe 6 Production Monopoly</span><div class="score-bar-wrap"><div class="score-bar" style="width:100%;background:#34d399"></div><span class="score-num">10/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">Amazon $6.5B Commitment</span><div class="score-bar-wrap"><div class="score-bar" style="width:100%;background:#34d399"></div><span class="score-num">10/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">76% Non-GAAP Gross Margin</span><div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:#34d399"></div><span class="score-num">9/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">58% Discount to Consensus</span><div class="score-bar-wrap"><div class="score-bar" style="width:100%;background:#34d399"></div><span class="score-num">10/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">Amazon Warrant Accounting</span><div class="score-bar-wrap"><div class="score-bar" style="width:50%;background:#f87171"></div><span class="score-num">5/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">$1.19B Cash Zero Debt</span><div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:#34d399"></div><span class="score-num">9/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">PCIe 7 Pipeline</span><div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:#34d399"></div><span class="score-num">9/10</span></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">Comparative Scoring Chart</div>
+        <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THESIS -->
+  <section id="thesis">
+    <div class="section-head"><div class="section-head-label">Investment Thesis</div><div class="section-head-line"></div></div>
+    <div class="thesis-block">
+      <div class="thesis-title">Long-Term Investment Thesis · ALAB · Portfolio Manager Perspective</div>
+      <div class="thesis-body"><strong>Astera is the most compelling risk-adjusted AI semiconductor opportunity based on the single most powerful institutional signal available: Amazon committed $6.5B to one product from one company.</strong> The PCIe 6 production monopoly, 76% non-GAAP gross margins, $1.19B cash, and zero debt create a business of exceptional quality. The 58% discount to analyst consensus is driven entirely by GAAP accounting complexity (SBC + Amazon warrant) rather than business deterioration. When Amazon's warrant impact is fully understood and priced in (expected by Q3-Q4 FY2026), the technical overhang clears and the stock should trade toward analyst consensus values.</div>
+    </div>
+    <div class="verdict-box">
+      <div class="verdict-inner-title">Institutional Verdict · ALAB · STRONG BUY · $6.5B Amazon · PCIe 6 monopoly · 58% below targets · 76% gross margin</div>
+      <div class="verdict-inner-body"><strong style='color:#34d399'>STRONG BUY — Amazon Committed $6.5B; Market Offers 58% Discount.</strong> Astera is the clearest institutional mispricing created by GAAP accounting complexity. Amazon's $6.5B commitment is the investment thesis in one sentence. Base DCF $130 (+63%), analyst consensus $195 (+144%). <strong style='color:#34d399'>Recommended: 1.5-2% position. Warrant accounting clarity = near-term re-rating. 18-month target: $130-195.</strong></div>
+    </div>
+  </section>
+
+</div>
+<footer>
+  <div><div class="footer-brand">ALAB · Institutional Investor Perspective</div><div>Dashboard 7 · Hedge Fund Analysis · March 2026</div></div>
+  <div style="max-width:480px;font-size:.7rem">Simulated hedge fund analysis for educational purposes only. Not investment advice. Past performance does not guarantee future results.</div>
+</footer>
+<script>
+window.addEventListener('load', function() {
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#182030';
+  const labels = ['Business Quality','Growth Potential','Valuation','Risk-Adjusted Ret.','Catalyst Density','Moat Durability'];
+  const scores = [9, 10, 10, 9, 4, 10];
+  new Chart(document.getElementById('radarChart'), {
+    type: 'radar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'ALAB',
+        data: scores,
+        backgroundColor: '#a78bfa22',
+        borderColor: '#a78bfa',
+        borderWidth: 2,
+        pointBackgroundColor: '#a78bfa',
+        pointRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display:false} },
+      scales: { r: {
+        min: 0, max: 10,
+        grid: {color:'#182030'},
+        ticks: {display:false},
+        pointLabels: {color:'#94a3b8',font:{size:10}}
+      }}
+    }
+  });
+});
+</script>
+</body>
+</html>
