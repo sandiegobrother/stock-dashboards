@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CRCL · Risk Analysis · Dashboard 5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--surface3:#182030;--border:#182030;--border2:#1e2d42;--accent:#ef4444;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#ef444408 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nav-d3{color:#c9993a;border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.06)}
+.nav-d4{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
+.nav-hub{color:var(--accent);border-color:#ef444444;background:#ef444410}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#ef444410;border:1px solid #ef444430;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero-right{text-align:right}
+.risk-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;color:var(--accent);line-height:1;margin-bottom:4px}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right;line-height:1.5}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.8rem}}
+.summary-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.sum-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.sum-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.sum-val{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;line-height:1}
+.sum-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.summary-grid{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.cat-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+.cat-pill{font-size:.7rem;padding:3px 10px;border-radius:20px;background:var(--surface2);border:1px solid var(--border2);color:var(--muted)}
+.cat-pill b{color:var(--text)}
+.risk-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1rem;transition:border-color .2s}
+.risk-card:hover{border-color:var(--border2)}
+.risk-header{display:grid;grid-template-columns:auto 1fr auto auto;gap:1rem;align-items:center;margin-bottom:.85rem}
+.risk-rank{font-family:'IBM Plex Mono',monospace;font-size:.75rem;font-weight:600;padding:4px 10px;border-radius:4px;white-space:nowrap}
+.risk-name{font-family:'IBM Plex Mono',monospace;font-size:.9rem;font-weight:500;color:var(--text);margin-bottom:2px}
+.risk-category{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2)}
+.risk-badge{font-family:'IBM Plex Mono',monospace;font-size:.65rem;padding:3px 10px;border-radius:4px;font-weight:600;letter-spacing:.06em;white-space:nowrap}
+.risk-score-wrap{text-align:right}
+.risk-score{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:600;line-height:1}
+.risk-prob{margin-top:2px}
+.risk-body{padding-top:.75rem;border-top:1px solid var(--border)}
+.risk-desc{font-size:.87rem;line-height:1.72;color:var(--text);margin-bottom:.6rem}
+.risk-desc strong{color:var(--accent);font-weight:500}
+.risk-mitigant{font-size:.8rem;color:var(--muted);padding:.6rem .85rem;background:var(--surface2);border-radius:5px;line-height:1.6}
+.mitigant-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted2);margin-right:6px}
+@media(max-width:600px){.risk-header{grid-template-columns:auto 1fr auto}  .risk-score-wrap{display:none}}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.chart-wrap{position:relative;width:100%;height:280px}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #ef4444;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">CRCL · RISK ANALYSIS</a>
+  <ul class="nav-links">
+    <li><a href="#ranked">Ranked Risks</a></li>
+    <li><a href="#matrix">Risk Matrix</a></li>
+    <li><a href="#verdict">Verdict</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-d3" href="../dashboard3/">D3</a>
+    <a class="nav-btn nav-d4" href="../dashboard4/">D4</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 5 · Investment Risk Analysis · March 2026</div>
+        <div class="hero-ticker">CRCL</div>
+        <div class="hero-name">Circle Internet Group</div>
+        <div class="hero-badge">Stablecoin / Digital Finance</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Risk Rating</div>
+        <div class="risk-big">HIGH RISK</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#ef4444;letter-spacing:.08em;margin-bottom:6px">2 CRITICAL · 3 HIGH · Avg Score 7.3/10</div>
+        <div class="hero-sub">GENIUS Act failure, Tether dominance, and Coinbase 50% revenue share are the three defining risk factors</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SUMMARY -->
+  <div class="summary-grid">
+    <div class="sum-item"><div class="sum-label">Total Risks</div><div class="sum-val" style="color:var(--text)">6</div><div class="sum-sub">Identified</div></div>
+    <div class="sum-item"><div class="sum-label">Critical</div><div class="sum-val" style="color:#ef4444">2</div><div class="sum-sub">Severity 8-10/10</div></div>
+    <div class="sum-item"><div class="sum-label">High</div><div class="sum-val" style="color:#f97316">3</div><div class="sum-sub">Severity 6-7/10</div></div>
+    <div class="sum-item"><div class="sum-label">Top Risk Score</div><div class="sum-val" style="color:#ef4444">9/10</div><div class="sum-sub">GENIUS Act Failure…</div></div>
+    <div class="sum-item"><div class="sum-label">Risk Horizon</div><div class="sum-val" style="color:#5b9cf6" >12–24 mo</div><div class="sum-sub">Primary timeframe</div></div>
+  </div>
+
+  <!-- RANKED RISKS -->
+  <section id="ranked">
+    <div class="section-head"><div class="section-head-label">Risks Ranked — Most to Least Dangerous</div><div class="section-head-line"></div></div>
+    <div class="cat-pills"><span class="cat-pill">Regulatory <b>1</b></span><span class="cat-pill">Competition <b>2</b></span><span class="cat-pill">Financial <b>2</b></span><span class="cat-pill">Economic <b>1</b></span></div>
+    
+        <div class="risk-card" style="border-left:3px solid #ef4444">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#ef444422;color:#ef4444;border:1px solid #ef444444">#1</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">GENIUS Act Failure — Regulatory Uncertainty Persists</div>
+              <div class="risk-category">Regulatory</div>
+            </div>
+            <div class="risk-badge" style="background:#ef444422;color:#ef4444;border:1px solid #ef444444">CRITICAL</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#ef4444">9<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">40%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>The GENIUS Act (stablecoin regulatory framework) is the primary catalyst for Circle's institutional adoption thesis.</strong> If the bill fails, stablecoin regulation remains fragmented, Tether maintains its unregulated dominance, and Circle's compliance-premium positioning loses its strategic value. The political path for GENIUS Act is uncertain despite bipartisan support.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> Pro-crypto Trump administration has made stablecoin regulation a priority. Senate Banking Committee has advanced the bill. Failure is possible but not the base case.</div>
+          </div>
+        </div>
+        <div class="risk-card" style="border-left:3px solid #ef4444">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#ef444422;color:#ef4444;border:1px solid #ef444444">#2</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">Tether Competitive Dominance ($130B vs $45B USDC)</div>
+              <div class="risk-category">Competition</div>
+            </div>
+            <div class="risk-badge" style="background:#ef444422;color:#ef4444;border:1px solid #ef444444">CRITICAL</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#ef4444">8<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">65%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>Tether (USDT) has $130B+ in circulation vs USDC's $45B — and operates with virtually no US regulatory compliance, allowing it to serve markets and customers that Circle cannot.</strong> In crypto trading markets (DeFi, offshore exchanges), USDT is the default stablecoin. Circle's regulatory compliance advantage only materializes if regulated finance adopts stablecoins — which remains uncertain.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> Institutional finance (banks, payment companies, fintechs) explicitly prefers USDC for compliance reasons. Tether's opacity is a feature for some users and a fatal flaw for others.</div>
+          </div>
+        </div>
+        <div class="risk-card" style="border-left:3px solid #f97316">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">#3</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">Coinbase Revenue Share (50/50 Split)</div>
+              <div class="risk-category">Financial</div>
+            </div>
+            <div class="risk-badge" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">HIGH</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#f97316">7<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">90%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>Circle splits approximately 50% of USDC interest income with Coinbase under their Centre consortium arrangement.</strong> This structural revenue sharing means Circle keeps only half the economics of its core product. As USDC circulation grows, this becomes increasingly material — $2B+ in annual interest means $1B+ flowing to Coinbase.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> The Coinbase relationship also provides distribution — Coinbase's 100M+ verified users are Circle's primary USDC distribution channel. The revenue share buys distribution at scale.</div>
+          </div>
+        </div>
+        <div class="risk-card" style="border-left:3px solid #f97316">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">#4</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">Interest Rate Sensitivity — Core Business Model</div>
+              <div class="risk-category">Economic</div>
+            </div>
+            <div class="risk-badge" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">HIGH</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#f97316">8<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">45%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>Circle's primary revenue is interest income on $45B+ in USDC reserves invested in Treasury bills.</strong> A 200bps rate decline from current levels would reduce annual interest income by ~$900M (from ~$2B+ to ~$1.1B), severely compressing earnings. The GENIUS Act bull case assumes sustained high rates and growing circulation.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> USDC circulation growth partially offsets rate declines. Circle's non-interest revenue (transaction fees, API services) is growing as a % of total.</div>
+          </div>
+        </div>
+        <div class="risk-card" style="border-left:3px solid #f97316">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">#5</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">Bank Run / De-Peg Risk</div>
+              <div class="risk-category">Financial</div>
+            </div>
+            <div class="risk-badge" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">HIGH</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#f97316">7<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">10%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>In March 2023, USDC temporarily de-pegged to $0.87 when Silicon Valley Bank (which held 8% of USDC reserves) failed.</strong> A sudden redemption panic — even without an actual reserve shortfall — could create a self-fulfilling de-peg that destroys USDC's reputation as a stable store of value.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> Circle now holds 100% of reserves in short-duration Treasuries (through BlackRock) and overnight repo — no single bank concentration risk. Reserve transparency reports are published monthly.</div>
+          </div>
+        </div>
+        <div class="risk-card" style="border-left:3px solid #fbbf24">
+          <div class="risk-header">
+            <div class="risk-rank" style="background:#fbbf2422;color:#fbbf24;border:1px solid #fbbf2444">#6</div>
+            <div class="risk-title-wrap">
+              <div class="risk-name">Stablecoin Competitive Entrants</div>
+              <div class="risk-category">Competition</div>
+            </div>
+            <div class="risk-badge" style="background:#fbbf2422;color:#fbbf24;border:1px solid #fbbf2444">MEDIUM</div>
+            <div class="risk-score-wrap">
+              <div class="risk-score" style="color:#fbbf24">5<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-prob" style="color:var(--muted);font-size:.65rem">50%</div>
+            </div>
+          </div>
+          <div class="risk-body">
+            <div class="risk-desc"><strong>PayPal (PYUSD), Visa, Mastercard, and major banks are all exploring stablecoin issuance.</strong> If banks issue their own FDIC-insured digital dollars, USDC's value proposition as the 'safe institutional stablecoin' faces direct competition from regulated deposit-backed digital currencies.</div>
+            <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> Circle's first-mover advantage in USDC ecosystem (DeFi integrations, exchange listings, developer tools) creates switching costs that bank stablecoins would need years to replicate.</div>
+          </div>
+        </div>
+  </section>
+
+  <!-- MATRIX -->
+  <section id="matrix">
+    <div class="section-head"><div class="section-head-label">Risk Matrix & Visualisation</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Risk Score by Category (Severity 0-10)</div>
+        <div class="chart-wrap"><canvas id="barChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Severity vs Probability Matrix</div>
+        <div class="chart-wrap"><canvas id="bubbleChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">Risk Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Risk Summary · CRCL · HIGH RISK · 2 Critical · 3 High Risk Factors</div>
+      <div class="verdict-text">Circle's risk profile is <strong style='color:#fbbf24'>moderate to speculative</strong> — the business fundamentals are sound (full reserves, growing circulation, institutional adoption) but regulatory uncertainty and Tether competition create significant uncertainty about the pace of value realization. <strong style='color:#fbbf24'>Most dangerous risk: GENIUS Act failure + interest rate cuts compressing the $2B interest income simultaneously — the two revenue pillars impaired at once.</strong></div>
+    </div>
+  </section>
+
+</div>
+<footer>
+  <div><div class="footer-brand">CRCL · Risk Analysis Dashboard</div><div>Dashboard 5 · Investment Risk Analysis · March 2026</div></div>
+  <div style="max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. Risk assessments are qualitative and subjective. All investments carry risk of loss. Consult a financial advisor before investing.</div>
+</footer>
+<script>
+window.addEventListener('load', function() {
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#182030';
+
+  const names   = ['GENIUS Act Failure — R…', 'Tether Competitive Dom…', 'Coinbase Revenue Share…', 'Interest Rate Sensitiv…', 'Bank Run / De-Peg Risk', 'Stablecoin Competitive…'];
+  const scores  = [9, 8, 7, 8, 7, 5];
+  const colors  = ['#ef4444', '#ef4444', '#f97316', '#f97316', '#f97316', '#fbbf24'];
+  const probs   = [40.0, 65.0, 90.0, 45.0, 10.0, 50.0];
+
+  // Bar chart
+  new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: names,
+      datasets: [{ label: 'Risk Score', data: scores,
+        backgroundColor: colors.map(c => c + '55'),
+        borderColor: colors, borderWidth: 2, borderRadius: 4 }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display:false},
+        tooltip: { callbacks: { label: c => ` Score: ${c.raw}/10` } } },
+      scales: {
+        x: { min:0, max:10, grid: {color:'#182030'}, ticks: {callback: v => v+'/10'} },
+        y: { grid: {display:false}, ticks: {font:{size:10}} }
+      }
+    }
+  });
+
+  // Bubble chart (severity vs probability)
+  const bubbleData = names.map((n,i) => ({
+    x: scores[i], y: probs[i],
+    r: Math.max(6, scores[i] * 1.8),
+    label: n
+  }));
+  new Chart(document.getElementById('bubbleChart'), {
+    type: 'bubble',
+    data: {
+      datasets: names.map((n,i) => ({
+        label: n,
+        data: [{ x: scores[i], y: probs[i], r: Math.max(6, scores[i]*1.5) }],
+        backgroundColor: colors[i] + '55',
+        borderColor: colors[i], borderWidth: 2
+      }))
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display:false},
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: Score ${ctx.raw.x}/10 · Prob ${ctx.raw.y}%` } } },
+      scales: {
+        x: { min:0, max:10, title: {display:true, text:'Severity (0-10)', color:'#64748b'}, grid: {color:'#182030'} },
+        y: { min:0, max:100, title: {display:true, text:'Probability (%)', color:'#64748b'}, grid: {color:'#182030'} }
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
