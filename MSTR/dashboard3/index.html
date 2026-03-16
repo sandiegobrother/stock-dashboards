@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MSTR · Moat Analysis · Dashboard 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07090c;--surface:#0e1117;--surface2:#141a24;--surface3:#1a2232;--border:#1a2232;--border2:#243248;--accent:#c9993a;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(201,153,58,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(52,211,153,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:var(--blue);border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}.nav-d2:hover{background:rgba(91,156,246,.12)}
+.nav-hub{color:var(--accent);border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.08)}.nav-hub:hover{background:rgba(201,153,58,.15)}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,153,58,.08);border:1px solid rgba(201,153,58,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero-right{text-align:right}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.moat-ring{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:6px}
+.moat-score{font-family:'IBM Plex Mono',monospace;font-size:3rem;font-weight:500;color:#5b9cf6;line-height:1}
+.moat-denom{font-family:'IBM Plex Mono',monospace;font-size:1.2rem;color:var(--muted);line-height:1;margin-top:auto;margin-bottom:6px}/10
+.moat-label{font-size:.72rem;font-family:'IBM Plex Mono',monospace;color:#5b9cf6;text-transform:uppercase;letter-spacing:.1em}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left}.hero-ticker{font-size:2.8rem}.moat-ring{justify-content:flex-start}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-num{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:280px;margin-top:.5rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:rgba(201,153,58,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #5b9cf6;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:2px 8px;border-radius:3px;font-weight:500;letter-spacing:.04em}
+.pill-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.pill-amber{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">MSTR · MOAT ANALYSIS</a>
+  <ul class="nav-links"><li><a href="#brand">Brand</a></li><li><a href="#network">Network</a></li><li><a href="#switching">Switching</a></li><li><a href="#cost">Cost Adv.</a></li><li><a href="#ip">IP / Tech</a></li><li><a href="#comparison">Vs. Peers</a></li><li><a href="#verdict">Verdict</a></li></ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 3 · Competitive Moat Analysis · March 2026</div>
+        <div class="hero-ticker">MSTR</div>
+        <div class="hero-name">Strategy (formerly MicroStrategy)</div>
+        <div class="hero-badge">BITCOIN TREASURY MOAT · LEVERAGED BTC ACCUMULATION MACHINE</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Moat Score</div>
+        <div class="moat-ring">
+          <div class="moat-score">6</div>
+          <div class="moat-denom">/10</div>
+        </div>
+        <div class="moat-label">Narrow Moat</div>
+        <div class="hero-sub">738,731 BTC at $75,985 avg. Bitcoin Yield +23% FY2025. Premium NAV access vehicle. $21/42 model capital machine.</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Brand Strength</div><div class="score-num" style="color:#5b9cf6">7/10</div><div class="score-sub">Bitcoin corporate treasury pioneer</div></div>
+    <div class="score-item"><div class="score-label">Network Effects</div><div class="score-num" style="color:#fbbf24">5/10</div><div class="score-sub">BTC holder community identity</div></div>
+    <div class="score-item"><div class="score-label">Switching Costs</div><div class="score-num" style="color:#fbbf24">5/10</div><div class="score-sub">Premium NAV access vehicle</div></div>
+    <div class="score-item"><div class="score-label">Cost Advantage</div><div class="score-num" style="color:#5b9cf6">6/10</div><div class="score-sub">Scale BTC accumulation advantage</div></div>
+    <div class="score-item"><div class="score-label">IP / Proprietary Tech</div><div class="score-num" style="color:#fbbf24">5/10</div><div class="score-sub">$21/42 capital model IP</div></div>
+  </div>
+
+  <!-- BRAND -->
+  <section id="brand">
+    <div class="section-head"><div class="section-head-label">1 · Brand Strength</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Brand Assessment · Score 7/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:70%;height:100%;background:#5b9cf6;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6;width:24px;text-align:right">7</span>
+        </div></div>
+        <div class="analysis-text">Strategy (formerly MicroStrategy) has created an entirely new corporate identity — the world's leading Bitcoin treasury company. <strong>Michael Saylor's relentless Bitcoin advocacy and the company's willingness to use leverage for BTC accumulation created a distinct brand: the purest institutional Bitcoin exposure vehicle available through a public equity.</strong> The rebrand to 'Strategy' underscores this Bitcoin-first corporate identity.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Brand Dimensions</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Bitcoin Treasury Pioneer</td><td class='mono right' style='color:var(--green)'>First and largest corporate BTC holder</td></tr><tr><td style='font-size:.83rem'>Michael Saylor Brand</td><td class='mono right' style='color:var(--green)'>Most recognized Bitcoin corporate advocate</td></tr><tr><td style='font-size:.83rem'>$21/42 Capital Model</td><td class='mono right' style='color:var(--green)'>Innovative leveraged BTC framework</td></tr><tr><td style='font-size:.83rem'>Premium NAV Brand</td><td class='mono right' style='color:var(--green)'>Investors pay premium for BTC leverage</td></tr><tr><td style='font-size:.83rem'>Rebrand to Strategy</td><td class='mono right' style='color:var(--green)'>Bitcoin-first corporate identity</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- NETWORK -->
+  <section id="network">
+    <div class="section-head"><div class="section-head-label">2 · Network Effects</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Network Effects · Score 5/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:50%;height:100%;background:#5b9cf6;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6;width:24px;text-align:right">5</span>
+        </div></div>
+        <div class="analysis-text">Strategy's BTC accumulation creates network effects in the Bitcoin community — as the largest corporate holder (738,731 BTC), Strategy's purchases are market-moving events that validate Bitcoin for institutional investors. <strong>The Bitcoin Yield metric (+23% FY2025) has become a novel corporate performance metric that Strategy has pioneered — other companies adopting corporate BTC treasuries validate and strengthen Strategy's pioneer positioning.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Network Effect Indicators</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Bitcoin Community Network</td><td class='mono right' style='color:var(--blue)'>738K BTC = community validation</td></tr><tr><td style='font-size:.83rem'>Institutional BTC Adoption</td><td class='mono right' style='color:var(--blue)'>Strategy paves way for followers</td></tr><tr><td style='font-size:.83rem'>Convertible Note Ecosystem</td><td class='mono right' style='color:var(--blue)'>$8.2B debt creates BTC-linked bonds</td></tr><tr><td style='font-size:.83rem'>Bitcoin Yield Metric</td><td class='mono right' style='color:var(--blue)'>Novel corporate performance standard</td></tr><tr><td style='font-size:.83rem'>MSBI/MSFO Instruments</td><td class='mono right' style='color:var(--blue)'>New financial product category</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SWITCHING -->
+  <section id="switching">
+    <div class="section-head"><div class="section-head-label">3 · Switching Costs</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Switching Costs · Score 5/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:50%;height:100%;background:#34d399;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399;width:24px;text-align:right">5</span>
+        </div></div>
+        <div class="analysis-text">Investors who want leveraged Bitcoin exposure through public equity face limited alternatives. <strong>Strategy's $8.2B in debt creating 1.7x leverage on Bitcoin (vs spot Bitcoin or Bitcoin ETF at 1x) is a specific risk/return profile that pure Bitcoin ETFs cannot replicate.</strong> Investors seeking this exact profile have limited substitutes.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Switching Cost Drivers</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Leveraged BTC Exposure</td><td class='mono right' style='color:var(--green)'>1.7x leverage vs 1x for Bitcoin ETFs</td></tr><tr><td style='font-size:.83rem'>Premium NAV Access</td><td class='mono right' style='color:var(--green)'>Institutional access to BTC leverage</td></tr><tr><td style='font-size:.83rem'>No Direct Alternative</td><td class='mono right' style='color:var(--green)'>No equivalent leveraged BTC pure-play</td></tr><tr><td style='font-size:.83rem'>Tax/Account Constraints</td><td class='mono right' style='color:var(--green)'>Some accounts prefer equity vs crypto</td></tr><tr><td style='font-size:.83rem'>Options/Derivatives Ecosystem</td><td class='mono right' style='color:var(--green)'>Rich options market on MSTR</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COST ADVANTAGE -->
+  <section id="cost">
+    <div class="section-head"><div class="section-head-label">4 · Cost Advantage</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Cost Advantage · Score 6/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:60%;height:100%;background:#fbbf24;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#fbbf24;width:24px;text-align:right">6</span>
+        </div></div>
+        <div class="analysis-text">Strategy's $21/42 capital model — issuing equity at premium to NAV and convertible notes to purchase Bitcoin — is a financial engineering innovation that allows accumulation of Bitcoin at below-market cost-of-capital. <strong>At 738,731 BTC, Strategy achieves scale advantages in Bitcoin OTC trading (large purchases without moving market price) unavailable to smaller corporate buyers.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Cost Structure Highlights</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>$21/42 Capital Model</td><td class='mono right' style='color:var(--amber)'>Issue equity/debt → buy BTC at premium</td></tr><tr><td style='font-size:.83rem'>OTC Scale Advantage</td><td class='mono right' style='color:var(--amber)'>738K BTC = market-moving scale</td></tr><tr><td style='font-size:.83rem'>Bitcoin Yield +23%</td><td class='mono right' style='color:var(--amber)'>Dilution-adjusted BTC per share growing</td></tr><tr><td style='font-size:.83rem'>Average Cost $75,985/BTC</td><td class='mono right' style='color:var(--amber)'>Accumulated pre-premium run</td></tr><tr><td style='font-size:.83rem'>Software Revenue Offset</td><td class='mono right' style='color:var(--amber)'>$477M software covers operations</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- IP / TECH -->
+  <section id="ip">
+    <div class="section-head"><div class="section-head-label">5 · Patents &amp; Proprietary Technology</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">IP &amp; Proprietary Tech · Score 5/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:50%;height:100%;background:#a78bfa;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#a78bfa;width:24px;text-align:right">5</span>
+        </div></div>
+        <div class="analysis-text">Strategy's true 'IP' is the $21/42 capital model framework — a financial engineering innovation for corporate Bitcoin treasury management. <strong>The Bitcoin Performance Agreement (BPA) and Bitcoin Yield metric are proprietary frameworks that Michael Saylor has been actively promoting as industry standards, attempting to make Strategy's metrics the accounting language for corporate Bitcoin adoption.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">IP &amp; Technology Assets</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>$21/42 Capital Model</td><td class='mono right' style='color:#a78bfa'>Leveraged BTC accumulation framework</td></tr><tr><td style='font-size:.83rem'>Bitcoin Yield Metric</td><td class='mono right' style='color:#a78bfa'>Novel performance standard</td></tr><tr><td style='font-size:.83rem'>BPA (Bitcoin Performance Agmt)</td><td class='mono right' style='color:#a78bfa'>New financial instrument</td></tr><tr><td style='font-size:.83rem'>Convertible Note Structure</td><td class='mono right' style='color:#a78bfa'>BTC-linked debt innovation</td></tr><tr><td style='font-size:.83rem'>Bitcoin Treasury Playbook</td><td class='mono right' style='color:#a78bfa'>Consultative IP for followers</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section id="comparison">
+    <div class="section-head"><div class="section-head-label">6 · Peer Comparison</div><div class="section-head-line"></div></div>
+    <div style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-head">Competitive Moat Scorecard vs. Top Peers</div>
+        <table class="tbl">
+          <thead><tr>
+            <th>Company</th><th class="right">Brand</th><th class="right">Network</th>
+            <th class="right">Switching</th><th class="right">Cost Adv.</th>
+            <th class="right">IP/Tech</th><th>Overall Moat</th>
+          </tr></thead>
+          <tbody><tr class='hl'>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#34d399">Strategy (MSTR)</td>
+          <td class="mono right">7</td>
+          <td class="mono right">5</td>
+          <td class="mono right">5</td>
+          <td class="mono right">6</td>
+          <td class="mono right">5</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:60%;height:100%;background:#34d399;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399">6/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Bitcoin ETF (IBIT)</td>
+          <td class="mono right">8</td>
+          <td class="mono right">3</td>
+          <td class="mono right">2</td>
+          <td class="mono right">9</td>
+          <td class="mono right">1</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:50%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">5/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Coinbase (COIN)</td>
+          <td class="mono right">8</td>
+          <td class="mono right">7</td>
+          <td class="mono right">6</td>
+          <td class="mono right">6</td>
+          <td class="mono right">6</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:70%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">7/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Galaxy Digital (GLXY)</td>
+          <td class="mono right">5</td>
+          <td class="mono right">5</td>
+          <td class="mono right">4</td>
+          <td class="mono right">5</td>
+          <td class="mono right">4</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:50%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">5/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Block/Square (SQ)</td>
+          <td class="mono right">7</td>
+          <td class="mono right">6</td>
+          <td class="mono right">6</td>
+          <td class="mono right">6</td>
+          <td class="mono right">6</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:60%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">6/10</span>
+          </div></td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Moat Radar Chart</div>
+        <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Moat Dimension Summary</div>
+        <table class="tbl">
+          <thead><tr><th>Dimension</th><th>Grade</th><th>Commentary</th></tr></thead>
+          <tbody><tr>
+          <td style="font-weight:500;font-size:.85rem">Brand Strength</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#5b9cf6;font-weight:600">B+</span></td>
+          <td class="dim">Bitcoin treasury pioneer — Michael Saylor's advocacy creates unique brand identity</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Network Effects</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#fbbf24;font-weight:600">C+</span></td>
+          <td class="dim">738K BTC purchase validates Bitcoin for institutions — community network</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Switching Costs</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#fbbf24;font-weight:600">C+</span></td>
+          <td class="dim">Leveraged BTC equity exposure not available elsewhere at this scale</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Cost Advantage</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#5b9cf6;font-weight:600">B</span></td>
+          <td class="dim">$21/42 model: issue equity at premium NAV → accumulate BTC below market</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">IP & Patents</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#fbbf24;font-weight:600">C+</span></td>
+          <td class="dim">$21/42 capital model framework + Bitcoin Yield metric are novel financial IP</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRENGTHS & THREATS -->
+  <section id="strengths">
+    <div class="section-head"><div class="section-head-label">7 · Moat Strengths &amp; Threats</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Core Moat Strengths</div>
+        <ul style="list-style:none"><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>738,731 BTC — largest corporate Bitcoin treasury by far, creates institutional validation effect</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>$21/42 capital model enables BTC accumulation at below-market cost of capital — financial innovation</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>Bitcoin Yield +23% FY2025 — novel performance metric showing BTC per share growing through dilution</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>$477M software revenue offsets operating costs — BTC strategy costs investors nothing operationally</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>Rich MSTR options market creates derivative ecosystem that increases investor utility vs direct BTC</li></ul>
+      </div>
+      <div class="card">
+        <div class="card-head">Moat Threats &amp; Watch Items</div>
+        <ul style="list-style:none"><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>$8.2B debt (16% LTV) with BTC-linked repayment — BTC price decline increases leverage dangerously</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Bitcoin price volatility: -80% would make current debt levels existential</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>BlackRock IBIT and other Bitcoin ETFs provide cleaner 1x exposure at near-zero expense ratio</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Software revenue declining — future funding of operations increasingly BTC-dependent</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Strategy is entirely exposed to Bitcoin regulatory risk in the US</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">8 · Moat Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Competitive Advantage Verdict · MSTR · Overall Moat Score: 6/10 · Narrow Moat</div>
+      <div class="verdict-text">Strategy holds a unique but leverage-dependent moat as the world's largest corporate Bitcoin treasury. The $21/42 capital model is genuinely innovative financial engineering, and 738,731 BTC creates institutional validation effects that smaller corporate buyers cannot replicate. The moat is real but fragile — entirely contingent on Bitcoin price levels remaining above the $8.2B debt's effective liquidation threshold. <strong style='color:#c9993a'>Moat Score: 6/10. Narrow Moat. BTC treasury pioneer + $21/42 model are novel advantages; leverage risk limits moat durability confidence.</strong></div>
+    </div>
+  </section>
+
+</div>
+
+<footer style="max-width:1200px;margin:0 auto;padding:2rem 2rem 1rem">
+  <div><div class="footer-brand">MSTR · Moat Analysis</div><div>Dashboard 3 · Competitive Advantage Analysis · March 2026</div></div>
+  <div style="color:var(--muted2);max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. All moat scores are qualitative assessments based on publicly available information. Consult a financial advisor before investing.</div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+  const isDark = true;
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#1a2232';
+
+  // Radar chart
+  const rCtx = document.getElementById('radarChart');
+  if(rCtx) {
+    new Chart(rCtx, {
+      type: 'radar',
+      data: {
+        labels: ['Brand', 'Network Effects', 'Switching Costs', 'Cost Advantage', 'IP / Tech'],
+        datasets: [{
+          label: 'MSTR',
+          data: [7, 5, 5, 6, 5],
+          backgroundColor: 'rgba(201,153,58,0.15)',
+          borderColor: '#c9993a',
+          borderWidth: 2,
+          pointBackgroundColor: '#c9993a',
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            min: 0, max: 10,
+            ticks: { stepSize: 2, color: '#334155', backdropColor: 'transparent', font:{size:10} },
+            grid: { color: '#1a2232' },
+            pointLabels: { color: '#94a3b8', font:{size:11} },
+            angleLines: { color: '#1a2232' }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw + '/10' } }
+        }
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
