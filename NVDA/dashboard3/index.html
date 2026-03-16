@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NVDA · Moat Analysis · Dashboard 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07090c;--surface:#0e1117;--surface2:#141a24;--surface3:#1a2232;--border:#1a2232;--border2:#243248;--accent:#c9993a;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(201,153,58,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(52,211,153,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:var(--blue);border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}.nav-d2:hover{background:rgba(91,156,246,.12)}
+.nav-hub{color:var(--accent);border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.08)}.nav-hub:hover{background:rgba(201,153,58,.15)}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,153,58,.08);border:1px solid rgba(201,153,58,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero-right{text-align:right}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.moat-ring{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:6px}
+.moat-score{font-family:'IBM Plex Mono',monospace;font-size:3rem;font-weight:500;color:#34d399;line-height:1}
+.moat-denom{font-family:'IBM Plex Mono',monospace;font-size:1.2rem;color:var(--muted);line-height:1;margin-top:auto;margin-bottom:6px}/10
+.moat-label{font-size:.72rem;font-family:'IBM Plex Mono',monospace;color:#34d399;text-transform:uppercase;letter-spacing:.1em}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left}.hero-ticker{font-size:2.8rem}.moat-ring{justify-content:flex-start}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-num{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:280px;margin-top:.5rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:rgba(201,153,58,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #34d399;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:2px 8px;border-radius:3px;font-weight:500;letter-spacing:.04em}
+.pill-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.pill-amber{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">NVDA · MOAT ANALYSIS</a>
+  <ul class="nav-links"><li><a href="#brand">Brand</a></li><li><a href="#network">Network</a></li><li><a href="#switching">Switching</a></li><li><a href="#cost">Cost Adv.</a></li><li><a href="#ip">IP / Tech</a></li><li><a href="#comparison">Vs. Peers</a></li><li><a href="#verdict">Verdict</a></li></ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 3 · Competitive Moat Analysis · March 2026</div>
+        <div class="hero-ticker">NVDA</div>
+        <div class="hero-name">NVIDIA Corporation</div>
+        <div class="hero-badge">WIDEST MOAT IN SEMICONDUCTORS · CUDA FORTRESS</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Moat Score</div>
+        <div class="moat-ring">
+          <div class="moat-score">10</div>
+          <div class="moat-denom">/10</div>
+        </div>
+        <div class="moat-label">Wide Moat</div>
+        <div class="hero-sub">4M+ CUDA developers. 80%+ AI GPU share. 19-year ecosystem lock-in. Competitors 2-3 years behind.</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Brand Strength</div><div class="score-num" style="color:#34d399">9/10</div><div class="score-sub">Premier AI brand globally</div></div>
+    <div class="score-item"><div class="score-label">Network Effects</div><div class="score-num" style="color:#34d399">10/10</div><div class="score-sub">4M+ CUDA developers</div></div>
+    <div class="score-item"><div class="score-label">Switching Costs</div><div class="score-num" style="color:#34d399">10/10</div><div class="score-sub">19yr ecosystem lock-in</div></div>
+    <div class="score-item"><div class="score-label">Cost Advantage</div><div class="score-num" style="color:#34d399">8/10</div><div class="score-sub">75% GM fabless scale</div></div>
+    <div class="score-item"><div class="score-label">IP / Proprietary Tech</div><div class="score-num" style="color:#34d399">10/10</div><div class="score-sub">CUDA+NVLink+Blackwell</div></div>
+  </div>
+
+  <!-- BRAND -->
+  <section id="brand">
+    <div class="section-head"><div class="section-head-label">1 · Brand Strength</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Brand Assessment · Score 9/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:90%;height:100%;background:#34d399;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399;width:24px;text-align:right">9</span>
+        </div></div>
+        <div class="analysis-text">NVIDIA has transformed into the premier AI infrastructure brand. <strong>Jensen Huang's keynotes are cultural events — every major AI model (GPT-4, Gemini, Llama) trained on NVIDIA hardware is an implicit brand endorsement.</strong> The H100/Blackwell naming carries the same prestige as Intel Xeon once did.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Brand Dimensions</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>AI Infrastructure Brand</td><td class='mono right' style='color:var(--green)'>Premier globally</td></tr><tr><td style='font-size:.83rem'>CEO Brand (Jensen Huang)</td><td class='mono right' style='color:var(--green)'>Cultural icon in AI</td></tr><tr><td style='font-size:.83rem'>Developer Mindshare</td><td class='mono right' style='color:var(--green)'>De facto standard</td></tr><tr><td style='font-size:.83rem'>Enterprise Recognition</td><td class='mono right' style='color:var(--green)'>H100/Blackwell = gold standard</td></tr><tr><td style='font-size:.83rem'>Consumer Brand (GeForce)</td><td class='mono right' style='color:var(--green)'>Top-tier gaming GPU</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- NETWORK -->
+  <section id="network">
+    <div class="section-head"><div class="section-head-label">2 · Network Effects</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Network Effects · Score 10/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:100%;height:100%;background:#5b9cf6;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6;width:24px;text-align:right">10</span>
+        </div></div>
+        <div class="analysis-text">4M+ CUDA developers create the strongest semiconductor platform flywheel ever built. <strong>More developers → more CUDA-optimized frameworks → more companies require CUDA hardware → more developers join. PyTorch, TensorFlow, JAX all optimized for CUDA first.</strong> 15,000+ Inception startups build entirely on CUDA, locking the next generation of AI companies into the ecosystem.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Network Effect Indicators</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>CUDA Developer Base</td><td class='mono right' style='color:var(--blue)'>4M+ active developers</td></tr><tr><td style='font-size:.83rem'>AI Frameworks Optimized</td><td class='mono right' style='color:var(--blue)'>PyTorch/TF/JAX CUDA-first</td></tr><tr><td style='font-size:.83rem'>Inception Startups</td><td class='mono right' style='color:var(--blue)'>15,000+ companies</td></tr><tr><td style='font-size:.83rem'>Research Papers</td><td class='mono right' style='color:var(--blue)'>~95% of ML papers use CUDA</td></tr><tr><td style='font-size:.83rem'>NVLink Clusters</td><td class='mono right' style='color:var(--blue)'>Up to 576 GPU scale</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SWITCHING -->
+  <section id="switching">
+    <div class="section-head"><div class="section-head-label">3 · Switching Costs</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Switching Costs · Score 10/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:100%;height:100%;background:#34d399;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399;width:24px;text-align:right">10</span>
+        </div></div>
+        <div class="analysis-text">Switching costs from CUDA are the highest in enterprise technology. <strong>A hyperscaler migrating from NVIDIA to AMD faces $500M–$2B in engineering rewrite costs, 18-24 months of team retraining, and production regression risk — making the economics of switching almost universally unfavorable.</strong> AMD's MI300X is competitive on specs but has failed to break NVIDIA's 80% market share precisely because of this.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Switching Cost Drivers</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Hyperscaler Rewrite Cost</td><td class='mono right' style='color:var(--green)'>$500M-$2B estimated</td></tr><tr><td style='font-size:.83rem'>Engineer Retraining</td><td class='mono right' style='color:var(--green)'>18-24 months</td></tr><tr><td style='font-size:.83rem'>Library Gap vs cuDNN</td><td class='mono right' style='color:var(--green)'>10+ year head start</td></tr><tr><td style='font-size:.83rem'>Performance Regression Risk</td><td class='mono right' style='color:var(--green)'>10-30% typical</td></tr><tr><td style='font-size:.83rem'>Production Stability Risk</td><td class='mono right' style='color:var(--green)'>Mission-critical AI workflows</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COST ADVANTAGE -->
+  <section id="cost">
+    <div class="section-head"><div class="section-head-label">4 · Cost Advantage</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Cost Advantage · Score 8/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:80%;height:100%;background:#fbbf24;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#fbbf24;width:24px;text-align:right">8</span>
+        </div></div>
+        <div class="analysis-text">NVIDIA's fabless model eliminates $20B+ in annual fab capex while maintaining TSMC's top priority. <strong>75%+ gross margins — the highest of any major semiconductor company — reflect both CUDA's near-zero marginal cost and hardware pricing power from near-monopoly AI GPU position.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Cost Structure Highlights</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Gross Margin</td><td class='mono right' style='color:var(--amber)'>75%+ (industry-leading)</td></tr><tr><td style='font-size:.83rem'>Fabless Advantage</td><td class='mono right' style='color:var(--amber)'>No $20B+ fab capex</td></tr><tr><td style='font-size:.83rem'>TSMC Priority Access</td><td class='mono right' style='color:var(--amber)'>Top-tier CoWoS customer</td></tr><tr><td style='font-size:.83rem'>HBM Allocation</td><td class='mono right' style='color:var(--amber)'>SK Hynix/Micron preferred</td></tr><tr><td style='font-size:.83rem'>Software Margin</td><td class='mono right' style='color:var(--amber)'>~100% incremental on CUDA</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- IP / TECH -->
+  <section id="ip">
+    <div class="section-head"><div class="section-head-label">5 · Patents &amp; Proprietary Technology</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">IP &amp; Proprietary Tech · Score 10/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:100%;height:100%;background:#a78bfa;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#a78bfa;width:24px;text-align:right">10</span>
+        </div></div>
+        <div class="analysis-text">NVIDIA's IP spans every layer of the AI stack: Blackwell architecture, NVLink interconnect (1.8 TB/s), CUDA platform (10,000+ libraries), TensorRT inference, and the NIM microservices deployment platform. <strong>CUDA alone represents 19 years of compounding investment — the 'standard gauge of AI railways' that competitors cannot quickly replicate regardless of hardware performance.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">IP &amp; Technology Assets</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>CUDA Platform</td><td class='mono right' style='color:#a78bfa'>19yr · 10,000+ libraries</td></tr><tr><td style='font-size:.83rem'>NVLink 5 Bandwidth</td><td class='mono right' style='color:#a78bfa'>1.8 TB/s — no rival</td></tr><tr><td style='font-size:.83rem'>Blackwell Architecture</td><td class='mono right' style='color:#a78bfa'>2-3yr ahead of AMD</td></tr><tr><td style='font-size:.83rem'>cuDNN Deep Learning</td><td class='mono right' style='color:#a78bfa'>Industry standard library</td></tr><tr><td style='font-size:.83rem'>NIM Microservices</td><td class='mono right' style='color:#a78bfa'>AI deployment platform</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section id="comparison">
+    <div class="section-head"><div class="section-head-label">6 · Peer Comparison</div><div class="section-head-line"></div></div>
+    <div style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-head">Competitive Moat Scorecard vs. Top Peers</div>
+        <table class="tbl">
+          <thead><tr>
+            <th>Company</th><th class="right">Brand</th><th class="right">Network</th>
+            <th class="right">Switching</th><th class="right">Cost Adv.</th>
+            <th class="right">IP/Tech</th><th>Overall Moat</th>
+          </tr></thead>
+          <tbody><tr class='hl'>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#34d399">NVIDIA (NVDA)</td>
+          <td class="mono right">9</td>
+          <td class="mono right">10</td>
+          <td class="mono right">10</td>
+          <td class="mono right">8</td>
+          <td class="mono right">10</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:100%;height:100%;background:#34d399;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399">10/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">AMD (AMD)</td>
+          <td class="mono right">7</td>
+          <td class="mono right">5</td>
+          <td class="mono right">4</td>
+          <td class="mono right">7</td>
+          <td class="mono right">7</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:60%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">6/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Intel (INTC)</td>
+          <td class="mono right">6</td>
+          <td class="mono right">4</td>
+          <td class="mono right">4</td>
+          <td class="mono right">6</td>
+          <td class="mono right">7</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:50%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">5/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Google TPU (internal)</td>
+          <td class="mono right">6</td>
+          <td class="mono right">6</td>
+          <td class="mono right">7</td>
+          <td class="mono right">8</td>
+          <td class="mono right">8</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:70%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">7/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Broadcom (AVGO)</td>
+          <td class="mono right">7</td>
+          <td class="mono right">5</td>
+          <td class="mono right">8</td>
+          <td class="mono right">7</td>
+          <td class="mono right">8</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:70%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">7/10</span>
+          </div></td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Moat Radar Chart</div>
+        <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Moat Dimension Summary</div>
+        <table class="tbl">
+          <thead><tr><th>Dimension</th><th>Grade</th><th>Commentary</th></tr></thead>
+          <tbody><tr>
+          <td style="font-weight:500;font-size:.85rem">Brand Strength</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A+</span></td>
+          <td class="dim">Premier AI brand — every major model trained on NVIDIA</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Network Effects</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A+</span></td>
+          <td class="dim">4M+ CUDA developers — irreversible platform flywheel</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Switching Costs</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A+</span></td>
+          <td class="dim">$500M-$2B to switch — 19yr code/library investment at stake</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Cost Advantage</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A</span></td>
+          <td class="dim">75% GM + fabless + TSMC priority access</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">IP & Patents</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A+</span></td>
+          <td class="dim">CUDA + NVLink + Blackwell — 2-3yr lead maintained</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRENGTHS & THREATS -->
+  <section id="strengths">
+    <div class="section-head"><div class="section-head-label">7 · Moat Strengths &amp; Threats</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Core Moat Strengths</div>
+        <ul style="list-style:none"><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>4M+ CUDA developers — self-reinforcing ecosystem that compounds every year</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>80% AI GPU market share sustained despite AMD MI300X and Google TPU competition</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>NVLink 1.8 TB/s interconnect has no competitive equivalent — enables 576 GPU clusters</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>75%+ gross margins reflect near-monopoly pricing power of platform moat</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>15,000 Inception startups built on CUDA — next generation of AI companies locked in</li></ul>
+      </div>
+      <div class="card">
+        <div class="card-head">Moat Threats &amp; Watch Items</div>
+        <ul style="list-style:none"><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Custom ASICs (Google TPU, Amazon Trainium, Microsoft Maia) growing in hyperscale training</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Export controls to China reduce TAM by $5-8B annually</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Open-source ROCm improving — AMD gaining traction in select inference workloads</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Antitrust scrutiny of CUDA bundling practices (EU investigation)</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>DeepSeek-style efficiency gains could reduce total compute demand per model</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">8 · Moat Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Competitive Advantage Verdict · NVDA · Overall Moat Score: 10/10 · Wide Moat</div>
+      <div class="verdict-text">NVIDIA holds the widest competitive moat in semiconductors — the CUDA ecosystem represents 19 years of compounding investment that creates switching costs no hardware advantage can overcome. 4M+ developers, 15,000 startups, and virtually every AI framework optimized for CUDA first defines a platform monopoly. <strong style='color:#34d399'>Moat Score: 10/10. Wide Moat. The most defensible competitive position in the AI era.</strong></div>
+    </div>
+  </section>
+
+</div>
+
+<footer style="max-width:1200px;margin:0 auto;padding:2rem 2rem 1rem">
+  <div><div class="footer-brand">NVDA · Moat Analysis</div><div>Dashboard 3 · Competitive Advantage Analysis · March 2026</div></div>
+  <div style="color:var(--muted2);max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. All moat scores are qualitative assessments based on publicly available information. Consult a financial advisor before investing.</div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+  const isDark = true;
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#1a2232';
+
+  // Radar chart
+  const rCtx = document.getElementById('radarChart');
+  if(rCtx) {
+    new Chart(rCtx, {
+      type: 'radar',
+      data: {
+        labels: ['Brand', 'Network Effects', 'Switching Costs', 'Cost Advantage', 'IP / Tech'],
+        datasets: [{
+          label: 'NVDA',
+          data: [9, 10, 10, 8, 10],
+          backgroundColor: 'rgba(201,153,58,0.15)',
+          borderColor: '#c9993a',
+          borderWidth: 2,
+          pointBackgroundColor: '#c9993a',
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            min: 0, max: 10,
+            ticks: { stepSize: 2, color: '#334155', backdropColor: 'transparent', font:{size:10} },
+            grid: { color: '#1a2232' },
+            pointLabels: { color: '#94a3b8', font:{size:11} },
+            angleLines: { color: '#1a2232' }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw + '/10' } }
+        }
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
