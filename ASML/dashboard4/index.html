@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ASML · IB Valuation · Dashboard 4</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--border:#182030;--border2:#1e2d42;--accent:#a78bfa;--text:#e2e8f0;--muted:#64748b;--muted2:#334155;--green:#34d399;--red:#f87171;--blue:#5b9cf6}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#a78bfa08 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.1rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem}
+@media(max-width:700px){.g2,.g3{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:.9rem;padding-bottom:.65rem;border-bottom:1px solid var(--border)}
+.prose{font-size:.88rem;line-height:1.75;color:var(--text)}
+.prose strong{color:#a78bfa;font-weight:500}
+.prose p{margin-bottom:.85rem}
+.prose p:last-child{margin-bottom:0}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .6rem .55rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.55rem .6rem .55rem 0;border-bottom:1px solid var(--border);vertical-align:middle;font-size:.82rem}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.79rem}
+.tbl td.right{text-align:right}
+.chart-wrap{position:relative;width:100%;height:240px}
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.kpi{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.kpi-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:5px}
+.kpi-val{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;line-height:1}
+.kpi-sub{font-size:.65rem;color:var(--muted);margin-top:3px}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(3,1fr)}}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #a78bfa;border-radius:8px;padding:1.5rem;margin-bottom:2rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem 1rem;font-size:.72rem;color:var(--muted2);display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:#a78bfa;font-size:.82rem;margin-bottom:4px}</style></head><body>
+<nav>
+  <a style="font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:#a78bfa;letter-spacing:.1em;text-decoration:none" href="#">ASML · IB VALUATION</a>
+  <div style="display:flex;gap:6px;align-items:center"><a style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:3px 9px;border-radius:4px;text-decoration:none;border:1px solid #c9993a44;background:#c9993a0d;color:#c9993a" href="../">D1</a><a style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:3px 9px;border-radius:4px;text-decoration:none;border:1px solid #5b9cf644;background:#5b9cf60d;color:#5b9cf6" href="../dashboard2/">D2</a><a style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:3px 9px;border-radius:4px;text-decoration:none;border:1px solid #c9993a44;background:#c9993a0d;color:#c9993a" href="../dashboard3/">D3</a><a style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:3px 9px;border-radius:4px;text-decoration:none;border:1px solid #f9731644;background:#f973160d;color:#f97316" href="../dashboard5/">D5</a><a style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:3px 9px;border-radius:4px;text-decoration:none;border:1px solid #34d39944;background:#34d3990d;color:#34d399" href="../dashboard6/">D6</a><a style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:3px 9px;border-radius:4px;text-decoration:none;border:1px solid #a78bfa44;background:#a78bfa0d;color:#a78bfa" href="../dashboard7/">D7</a><a style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:3px 9px;border-radius:4px;text-decoration:none;border:1px solid #f59e0b44;background:#f59e0b0d;color:#f59e0b" href="../dashboard8/">D8</a><a style="font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:3px 9px;border-radius:4px;text-decoration:none;border:1px solid #c9993a44;background:#c9993a10;color:#c9993a" href="../../hub/">Hub</a></div>
+</nav>
+<div class="wrapper">
+<div style="padding:3rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem">
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem">Dashboard 4 · IB Valuation · March 2026</div>
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:#a78bfa;line-height:1;margin-bottom:.4rem">ASML</div>
+  <div style="font-family:'Playfair Display',serif;font-size:1.35rem;color:var(--muted);margin-bottom:.5rem">Investment Banking Valuation — ASML Holding N.V.</div>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi"><div class="kpi-label">Current Price</div><div class="kpi-val" style="color:#a78bfa">~$1,461</div><div class="kpi-sub">Feb 2026 reference</div></div>
+  <div class="kpi"><div class="kpi-label">Base Target</div><div class="kpi-val" style="color:#34d399">$1,600</div><div class="kpi-sub">+9.5% upside</div></div>
+  <div class="kpi"><div class="kpi-label">Bull Target</div><div class="kpi-val" style="color:#34d399">$2,000</div><div class="kpi-sub">+37% upside</div></div>
+  <div class="kpi"><div class="kpi-label">Bear Target</div><div class="kpi-val" style="color:#f87171">$1,050</div><div class="kpi-sub">-28% downside</div></div>
+  <div class="kpi"><div class="kpi-label">Analyst Consensus</div><div class="kpi-val" style="color:#a78bfa">$1,476</div><div class="kpi-sub">Bernstein $1,911 high</div></div>
+</div>
+
+<div class="section-head"><div class="section-head-label">DCF Valuation</div><div class="section-head-line"></div></div>
+<div class="g2">
+  <div class="card"><div class="card-head">DCF Assumptions</div>
+    <table class="tbl">
+      <thead><tr><th>Assumption</th><th class="right">Bear</th><th class="right">Base</th><th class="right">Bull</th></tr></thead>
+      <tbody>
+        <tr><td>Revenue CAGR (5yr)</td><td class="mono right" style="color:#f87171">+5%</td><td class="mono right" style="color:#fbbf24">+12%</td><td class="mono right" style="color:#34d399">+18%</td></tr>
+        <tr><td>Terminal Growth</td><td class="mono right">2%</td><td class="mono right">3%</td><td class="mono right">4%</td></tr>
+        <tr><td>Gross Margin (FY2030)</td><td class="mono right">51%</td><td class="mono right">54%</td><td class="mono right">57%</td></tr>
+        <tr><td>WACC</td><td class="mono right">9%</td><td class="mono right">8.2%</td><td class="mono right">7.5%</td></tr>
+        <tr><td>FY2030 FCF (€B)</td><td class="mono right">€12B</td><td class="mono right">€18B</td><td class="mono right">€26B</td></tr>
+        <tr><td><strong>Implied Value</strong></td><td class="mono right" style="color:#f87171"><strong>$1,050</strong></td><td class="mono right" style="color:#fbbf24"><strong>$1,600</strong></td><td class="mono right" style="color:#34d399"><strong>$2,000</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card"><div class="card-head">DCF Scenario Chart</div><div class="chart-wrap"><canvas id="dcfChart"></canvas></div></div>
+</div>
+
+<div class="section-head"><div class="section-head-label">Relative Valuation — Peer Multiples</div><div class="section-head-line"></div></div>
+<div class="g2">
+  <div class="card"><div class="card-head">Peer Multiple Comparison</div>
+    <table class="tbl">
+      <thead><tr><th>Company</th><th class="right">P/E Fwd</th><th class="right">EV/Rev</th><th class="right">FCF Yld</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td style="color:#a78bfa;font-weight:500">ASML</td><td class="mono right" style="color:#a78bfa">~38x</td><td class="mono right" style="color:#a78bfa">~17x</td><td class="mono right" style="color:#a78bfa">~1.9%</td><td style="font-size:.75rem;color:var(--muted)">EUV monopoly premium</td></tr>
+        <tr><td>Applied Materials</td><td class="mono right">~22x</td><td class="mono right">~6x</td><td class="mono right">~3.2%</td><td style="font-size:.75rem;color:var(--muted)">Broader equipment portfolio</td></tr>
+        <tr><td>Lam Research</td><td class="mono right">~24x</td><td class="mono right">~7x</td><td class="mono right">~3.0%</td><td style="font-size:.75rem;color:var(--muted)">Etch / deposition leader</td></tr>
+        <tr><td>KLA Corporation</td><td class="mono right">~28x</td><td class="mono right">~9x</td><td class="mono right">~2.1%</td><td style="font-size:.75rem;color:var(--muted)">Inspection monopoly similar moat</td></tr>
+        <tr><td>Tokyo Electron</td><td class="mono right">~25x</td><td class="mono right">~8x</td><td class="mono right">~2.5%</td><td style="font-size:.75rem;color:var(--muted)">Japan, diversified equipment</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card"><div class="card-head">Multiple Justification</div><div class="prose">
+    <p>ASML's 38x forward P/E trades at a <strong>40-70% premium to semiconductor equipment peers</strong>. This premium is justified by:</p>
+    <p><strong>1. Monopoly pricing power:</strong> ASML can raise prices 10-15% annually on EUV systems because customers have no alternative. This is impossible for Applied Materials or Lam Research, which compete with each other and with TEL.</p>
+    <p><strong>2. IBM recurring revenue (25% and growing):</strong> Service/upgrade revenue at 60%+ margins creates a compounding annuity stream. KLA's inspection monopoly commands 28x P/E — ASML's EUV monopoly is stronger, justifying the premium.</p>
+    <p><strong>3. High-NA system ASP escalation:</strong> €400M per High-NA system vs €200M for standard EUV means ASP is doubling while unit count grows. Revenue per installed system is compounding.</p>
+  </div></div>
+</div>
+
+<div class="section-head"><div class="section-head-label">Bull / Base / Bear Scenarios</div><div class="section-head-line"></div></div>
+<div class="g3">
+  <div class="card" style="border-left:3px solid #f87171"><div class="card-head">Bear Case — $1,050</div><div class="prose">
+    <p><strong>Triggers:</strong> China revenue -50% (export control escalation), semiconductor capex recession in 2026, High-NA ramp 12-month delay.</p>
+    <p>FY2026 revenue misses guide at €32B. P/E compresses to 32x. EPS €28 → stock €896 / $1,050.</p>
+  </div></div>
+  <div class="card" style="border-left:3px solid #fbbf24"><div class="card-head">Base Case — $1,600</div><div class="prose">
+    <p><strong>Assumes:</strong> FY2026 revenue €36B (mid-guide), China replacement by TSMC/Samsung/Micron, High-NA ramps as planned. P/E holds 38x on €30 EPS → €1,140 / $1,340 FY2026 + multiple expansion to $1,600 by year-end.</p>
+  </div></div>
+  <div class="card" style="border-left:3px solid #34d399"><div class="card-head">Bull Case — $2,000</div><div class="prose">
+    <p><strong>Triggers:</strong> FY2026 revenue €39B+ (high-end guide hit), TSMC commits to High-NA accelerated timeline, memory capex above consensus. P/E re-rates to 42x on €34 EPS → $1,700+. Bernstein target $1,911 supports this range.</p>
+  </div></div>
+</div>
+
+<div class="verdict-block">
+  <div class="verdict-title">Valuation Verdict · ASML · Base Case $1,600 · ~10% Upside from Current</div>
+  <div class="prose"><p><strong>ASML is fairly valued to modestly undervalued at current prices (~$1,461).</strong> The stock is not cheap on traditional metrics (38x P/E), but traditional metrics don't capture the monopoly optionality of High-NA EUV. Each new High-NA customer generates €400M upfront + decades of high-margin service — Bernstein's $1,911 target reflects this optionality. Our base case of $1,600 is conservative; the bull case of $2,000 is achievable if TSMC formally commits to High-NA in its 1.4nm roadmap.</p></div>
+</div>
+</div>
+<footer><div><div class="footer-brand">ASML · IB Valuation</div><div>Dashboard 4 · March 2026 · Not investment advice</div></div><div style="font-size:.7rem;max-width:400px">ASML Holding N.V. (NASDAQ: ASML). All financials in EUR unless stated. Based on FY2025 earnings (Jan 28, 2026).</div></footer>
+<script>Chart.defaults.color='#64748b';Chart.defaults.borderColor='#182030';
+new Chart(document.getElementById('dcfChart'),{type:'bar',data:{labels:['Bear','Base','Bull','Analyst High'],datasets:[{data:[1050,1600,2000,1911],backgroundColor:['#f8717144','#fbbf2444','#34d39944','#a78bfa44'],borderColor:['#f87171','#fbbf24','#34d399','#a78bfa'],borderWidth:2,borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' $'+c.raw}}},scales:{y:{grid:{color:'#182030'},ticks:{callback:v=>'$'+v},min:800},x:{grid:{display:false}}}}});
+</script>
+</body></html>
