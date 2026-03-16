@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ALAB · Moat Analysis · Dashboard 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07090c;--surface:#0e1117;--surface2:#141a24;--surface3:#1a2232;--border:#1a2232;--border2:#243248;--accent:#c9993a;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(201,153,58,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(52,211,153,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:var(--blue);border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}.nav-d2:hover{background:rgba(91,156,246,.12)}
+.nav-hub{color:var(--accent);border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.08)}.nav-hub:hover{background:rgba(201,153,58,.15)}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,153,58,.08);border:1px solid rgba(201,153,58,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero-right{text-align:right}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.moat-ring{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:6px}
+.moat-score{font-family:'IBM Plex Mono',monospace;font-size:3rem;font-weight:500;color:#5b9cf6;line-height:1}
+.moat-denom{font-family:'IBM Plex Mono',monospace;font-size:1.2rem;color:var(--muted);line-height:1;margin-top:auto;margin-bottom:6px}/10
+.moat-label{font-size:.72rem;font-family:'IBM Plex Mono',monospace;color:#5b9cf6;text-transform:uppercase;letter-spacing:.1em}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left}.hero-ticker{font-size:2.8rem}.moat-ring{justify-content:flex-start}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-num{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:280px;margin-top:.5rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:rgba(201,153,58,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #5b9cf6;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:2px 8px;border-radius:3px;font-weight:500;letter-spacing:.04em}
+.pill-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.pill-amber{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">ALAB · MOAT ANALYSIS</a>
+  <ul class="nav-links"><li><a href="#brand">Brand</a></li><li><a href="#network">Network</a></li><li><a href="#switching">Switching</a></li><li><a href="#cost">Cost Adv.</a></li><li><a href="#ip">IP / Tech</a></li><li><a href="#comparison">Vs. Peers</a></li><li><a href="#verdict">Verdict</a></li></ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 3 · Competitive Moat Analysis · March 2026</div>
+        <div class="hero-ticker">ALAB</div>
+        <div class="hero-name">Astera Labs, Inc.</div>
+        <div class="hero-badge">PCIe 6 FIRST-MOVER · CONNECTIVITY INFRASTRUCTURE MOAT</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Moat Score</div>
+        <div class="moat-ring">
+          <div class="moat-score">7</div>
+          <div class="moat-denom">/10</div>
+        </div>
+        <div class="moat-label">Narrow-Wide Moat</div>
+        <div class="hero-sub">Only PCIe 6 fabric switch in production volume. Amazon $6.5B commitment. 76% non-GAAP GM. 12-24mo competitor lead.</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Brand Strength</div><div class="score-num" style="color:#fbbf24">5/10</div><div class="score-sub">AI connectivity specialist</div></div>
+    <div class="score-item"><div class="score-label">Network Effects</div><div class="score-num" style="color:#5b9cf6">6/10</div><div class="score-sub">Hyperscaler design win ecosystem</div></div>
+    <div class="score-item"><div class="score-label">Switching Costs</div><div class="score-num" style="color:#34d399">8/10</div><div class="score-sub">2-3yr ASIC design cycle lock</div></div>
+    <div class="score-item"><div class="score-label">Cost Advantage</div><div class="score-num" style="color:#5b9cf6">7/10</div><div class="score-sub">76% non-GAAP GM</div></div>
+    <div class="score-item"><div class="score-label">IP / Proprietary Tech</div><div class="score-num" style="color:#34d399">9/10</div><div class="score-sub">Scorpio PCIe 6 — only solution</div></div>
+  </div>
+
+  <!-- BRAND -->
+  <section id="brand">
+    <div class="section-head"><div class="section-head-label">1 · Brand Strength</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Brand Assessment · Score 5/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:50%;height:100%;background:#5b9cf6;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6;width:24px;text-align:right">5</span>
+        </div></div>
+        <div class="analysis-text">Astera Labs is not a consumer brand but holds the most important possible brand positioning in AI infrastructure: recognized as the only production-ready PCIe 6 fabric solution by hyperscalers that matter. <strong>The Amazon $6.5B warrant commitment is the most credible brand endorsement possible — the world's largest cloud company has staked multi-year infrastructure investment on Astera's technology.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Brand Dimensions</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>AI Connectivity Brand</td><td class='mono right' style='color:var(--green)'>Recognized PCIe 6 leader</td></tr><tr><td style='font-size:.83rem'>Amazon Partnership Brand</td><td class='mono right' style='color:var(--green)'>$6.5B commitment validates tech</td></tr><tr><td style='font-size:.83rem'>Hyperscaler Engineering Brand</td><td class='mono right' style='color:var(--green)'>Preferred by AI infra teams</td></tr><tr><td style='font-size:.83rem'>IPO Credibility</td><td class='mono right' style='color:var(--green)'>March 2024 public company</td></tr><tr><td style='font-size:.83rem'>Analyst Recognition</td><td class='mono right' style='color:var(--green)'>58% below average price target</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- NETWORK -->
+  <section id="network">
+    <div class="section-head"><div class="section-head-label">2 · Network Effects</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Network Effects · Score 6/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:60%;height:100%;background:#5b9cf6;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6;width:24px;text-align:right">6</span>
+        </div></div>
+        <div class="analysis-text">Design wins at hyperscalers create a reference architecture network effect — once Scorpio becomes the standard PCIe 6 switch at Amazon's AI clusters, other hyperscalers evaluate Astera first for their implementations. <strong>The interconnect ecosystem around Scorpio (compatible NIC vendors, software drivers, management tools) compounds the switching cost as the ecosystem builds.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Network Effect Indicators</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Amazon Reference Architecture</td><td class='mono right' style='color:var(--blue)'>Largest cloud endorses Scorpio</td></tr><tr><td style='font-size:.83rem'>Hyperscaler Evaluation Pipeline</td><td class='mono right' style='color:var(--blue)'>Google/Meta evaluating post-Amazon</td></tr><tr><td style='font-size:.83rem'>Ecosystem Partners</td><td class='mono right' style='color:var(--blue)'>NIC/software compatibility layer</td></tr><tr><td style='font-size:.83rem'>NVIDIA NVLink Complement</td><td class='mono right' style='color:var(--blue)'>Deployed alongside NVIDIA hardware</td></tr><tr><td style='font-size:.83rem'>Industry Standards Body</td><td class='mono right' style='color:var(--blue)'>Contributing to PCIe 7 specs</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SWITCHING -->
+  <section id="switching">
+    <div class="section-head"><div class="section-head-label">3 · Switching Costs</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Switching Costs · Score 8/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:80%;height:100%;background:#34d399;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399;width:24px;text-align:right">8</span>
+        </div></div>
+        <div class="analysis-text">Custom connectivity chips have 2-3 year design cycles — once a hyperscaler has designed Scorpio into their server rack architecture, switching to an alternative requires a full architectural redesign. <strong>Amazon's $6.5B commitment represents the most extreme form of switching cost — a multi-year infrastructure capital commitment tied to Astera's continued technology execution.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Switching Cost Drivers</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Rack Architecture Design Cycle</td><td class='mono right' style='color:var(--green)'>2-3 years to change</td></tr><tr><td style='font-size:.83rem'>Amazon Capital Commitment</td><td class='mono right' style='color:var(--green)'>$6.5B — extraordinary switching cost</td></tr><tr><td style='font-size:.83rem'>Server Board Integration</td><td class='mono right' style='color:var(--green)'>PCB-level integration difficulty</td></tr><tr><td style='font-size:.83rem'>Driver Software Investment</td><td class='mono right' style='color:var(--green)'>Months of optimization</td></tr><tr><td style='font-size:.83rem'>Multi-gen Partnership</td><td class='mono right' style='color:var(--green)'>Each PCIe gen deepens commitment</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COST ADVANTAGE -->
+  <section id="cost">
+    <div class="section-head"><div class="section-head-label">4 · Cost Advantage</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Cost Advantage · Score 7/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:70%;height:100%;background:#fbbf24;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#fbbf24;width:24px;text-align:right">7</span>
+        </div></div>
+        <div class="analysis-text">76% non-GAAP gross margins are exceptional for a connectivity semiconductor company — reflecting the premium pricing of a first-mover with no competition at PCIe 6. <strong>$1.19B in cash and zero debt provides maximum strategic freedom to invest in PCIe 7 development without financial pressure.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Cost Structure Highlights</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Non-GAAP Gross Margin</td><td class='mono right' style='color:var(--amber)'>76% first-mover premium</td></tr><tr><td style='font-size:.83rem'>Zero Debt</td><td class='mono right' style='color:var(--amber)'>$1.19B cash fortress</td></tr><tr><td style='font-size:.83rem'>Fabless Model</td><td class='mono right' style='color:var(--amber)'>TSMC leading-edge access</td></tr><tr><td style='font-size:.83rem'>R&D Investment</td><td class='mono right' style='color:var(--amber)'>PCIe 7 development underway</td></tr><tr><td style='font-size:.83rem'>Operating Leverage</td><td class='mono right' style='color:var(--amber)'>40% op. margin at current scale</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- IP / TECH -->
+  <section id="ip">
+    <div class="section-head"><div class="section-head-label">5 · Patents &amp; Proprietary Technology</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">IP &amp; Proprietary Tech · Score 9/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:90%;height:100%;background:#a78bfa;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#a78bfa;width:24px;text-align:right">9</span>
+        </div></div>
+        <div class="analysis-text">Astera's Scorpio P-Series PCIe 6 fabric switch is the only solution shipping in production volume — a 12-24 month technology lead that represents irreplaceable first-mover IP. <strong>The PCIe 6 specification implementation required solving fundamental electrical engineering challenges that competitors are still working through.</strong> Development of PCIe 7 (already underway) aims to extend this generational lead.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">IP &amp; Technology Assets</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Scorpio PCIe 6 Switch</td><td class='mono right' style='color:#a78bfa'>Only production solution — 12-24mo lead</td></tr><tr><td style='font-size:.83rem'>PCIe 7 Development</td><td class='mono right' style='color:#a78bfa'>Next-gen extending lead</td></tr><tr><td style='font-size:.83rem'>Aries Retimers</td><td class='mono right' style='color:#a78bfa'>PCIe signal integrity IP</td></tr><tr><td style='font-size:.83rem'>CXL Connectivity IP</td><td class='mono right' style='color:#a78bfa'>Memory expansion capability</td></tr><tr><td style='font-size:.83rem'>System-Level IP</td><td class='mono right' style='color:#a78bfa'>Board + rack-level integration</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section id="comparison">
+    <div class="section-head"><div class="section-head-label">6 · Peer Comparison</div><div class="section-head-line"></div></div>
+    <div style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-head">Competitive Moat Scorecard vs. Top Peers</div>
+        <table class="tbl">
+          <thead><tr>
+            <th>Company</th><th class="right">Brand</th><th class="right">Network</th>
+            <th class="right">Switching</th><th class="right">Cost Adv.</th>
+            <th class="right">IP/Tech</th><th>Overall Moat</th>
+          </tr></thead>
+          <tbody><tr class='hl'>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#34d399">Astera Labs (ALAB)</td>
+          <td class="mono right">5</td>
+          <td class="mono right">6</td>
+          <td class="mono right">8</td>
+          <td class="mono right">7</td>
+          <td class="mono right">9</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:70%;height:100%;background:#34d399;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399">7/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Broadcom (AVGO)</td>
+          <td class="mono right">8</td>
+          <td class="mono right">7</td>
+          <td class="mono right">8</td>
+          <td class="mono right">8</td>
+          <td class="mono right">9</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:80%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">8/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Marvell (MRVL)</td>
+          <td class="mono right">6</td>
+          <td class="mono right">6</td>
+          <td class="mono right">8</td>
+          <td class="mono right">7</td>
+          <td class="mono right">8</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:70%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">7/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Microchip Tech</td>
+          <td class="mono right">5</td>
+          <td class="mono right">4</td>
+          <td class="mono right">6</td>
+          <td class="mono right">6</td>
+          <td class="mono right">6</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:50%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">5/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Credo (CRDO)</td>
+          <td class="mono right">4</td>
+          <td class="mono right">4</td>
+          <td class="mono right">7</td>
+          <td class="mono right">6</td>
+          <td class="mono right">7</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:60%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">6/10</span>
+          </div></td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Moat Radar Chart</div>
+        <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Moat Dimension Summary</div>
+        <table class="tbl">
+          <thead><tr><th>Dimension</th><th>Grade</th><th>Commentary</th></tr></thead>
+          <tbody><tr>
+          <td style="font-weight:500;font-size:.85rem">Brand Strength</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#5b9cf6;font-weight:600">B-</span></td>
+          <td class="dim">Not consumer brand — Amazon $6.5B commitment is the ultimate validation</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Network Effects</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#5b9cf6;font-weight:600">B</span></td>
+          <td class="dim">Hyperscaler reference architecture + ecosystem partners building</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Switching Costs</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A</span></td>
+          <td class="dim">2-3yr design cycle + Amazon $6.5B capital commitment</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Cost Advantage</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#5b9cf6;font-weight:600">B+</span></td>
+          <td class="dim">76% non-GAAP GM first-mover premium + $1.19B cash fortress</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">IP & Patents</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A+</span></td>
+          <td class="dim">Scorpio PCIe 6 — only production solution with 12-24 month lead</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRENGTHS & THREATS -->
+  <section id="strengths">
+    <div class="section-head"><div class="section-head-label">7 · Moat Strengths &amp; Threats</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Core Moat Strengths</div>
+        <ul style="list-style:none"><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>Scorpio PCIe 6 is the only production-ready fabric switch — competitors 12-24 months behind</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>Amazon $6.5B warrant commitment = deepest possible hyperscaler validation</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>76% non-GAAP gross margin = pricing power of first-mover with zero competition</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>$1.19B cash + zero debt = maximum strategic freedom during critical commercial ramp</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>PCIe 7 development already underway — extends generational technology lead</li></ul>
+      </div>
+      <div class="card">
+        <div class="card-head">Moat Threats &amp; Watch Items</div>
+        <ul style="list-style:none"><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Broadcom and Marvell both have PCIe 6 solutions in development — 12-24 month lead not permanent</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Amazon warrant creates ~2pt/quarter non-cash gross margin headwind from Q2 2026 — optics</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>CFO transition creates continuity risk during hypergrowth</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Stock 58% below average analyst consensus — market skepticism to overcome</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Revenue deceleration expected FY2027 as hyperscale investment cycles normalize</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">8 · Moat Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Competitive Advantage Verdict · ALAB · Overall Moat Score: 7/10 · Narrow-Wide Moat</div>
+      <div class="verdict-text">Astera Labs holds a powerful but time-limited first-mover moat in PCIe 6 connectivity. The 12-24 month lead over Broadcom and Marvell, combined with Amazon's $6.5B commitment, creates a window of extraordinary pricing power and switching cost lock-in. The key strategic imperative is executing PCIe 7 before competitors close the PCIe 6 gap. <strong style='color:#c9993a'>Moat Score: 7/10. Narrow-Wide Moat. PCIe 6 monopoly + Amazon commitment are strong but time-limited. PCIe 7 execution is the moat-sustaining requirement.</strong></div>
+    </div>
+  </section>
+
+</div>
+
+<footer style="max-width:1200px;margin:0 auto;padding:2rem 2rem 1rem">
+  <div><div class="footer-brand">ALAB · Moat Analysis</div><div>Dashboard 3 · Competitive Advantage Analysis · March 2026</div></div>
+  <div style="color:var(--muted2);max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. All moat scores are qualitative assessments based on publicly available information. Consult a financial advisor before investing.</div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+  const isDark = true;
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#1a2232';
+
+  // Radar chart
+  const rCtx = document.getElementById('radarChart');
+  if(rCtx) {
+    new Chart(rCtx, {
+      type: 'radar',
+      data: {
+        labels: ['Brand', 'Network Effects', 'Switching Costs', 'Cost Advantage', 'IP / Tech'],
+        datasets: [{
+          label: 'ALAB',
+          data: [5, 6, 8, 7, 9],
+          backgroundColor: 'rgba(201,153,58,0.15)',
+          borderColor: '#c9993a',
+          borderWidth: 2,
+          pointBackgroundColor: '#c9993a',
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            min: 0, max: 10,
+            ticks: { stepSize: 2, color: '#334155', backdropColor: 'transparent', font:{size:10} },
+            grid: { color: '#1a2232' },
+            pointLabels: { color: '#94a3b8', font:{size:11} },
+            angleLines: { color: '#1a2232' }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw + '/10' } }
+        }
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
