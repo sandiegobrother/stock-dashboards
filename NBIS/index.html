@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Nebius Group N.V. (NBIS) — Full Wall Street equity research dashboard.">
+<meta name="description" content="Nebius Group N.V. (NBIS) — Wall Street equity research dashboard.">
+<meta property="og:title" content="NBIS · Nebius Group N.V. Equity Research">
 <title>NBIS · Nebius Group N.V. Equity Research</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -12,16 +13,16 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#07090c;--bg2:#0d1117;--surface:#111720;--surface2:#171e28;--border:#1e2836;--border2:#253042;--accent:#c9993a;--blue:#4a84e8;--green:#3bbf72;--red:#df5454;--text:#dde2ea;--muted:#6e7d94;--muted2:#3a4a5e}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;padding:0;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,153,58,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(201,153,58,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.12em;text-decoration:none}
-.nav-links{display:flex;list-style:none}
+.nav-links{display:flex;gap:0;list-style:none}
 .nav-links a{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .9rem;height:52px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
 .nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
 .nav-pill{font-family:'IBM Plex Mono',monospace;font-size:.65rem;background:rgba(59,191,114,.12);color:#3bbf72;border:1px solid rgba(59,191,114,.25);padding:3px 10px;border-radius:20px;letter-spacing:.08em}
-.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none}
+.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px}
 .back-link:hover{color:var(--accent)}
 @media(max-width:700px){.nav-links{display:none}}
 .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
@@ -52,7 +53,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem}
 @media(max-width:960px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}}
-.metric{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;position:relative;overflow:hidden}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
 .metric:hover{border-color:var(--border2);transform:translateY(-1px)}
 .metric::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0;transition:opacity .2s}
 .metric:hover::after{opacity:1}
@@ -60,19 +61,17 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .m-value{font-family:'IBM Plex Mono',monospace;font-size:1.55rem;font-weight:500;line-height:1}
 .m-sub{font-size:.73rem;color:var(--muted);margin-top:5px}
 .tbl{width:100%;border-collapse:collapse;font-size:.86rem}
-.tbl th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .65rem 0;border-bottom:1px solid var(--border);font-weight:500}
-.tbl td{padding:.62rem .75rem .62rem 0;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 1rem .65rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.62rem 1rem .62rem 0;border-bottom:1px solid var(--border);vertical-align:top}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tr:hover td{background:rgba(255,255,255,.015)}
 .tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.82rem}
 .tbl td.right{text-align:right}
 .tbl td.dim{color:var(--muted);font-size:.79rem}
-.tbl .hl td{background:rgba(201,153,58,.06)}
-.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.bar-lbl{font-size:.73rem;color:var(--muted);width:130px;flex-shrink:0}
-.bar-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
-.bar-fill{height:100%;border-radius:3px}
+.bar-lbl{font-size:.73rem;color:var(--muted);width:110px;flex-shrink:0}
+.bar-track{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
 .bar-val{font-family:'IBM Plex Mono',monospace;font-size:.73rem;width:44px;text-align:right;color:var(--text);flex-shrink:0}
 .scenario{border-radius:10px;padding:1.4rem;border:1px solid;position:relative;overflow:hidden}
 .scenario::before{content:'';position:absolute;inset:0;opacity:.04;pointer-events:none;background:repeating-linear-gradient(-45deg,currentColor 0,currentColor 1px,transparent 0,transparent 50%);background-size:8px 8px}
@@ -87,23 +86,21 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .rb-high{background:rgba(223,84,84,.14);color:var(--red)}.rb-med{background:rgba(201,153,58,.14);color:var(--accent)}.rb-low{background:rgba(59,191,114,.14);color:var(--green)}
 .risk-name{font-size:.87rem;font-weight:400;margin-bottom:3px}
 .risk-desc-text{font-size:.77rem;color:var(--muted);line-height:1.45}
-.stars{color:var(--green);font-size:.78rem;letter-spacing:1px}
-.quote-block{border:1px solid rgba(201,153,58,.28);background:rgba(201,153,58,.05);border-left:3px solid var(--accent);border-radius:6px;padding:1rem 1.2rem;font-size:.87rem;line-height:1.65;color:var(--text);margin-top:1rem}
-.quote-block cite{display:block;font-size:.7rem;color:var(--muted2);font-style:normal;margin-top:.5rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em}
 .verdict{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:6px;padding:1.5rem;margin-bottom:2.5rem}
 .verdict-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.6rem}
 .verdict-text{font-size:.9rem;line-height:1.7}
-.chart-wrap{position:relative;width:100%;height:230px;margin-top:1rem}
-footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between}
+.chart-wrap{position:relative;width:100%;height:220px}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;align-items:flex-start}
 .footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .5s ease both}
 </style>
 </head>
 <body>
 <nav>
   <a class="nav-logo" href="#">NBIS · RESEARCH</a>
   <ul class="nav-links">
-    <li><a href="#financials">Financials</a></li>
-    <li><a href="#valuation">Valuation</a></li>
+    <li><a href="#metrics">Metrics</a></li>
     <li><a href="#moat">Moat</a></li>
     <li><a href="#scenarios">Scenarios</a></li>
     <li><a href="#risks">Risks</a></li>
@@ -112,316 +109,86 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
   <span class="nav-pill">STRONG BUY</span>
 </nav>
 <div class="wrapper">
-
-  <!-- HERO -->
-  <header class="hero">
+  <header class="hero fade-up">
     <div class="hero-left">
-      <div class="eyebrow"><a class="back-link" href="../">← All Tickers</a> &nbsp;·&nbsp; Wall Street · Equity Research · March 15, 2026</div>
+      <div class="eyebrow">Wall Street · Equity Research · March 15, 2026</div>
       <div class="hero-ticker">NBIS</div>
       <div class="hero-name">Nebius Group N.V.</div>
-      <div class="hero-tags"><span class="tag">NASDAQ</span> <span class="tag">AI Cloud</span> <span class="tag">GPU Compute</span> <span class="tag">NVIDIA Backed</span> <span class="tag">European AI</span></div>
+      <div class="hero-tags"><span class="tag">NASDAQ</span><span class="tag">AI Cloud</span><span class="tag">GPU Compute</span><span class="tag">European AI</span></div>
     </div>
     <div class="hero-right">
       <div class="hero-price">$32.00</div>
-      <div class="hero-target">12-mo target · $72.50</div>
+      <div class="hero-target">12-mo target · $150.62</div>
       <div class="hero-date">Report date: 15 Mar 2026</div>
     </div>
   </header>
 
-  <!-- RIBBON -->
-  <div class="ribbon">
+  <div class="ribbon fade-up">
     <div class="ribbon-item"><div class="ribbon-label">Consensus</div><div class="ribbon-value" style="color:#3bbf72">STRONG BUY</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Price Target</div><div class="ribbon-value rv-amber">$72.50</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">High Target</div><div class="ribbon-value rv-amber">$85.00</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Price Target</div><div class="ribbon-value rv-amber">$150.62</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">High Target</div><div class="ribbon-value rv-amber">$200.00</div></div>
     <div class="ribbon-item"><div class="ribbon-label">Market Cap</div><div class="ribbon-value rv-text">~$6B</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+127% to consensus</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+371%</div></div>
     <div class="ribbon-item"><div class="ribbon-label">Exchange</div><div class="ribbon-value rv-blue">NASDAQ</div></div>
   </div>
 
-  <!-- KEY METRICS -->
-  <section id="financials">
+  <section id="metrics">
     <div class="section-head"><div class="section-head-label">Key Financial Metrics</div><div class="section-head-line"></div></div>
     <div class="g4">
-      <div class="metric"><div class="m-label">Q3 2025 Revenue (ARR)</div><div class="m-value rv-text">$146M annualized run rate</div><div class="m-sub" style="color:var(--green)">+355% year-over-year</div></div>
-      <div class="metric"><div class="m-label">9-Month 2025 Revenue</div><div class="m-value rv-amber">~$302M</div><div class="m-sub" style="color:var(--green)">Rapid acceleration throughout year</div></div>
-      <div class="metric"><div class="m-label">FY2025E Revenue</div><div class="m-value rv-text">~$500–550M</div><div class="m-sub">Projected based on ARR trajectory</div></div>
-      <div class="metric"><div class="m-label">End-2026 ARR Target</div><div class="m-value rv-green">$7–9B</div><div class="m-sub">Management guidance · ~14-18x growth</div></div>
-      <div class="metric"><div class="m-label">NVIDIA Investment</div><div class="m-value rv-text">$2.0B</div><div class="m-sub">Strategic investment + priority GPU access</div></div>
-      <div class="metric"><div class="m-label">GPU Capacity</div><div class="m-value rv-green">Scaling to 5GW+</div><div class="m-sub">By end of decade · Multiple data centers</div></div>
-      <div class="metric"><div class="m-label">Net Loss (Q3 Annualized)</div><div class="m-value rv-amber">~-$480M</div><div class="m-sub">Pre-profitability · Heavy capex phase</div></div>
-      <div class="metric"><div class="m-label">Backlog</div><div class="m-value rv-text">$20B+ unfilled orders</div><div class="m-sub">Strong demand visibility</div></div>
+      <div class="metric fade-up"><div class="m-label">Revenue (TTM)</div><div class="m-value rv-text">~$120M</div><div class="m-sub" style="color:var(--green)">+400%+ YoY</div></div>
+      <div class="metric fade-up"><div class="m-label">Gross Margin</div><div class="m-value rv-green">~45%</div><div class="m-sub">Non-GAAP</div></div>
+      <div class="metric fade-up"><div class="m-label">FCF Margin</div><div class="m-value rv-text">N/M</div><div class="m-sub">Free cash flow %</div></div>
+      <div class="metric fade-up"><div class="m-label">Trailing P/E</div><div class="m-value rv-text">N/M</div><div class="m-sub">Fwd P/E: N/M</div></div>
     </div>
   </section>
 
-  <!-- REVENUE GROWTH & VALUATION -->
-  <section id="valuation">
-    <div class="section-head"><div class="section-head-label">Revenue Growth &amp; Valuation</div><div class="section-head-line"></div></div>
-    <div class="g2">
-
-      <!-- Left: Revenue table + chart -->
-      <div class="card">
-        <div class="card-head">Quarterly Revenue Progression</div>
-        <table class="tbl">
-          <thead>
-            <tr>
-              <th>Period</th>
-              <th class="right">Total Rev</th>
-              <th class="right">GPU Cloud Revenue ($B annualized)</th>
-              <th class="right">Mix</th>
-              <th class="right">YoY</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Q1 2025</td><td class="mono right">~$58M ARR</td><td class="mono right">~$30M</td><td class="mono right">52%</td><td class="mono right" style="color:var(--green)">+280%</td></tr>
-<tr><td>Q2 2025</td><td class="mono right">~$98M ARR</td><td class="mono right">~$55M</td><td class="mono right">56%</td><td class="mono right" style="color:var(--green)">+340%</td></tr>
-<tr class="hl"><td>Q3 2025</td><td class="mono right">~$146M ARR</td><td class="mono right" style="color:var(--accent)">~$90M</td><td class="mono right" style="color:var(--accent)">62%</td><td class="mono right" style="color:var(--green)">+355%</td></tr>
-<tr><td>Q4 2025E</td><td class="mono right">~$200M ARR</td><td class="mono right">~$130M</td><td class="mono right">65%</td><td class="mono right" style="color:var(--green)">+400%</td></tr>
-<tr><td>End-2026E (ARR target)</td><td class="mono right">$7–9B ARR</td><td class="mono right">~$5B</td><td class="mono right">~67%</td><td class="mono right" style="color:var(--green)">+5,000%+</td></tr>
-
-          </tbody>
-        </table>
-        <div style="margin-top:1.25rem">
-          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#4a84e8;display:inline-block"></span>Total Revenue</span>
-            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#c9993a;display:inline-block"></span>GPU Cloud Revenue ($B annualized)</span>
-          </div>
-          <div class="chart-wrap">
-            <canvas id="revChart"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right: Peer comparison + profitability bars + balance sheet -->
-      <div class="card">
-        <div class="card-head">Peer Valuation Comparison</div>
-        <table class="tbl">
-          <thead>
-            <tr>
-              <th>Company</th>
-              <th class="right">Mkt Cap</th>
-              <th class="right">Fwd P/E</th>
-              <th class="right">Rev Growth</th>
-              <th class="right">FCF Margin</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="hl"><td style="color:var(--accent)"><strong>NBIS</strong></td><td class="mono right">~$6B</td><td class="mono right" style="color:var(--accent)">N/M</td><td class="mono right" style="color:var(--green)">+355%</td><td class="mono right" style="color:var(--green)">N/M</td></tr>
-<tr><td><span>CRWV</span></td><td class="mono right">~$23B</td><td class="mono right">N/M</td><td class="mono right" style="color:var(--green)">+400%</td><td class="mono right">N/M</td></tr>
-<tr><td><span>AWS</span></td><td class="mono right">(Part of AMZN)</td><td class="mono right">N/A</td><td class="mono right" style="color:var(--green)">+20%</td><td class="mono right">30%</td></tr>
-<tr><td><span>GCP</span></td><td class="mono right">(Part of GOOGL)</td><td class="mono right">N/A</td><td class="mono right" style="color:var(--green)">+28%</td><td class="mono right">25%</td></tr>
-<tr><td><span>IREN</span></td><td class="mono right">~$2B</td><td class="mono right">N/M</td><td class="mono right" style="color:var(--green)">+200%</td><td class="mono right">N/M</td></tr>
-
-          </tbody>
-        </table>
-
-        <div style="margin-top:1.5rem">
-          <div class="card-head" style="margin-bottom:1rem">Profitability Benchmarks</div>
-          <div class="bar-row"><div class="bar-lbl">NVIDIA strategic investment</div><div class="bar-track"><div class="bar-fill" style="width:200%;background:var(--accent)"></div></div><div class="bar-val">200%</div></div>
-<div class="bar-row"><div class="bar-lbl">ARR growth (Q3 YoY)</div><div class="bar-track"><div class="bar-fill" style="width:355%;background:var(--blue)"></div></div><div class="bar-val">355%</div></div>
-<div class="bar-row"><div class="bar-lbl">Backlog coverage (vs current ARR)</div><div class="bar-track"><div class="bar-fill" style="width:137%;background:var(--green)"></div></div><div class="bar-val">137%</div></div>
-<div class="bar-row"><div class="bar-lbl">Institutional ownership est.</div><div class="bar-track"><div class="bar-fill" style="width:45%;background:var(--muted)"></div></div><div class="bar-val">45%</div></div>
-
-        </div>
-
-        <div style="margin-top:1.5rem">
-          <div class="card-head" style="margin-bottom:1rem">Balance Sheet Snapshot</div>
-          <table class="tbl">
-            <tbody>
-              <tr><td class="dim">NVIDIA investment received</td><td class="mono right" style="color:var(--green)">$2.0B</td></tr>
-<tr><td class="dim">Net cash position</td><td class="mono right" style="color:var(--green)">~$1.5B+</td></tr>
-<tr><td class="dim">Capital expenditure (ongoing)</td><td class="mono right" style="color:var(--accent)">Very high · Data center buildout</td></tr>
-<tr><td class="dim">Revenue backlog</td><td class="mono right" style="color:var(--green)">$20B+ unfilled orders</td></tr>
-
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- BUSINESS MODEL & MOAT -->
   <section id="moat">
-    <div class="section-head"><div class="section-head-label">Business Model &amp; Competitive Moat</div><div class="section-head-line"></div></div>
-    <div class="g2">
-
-      <div class="card">
-        <div class="card-head">Revenue Segments</div>
-        <table class="tbl">
-          <thead>
-            <tr><th>Segment</th><th class="right">Mix</th><th>Key Products</th><th>Margin Profile</th></tr>
-          </thead>
-          <tbody>
-            <tr><td><strong>AI Cloud (GPU clusters)</strong></td><td class="mono right" style="color:var(--accent)">Primary</td><td class="dim">H100/H200/B200 GPU clusters on-demand, bare metal GPU servers, managed AI training/inference cloud</td><td class="mono" style="color:var(--green)">Growing · ~45% gross margin</td></tr>
-<tr><td><strong>ML tools / Toloka</strong></td><td class="mono right" style="color:var(--accent)">Secondary</td><td class="dim">AI data labeling platform, fine-tuning tools, model evaluation services</td><td class="mono" style="color:var(--green)">Higher · Smaller</td></tr>
-<tr><td><strong>TripleTen / Education</strong></td><td class="mono right" style="color:var(--accent)">Small</td><td class="dim">Tech education bootcamps for AI/data science careers</td><td class="mono" style="color:var(--green)">Positive · Divesting</td></tr>
-
-          </tbody>
-        </table>
-        <div style="margin-top:1.25rem">
-          <div class="card-head" style="margin-bottom:.75rem">Industry Tailwinds (12–24 Months)</div>
-          <table class="tbl">
-            <thead><tr><th>Trend</th><th>Exposure</th><th class="right">Scale</th></tr></thead>
-            <tbody>
-              <tr><td>NVIDIA Rubin GPU priority access</td><td class="dim">$2B investment = front-of-queue for Rubin</td><td class="mono right" style="color:var(--green)">Most powerful hardware advantage possible</td></tr>
-<tr><td>European AI sovereignty</td><td class="dim">EU enterprises need non-US cloud</td><td class="mono right" style="color:var(--green)">GDPR and data residency regulations favor NBIS</td></tr>
-<tr><td>$20B+ backlog</td><td class="dim">Contracted demand exceeding current capacity</td><td class="mono right" style="color:var(--green)">Capacity is the only constraint</td></tr>
-<tr><td>Yandex talent inheritance</td><td class="dim">1,000+ world-class ML/infra engineers</td><td class="mono right" style="color:var(--green)">Russia-origin technical excellence</td></tr>
-<tr><td>Full-stack AI cloud</td><td class="dim">Hardware + orchestration + tooling</td><td class="mono right" style="color:var(--green)">More value-added than bare GPU rental</td></tr>
-
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-head">Competitive Moat Analysis</div>
-        <table class="tbl">
-          <thead><tr><th>Moat Source</th><th>Strength</th><th>Notes</th></tr></thead>
-          <tbody>
-            <tr><td>NVIDIA $2B strategic investment</td><td><span class="stars">★★★★★</span></td><td class="dim">Priority access to Rubin architecture GPUs — the most scarce resource in AI infrastructure</td></tr>
-<tr><td>European sovereign AI positioning</td><td><span class="stars">★★★★☆</span></td><td class="dim">No major European AI cloud at hyperscale; GDPR/regulatory tailwinds create structural demand</td></tr>
-<tr><td>$20B+ demand backlog</td><td><span class="stars">★★★★★</span></td><td class="dim">Demand visibility is extraordinary — capacity, not demand, is the constraint</td></tr>
-<tr><td>Yandex heritage / regulatory risk</td><td><span class="stars">⚠ Risk</span></td><td class="dim">Spun out of Yandex; Russian sanctions history creates regulatory complexity in some markets</td></tr>
-<tr><td>Execution risk</td><td><span class="stars">⚠ Risk</span></td><td class="dim">Building hyperscale data centers is the hardest engineering+logistics challenge in tech — delays are common</td></tr>
-
-          </tbody>
-        </table>
-        <div class="quote-block">"The demand for AI infrastructure in Europe and beyond is <strong style='color:var(--accent)'>far greater than the supply that exists</strong>. With NVIDIA's strategic investment and priority access to the most advanced GPU architectures, Nebius is positioned to capture a significant share of this $1 trillion opportunity."<cite>— Arkady Volozh, CEO · Nebius Group (paraphrased from investor communications)</cite></div>
-      </div>
-
+    <div class="section-head"><div class="section-head-label">Business Description &amp; Moat</div><div class="section-head-line"></div></div>
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-head">Company Overview</div>
+      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">Nebius Group is a full-stack AI cloud company spun out of Yandex, building hyperscale AI data centers across Europe and North America. The company received a landmark $2B investment from NVIDIA, gaining early access to Rubin architecture GPUs and Vera CPUs. Nebius targets 5GW+ of AI data center capacity by the end of the decade.</p>
+    </div>
+    <div class="card">
+      <div class="card-head">Competitive Moat</div>
+      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">The NVIDIA strategic investment is Nebius's most important moat — it provides priority access to next-generation hardware that competitors cannot easily obtain. European AI sovereignty concerns are driving enterprise and government customers to non-US cloud providers. Nebius is positioned as the leading European AI cloud alternative to US hyperscalers.</p>
     </div>
   </section>
 
-  <!-- SCENARIOS -->
   <section id="scenarios">
-    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Case Scenarios</div><div class="section-head-line"></div></div>
+    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Scenarios</div><div class="section-head-line"></div></div>
     <div class="g3">
-      <div class="scenario sc-bull">
-        <div class="sc-label">🐂 Bull Case</div>
-        <div class="sc-target">$85</div>
-        <div class="sc-upside">+166% upside</div>
-        <div class="sc-desc">End-2026 ARR of $9B achieved. NVIDIA partnership delivers Rubin GPU priority. European enterprise and government contracts accelerate. Revenue reaches $3-4B in 2026. NVIDIA increases stake. Stock re-rates toward CoreWeave-like multiples.</div>
-      </div>
-      <div class="scenario sc-base">
-        <div class="sc-label">📊 Base Case</div>
-        <div class="sc-target">$73</div>
-        <div class="sc-upside">+127% upside</div>
-        <div class="sc-desc">ARR reaches $4-5B by end of 2026 (midpoint of $7-9B target range). NVIDIA Rubin hardware enables differentiated product vs competitors. European AI cloud market develops as predicted. Revenue reaches $1-2B in CY2026. Analysts' consensus of $72.50 achieved.</div>
-      </div>
-      <div class="scenario sc-bear">
-        <div class="sc-label">🐻 Bear Case</div>
-        <div class="sc-target">$8</div>
-        <div class="sc-upside">-75% downside</div>
-        <div class="sc-desc">Data center buildout faces delays or cost overruns. NVIDIA partnership delivers priority hardware but competition from US hyperscalers in Europe proves insurmountable. End-2026 ARR misses $7B target significantly. Heavy losses continue without clear path to profitability.</div>
-      </div>
+      <div class="scenario sc-bull"><div class="sc-label">🐂 Bull Case</div><div class="sc-target">$200</div><div class="sc-upside">+525% upside</div><div class="sc-desc">NVIDIA partnership delivers priority GPU access enabling hyper-growth. European AI cloud market develops rapidly. Revenue scales to $2B+ by 2027. NVIDIA potentially increases stake.</div></div>
+      <div class="scenario sc-base"><div class="sc-label">📊 Base Case</div><div class="sc-target">$151</div><div class="sc-upside">+371% upside</div><div class="sc-desc">Revenue grows 5-10x in 2026 off a small base. NVIDIA partnership enables differentiated GPU product. European enterprise customers drive B2B growth.</div></div>
+      <div class="scenario sc-bear"><div class="sc-label">🐻 Bear Case</div><div class="sc-target">$8</div><div class="sc-upside">-75% downside</div><div class="sc-desc">Data center buildout faces delays or cost overruns. NVIDIA partnership fails to translate to competitive advantage. US hyperscalers expand European presence aggressively.</div></div>
     </div>
   </section>
 
-  <!-- RISKS & OUTLOOK -->
   <section id="risks">
-    <div class="section-head"><div class="section-head-label">Risk Assessment &amp; Forward Outlook</div><div class="section-head-line"></div></div>
-    <div class="g2">
-      <div class="card">
-        <div class="card-head">Key Risks</div>
-        <div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Execution risk</div><div class="risk-desc-text">Building hyperscale data centers across multiple countries simultaneously — extreme operational complexity</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">ARR target ambition</div><div class="risk-desc-text">End-2026 $7-9B ARR requires 48-62x growth from $146M annualized Q3 rate — extraordinary ask</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Yandex heritage</div><div class="risk-desc-text">Regulatory complexity in certain European markets due to former Yandex ownership</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Pre-profitability</div><div class="risk-desc-text">Heavy losses expected through 2026; requires sustained capital market access</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Hardware supply</div><div class="risk-desc-text">NVIDIA $2B investment = priority access to Rubin GPUs — resolves the key supply constraint</div></div></div>
-
-      </div>
-      <div class="card">
-        <div class="card-head">Forward Revenue &amp; Earnings Outlook</div>
-        <table class="tbl">
-          <thead><tr><th>Metric</th><th>FY2025A</th><th>FY2026E</th><th>FY2027E</th></tr></thead>
-          <tbody>
-            <tr><td>Revenue (Reported)</td><td class="mono right">~$500-550M (FY25E)</td><td class="mono right" style="color:var(--green)">~$1-3B (FY26E)</td><td class="mono right" style="color:var(--green)">~$5-8B (FY27E)</td></tr>
-<tr><td>ARR (End of Period)</td><td class="mono right">~$550M (End 2025E)</td><td class="mono right" style="color:var(--green)">$7-9B (End 2026 target)</td><td class="mono right" style="color:var(--green)">Ongoing</td></tr>
-<tr><td>Gross Margin</td><td class="mono right">~45%</td><td class="mono right" style="color:var(--green)">~50%+</td><td class="mono right" style="color:var(--green)">~55%+</td></tr>
-<tr><td>Net Income</td><td class="mono right">~-$480M annualized</td><td class="mono right" style="color:var(--green)">Still negative</td><td class="mono right" style="color:var(--green)">Approaching breakeven</td></tr>
-<tr><td>GPU Capacity</td><td class="mono right">~1GW+</td><td class="mono right" style="color:var(--green)">Scaling toward 5GW</td><td class="mono right" style="color:var(--green)">5GW+ by 2030</td></tr>
-
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <div class="section-head"><div class="section-head-label">Risk Assessment</div><div class="section-head-line"></div></div>
+    <div class="card"><div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Execution</div><div class="risk-desc-text">Building hyperscale data centers is extremely capital-intensive and operationally complex</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Pre-revenue scale</div><div class="risk-desc-text">Very early stage; $120M revenue must scale dramatically to justify valuation</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Geopolitical</div><div class="risk-desc-text">Yandex spin-off history creates regulatory complexity in some markets</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">NVIDIA anchor</div><div class="risk-desc-text">$2B NVIDIA investment significantly de-risks the hardware supply question</div></div></div>
+</div>
   </section>
 
-  <!-- VERDICT -->
   <section id="verdict">
     <div class="section-head"><div class="section-head-label">Analyst Verdict</div><div class="section-head-line"></div></div>
     <div class="verdict">
-      <div class="verdict-label">Bottom Line · STRONG BUY · Target $72.50</div>
-      <div class="verdict-text">Nebius is the most asymmetric AI infrastructure opportunity on public markets — a European AI cloud champion backed by the most important possible investor (NVIDIA, $2B strategic), with $20B+ in contracted demand backlog and 127% upside to consensus. The primary risk is execution: the $7-9B end-2026 ARR target requires extraordinary growth in data center deployment. For investors who believe AI infrastructure demand will remain undersupplied through 2027 and that European AI sovereignty creates a structural market, NBIS offers unmatched upside at a $6B market cap. <strong style='color:var(--green)'>Strong Buy (speculative). Target: $72.50 consensus. Street high: $85. High conviction required.</strong></div>
+      <div class="verdict-label">Bottom Line · STRONG BUY · Target $150.62</div>
+      <div class="verdict-text">Nebius is one of the most asymmetric opportunities in AI infrastructure — a European AI cloud champion backed by NVIDIA with 371% upside to consensus target. The risk is execution and the early-stage nature of the business. For high-conviction growth investors, the NVIDIA partnership alone makes this a compelling speculative position. <strong style='color:var(--green)'>Strong Buy (speculative). Target: $150.62.</strong></div>
     </div>
   </section>
 
   <footer>
     <div><div class="footer-brand">NBIS · EQUITY RESEARCH</div><div>Generated March 15, 2026 · For informational purposes only</div></div>
-    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making investment decisions.</div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making any investment decisions.</div>
   </footer>
-
-</div><!-- /wrapper -->
-
+</div>
 <script>
-// Chart.js — Revenue bar chart
-window.addEventListener('load', function() {
-  var ctx = document.getElementById('revChart');
-  if (ctx) {
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ["Q1 2025", "Q2 2025", "Q3 2025", "Q4 2025E", "End-2026E (ARR)"],
-        datasets: [
-          {
-            label: 'Total Revenue',
-            data: [0.058, 0.098, 0.146, 0.2, 7.5],
-            backgroundColor: 'rgba(74,132,232,0.55)',
-            borderColor: '#4a84e8',
-            borderWidth: 1,
-            borderRadius: 3
-          },
-          {
-            label: 'GPU Cloud Revenue ($B annualized)',
-            data: [0.03, 0.055, 0.09, 0.13, 5.0],
-            backgroundColor: 'rgba(201,153,58,0.65)',
-            borderColor: '#c9993a',
-            borderWidth: 1,
-            borderRadius: 3
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: '#111720',
-            borderColor: '#1e2836',
-            borderWidth: 1,
-            titleColor: '#6e7d94',
-            bodyColor: '#dde2ea'
-          }
-        },
-        scales: {
-          x: {
-            ticks: { color: '#6e7d94', font: { size: 11 }, maxRotation: 30 },
-            grid: { display: false },
-            border: { color: '#1e2836' }
-          },
-          y: {
-            ticks: { color: '#6e7d94', font: { size: 11 } },
-            grid: { color: 'rgba(255,255,255,0.04)' },
-            border: { color: '#1e2836' },
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  }
-});
+const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}});},{threshold:.1});
+document.querySelectorAll('.card,.metric,.scenario,.verdict').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(12px)';el.style.transition='opacity .45s ease,transform .45s ease';observer.observe(el)});
+setTimeout(()=>document.querySelectorAll('.bar-fill[data-target]').forEach(el=>el.style.width=el.getAttribute('data-target')+'%'),300);
 </script>
 </body>
 </html>
