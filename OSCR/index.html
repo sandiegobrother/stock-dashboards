@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="Oscar Health, Inc. (OSCR) — Wall Street equity research dashboard.">
-<meta property="og:title" content="OSCR · Oscar Health, Inc. Equity Research">
+<meta name="description" content="Oscar Health, Inc. (OSCR) — Full Wall Street equity research dashboard.">
 <title>OSCR · Oscar Health, Inc. Equity Research</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -13,16 +12,16 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#07090c;--bg2:#0d1117;--surface:#111720;--surface2:#171e28;--border:#1e2836;--border2:#253042;--accent:#c9993a;--blue:#4a84e8;--green:#3bbf72;--red:#df5454;--text:#dde2ea;--muted:#6e7d94;--muted2:#3a4a5e}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;padding:0;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,153,58,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(201,153,58,.02) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:52px}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.12em;text-decoration:none}
-.nav-links{display:flex;gap:0;list-style:none}
+.nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .9rem;height:52px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
 .nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
-.nav-pill{font-family:'IBM Plex Mono',monospace;font-size:.65rem;background:rgba(59,191,114,.12);color:#3bbf72;border:1px solid rgba(59,191,114,.25);padding:3px 10px;border-radius:20px;letter-spacing:.08em}
-.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:6px}
+.nav-pill{font-family:'IBM Plex Mono',monospace;font-size:.65rem;background:rgba(59,191,114,.12);color:#c9993a;border:1px solid rgba(59,191,114,.25);padding:3px 10px;border-radius:20px;letter-spacing:.08em}
+.back-link{font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--muted);text-decoration:none}
 .back-link:hover{color:var(--accent)}
 @media(max-width:700px){.nav-links{display:none}}
 .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
@@ -53,7 +52,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem}
 @media(max-width:960px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:600px){.g4,.g3,.g2{grid-template-columns:1fr}}
-.metric{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:1rem 1.2rem;position:relative;overflow:hidden}
 .metric:hover{border-color:var(--border2);transform:translateY(-1px)}
 .metric::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0;transition:opacity .2s}
 .metric:hover::after{opacity:1}
@@ -61,17 +60,19 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .m-value{font-family:'IBM Plex Mono',monospace;font-size:1.55rem;font-weight:500;line-height:1}
 .m-sub{font-size:.73rem;color:var(--muted);margin-top:5px}
 .tbl{width:100%;border-collapse:collapse;font-size:.86rem}
-.tbl th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 1rem .65rem 0;border-bottom:1px solid var(--border);font-weight:500}
-.tbl td{padding:.62rem 1rem .62rem 0;border-bottom:1px solid var(--border);vertical-align:top}
+.tbl th{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .65rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.62rem .75rem .62rem 0;border-bottom:1px solid var(--border);vertical-align:top}
 .tbl tr:last-child td{border-bottom:none}
 .tbl tr:hover td{background:rgba(255,255,255,.015)}
 .tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.82rem}
 .tbl td.right{text-align:right}
 .tbl td.dim{color:var(--muted);font-size:.79rem}
+.tbl .hl td{background:rgba(201,153,58,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.bar-lbl{font-size:.73rem;color:var(--muted);width:110px;flex-shrink:0}
-.bar-track{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
-.bar-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.bar-lbl{font-size:.73rem;color:var(--muted);width:130px;flex-shrink:0}
+.bar-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px}
 .bar-val{font-family:'IBM Plex Mono',monospace;font-size:.73rem;width:44px;text-align:right;color:var(--text);flex-shrink:0}
 .scenario{border-radius:10px;padding:1.4rem;border:1px solid;position:relative;overflow:hidden}
 .scenario::before{content:'';position:absolute;inset:0;opacity:.04;pointer-events:none;background:repeating-linear-gradient(-45deg,currentColor 0,currentColor 1px,transparent 0,transparent 50%);background-size:8px 8px}
@@ -86,109 +87,347 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.93);backdrop-filte
 .rb-high{background:rgba(223,84,84,.14);color:var(--red)}.rb-med{background:rgba(201,153,58,.14);color:var(--accent)}.rb-low{background:rgba(59,191,114,.14);color:var(--green)}
 .risk-name{font-size:.87rem;font-weight:400;margin-bottom:3px}
 .risk-desc-text{font-size:.77rem;color:var(--muted);line-height:1.45}
+.stars{color:var(--green);font-size:.78rem;letter-spacing:1px}
+.quote-block{border:1px solid rgba(201,153,58,.28);background:rgba(201,153,58,.05);border-left:3px solid var(--accent);border-radius:6px;padding:1rem 1.2rem;font-size:.87rem;line-height:1.65;color:var(--text);margin-top:1rem}
+.quote-block cite{display:block;font-size:.7rem;color:var(--muted2);font-style:normal;margin-top:.5rem;font-family:'IBM Plex Mono',monospace;letter-spacing:.06em}
 .verdict{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:6px;padding:1.5rem;margin-bottom:2.5rem}
 .verdict-label{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.6rem}
 .verdict-text{font-size:.9rem;line-height:1.7}
-.chart-wrap{position:relative;width:100%;height:220px}
-footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;align-items:flex-start}
+.chart-wrap{position:relative;width:100%;height:230px;margin-top:1rem}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between}
 .footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.fade-up{animation:fadeUp .5s ease both}
 </style>
 </head>
 <body>
 <nav>
   <a class="nav-logo" href="#">OSCR · RESEARCH</a>
   <ul class="nav-links">
-    <li><a href="#metrics">Metrics</a></li>
+    <li><a href="#financials">Financials</a></li>
+    <li><a href="#valuation">Valuation</a></li>
     <li><a href="#moat">Moat</a></li>
     <li><a href="#scenarios">Scenarios</a></li>
     <li><a href="#risks">Risks</a></li>
     <li><a href="#verdict">Verdict</a></li>
   </ul>
-  <span class="nav-pill">BUY</span>
+  <span class="nav-pill">HOLD</span>
 </nav>
 <div class="wrapper">
-  <header class="hero fade-up">
+
+  <!-- HERO -->
+  <header class="hero">
     <div class="hero-left">
-      <div class="eyebrow">Wall Street · Equity Research · March 15, 2026</div>
+      <div class="eyebrow"><a class="back-link" href="../">← All Tickers</a> &nbsp;·&nbsp; Wall Street · Equity Research · March 15, 2026</div>
       <div class="hero-ticker">OSCR</div>
       <div class="hero-name">Oscar Health, Inc.</div>
-      <div class="hero-tags"><span class="tag">NYSE</span><span class="tag">Health Insurance</span><span class="tag">ACA</span><span class="tag">Insurtech</span><span class="tag">Individual Market</span></div>
+      <div class="hero-tags"><span class="tag">NYSE</span> <span class="tag">ACA Health Insurance</span> <span class="tag">Insurtech</span> <span class="tag">Individual Market</span> <span class="tag">Cigna Partnership</span></div>
     </div>
     <div class="hero-right">
-      <div class="hero-price">$16.00</div>
-      <div class="hero-target">12-mo target · $22.00</div>
+      <div class="hero-price">$14.88</div>
+      <div class="hero-target">12-mo target · $17.00</div>
       <div class="hero-date">Report date: 15 Mar 2026</div>
     </div>
   </header>
 
-  <div class="ribbon fade-up">
-    <div class="ribbon-item"><div class="ribbon-label">Consensus</div><div class="ribbon-value" style="color:#3bbf72">BUY</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Price Target</div><div class="ribbon-value rv-amber">$22.00</div></div>
+  <!-- RIBBON -->
+  <div class="ribbon">
+    <div class="ribbon-item"><div class="ribbon-label">Consensus</div><div class="ribbon-value" style="color:#c9993a">HOLD</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Price Target</div><div class="ribbon-value rv-amber">$17.00</div></div>
     <div class="ribbon-item"><div class="ribbon-label">High Target</div><div class="ribbon-value rv-amber">$35.00</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Market Cap</div><div class="ribbon-value rv-text">~$3.5B</div></div>
-    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+38%</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Market Cap</div><div class="ribbon-value rv-text">~$3.1B</div></div>
+    <div class="ribbon-item"><div class="ribbon-label">Upside (consensus)</div><div class="ribbon-value rv-green">+14% to consensus</div></div>
     <div class="ribbon-item"><div class="ribbon-label">Exchange</div><div class="ribbon-value rv-blue">NYSE</div></div>
   </div>
 
-  <section id="metrics">
+  <!-- KEY METRICS -->
+  <section id="financials">
     <div class="section-head"><div class="section-head-label">Key Financial Metrics</div><div class="section-head-line"></div></div>
     <div class="g4">
-      <div class="metric fade-up"><div class="m-label">Revenue (TTM)</div><div class="m-value rv-text">~$8B</div><div class="m-sub" style="color:var(--green)">+45% YoY</div></div>
-      <div class="metric fade-up"><div class="m-label">Gross Margin</div><div class="m-value rv-green">N/M</div><div class="m-sub">Non-GAAP</div></div>
-      <div class="metric fade-up"><div class="m-label">FCF Margin</div><div class="m-value rv-text">N/M</div><div class="m-sub">Free cash flow %</div></div>
-      <div class="metric fade-up"><div class="m-label">Trailing P/E</div><div class="m-value rv-text">N/M</div><div class="m-sub">Fwd P/E: N/M</div></div>
+      <div class="metric"><div class="m-label">FY2025 Revenue</div><div class="m-value rv-text">~$9.5B</div><div class="m-sub" style="color:var(--green)">+43% YoY</div></div>
+      <div class="metric"><div class="m-label">FY2025 Members</div><div class="m-value rv-amber">~1.7M</div><div class="m-sub" style="color:var(--green)">ACA individual market growing</div></div>
+      <div class="metric"><div class="m-label">Medical Loss Ratio (FY2025)</div><div class="m-value rv-text">~84%</div><div class="m-sub">Near top of acceptable range</div></div>
+      <div class="metric"><div class="m-label">FY2025 Adj. EBITDA</div><div class="m-value rv-green">~$450M</div><div class="m-sub">Profitable on adj. basis</div></div>
+      <div class="metric"><div class="m-label">FY2025 GAAP Net Income</div><div class="m-value rv-text">~$280M</div><div class="m-sub">Full-year GAAP profitability</div></div>
+      <div class="metric"><div class="m-label">FY2026 Revenue Est.</div><div class="m-value rv-green">~$10B+</div><div class="m-sub">Dependent on ACA enrollment</div></div>
+      <div class="metric"><div class="m-label">ACA Policy Risk</div><div class="m-value rv-amber">Active</div><div class="m-sub">Subsidy extension debate in Congress</div></div>
+      <div class="metric"><div class="m-label">Cigna Partnership</div><div class="m-value rv-text">Ongoing</div><div class="m-sub">+Oscar technology integration</div></div>
     </div>
   </section>
 
+  <!-- REVENUE GROWTH & VALUATION -->
+  <section id="valuation">
+    <div class="section-head"><div class="section-head-label">Revenue Growth &amp; Valuation</div><div class="section-head-line"></div></div>
+    <div class="g2">
+
+      <!-- Left: Revenue table + chart -->
+      <div class="card">
+        <div class="card-head">Quarterly Revenue Progression</div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Period</th>
+              <th class="right">Total Rev</th>
+              <th class="right">Adj. EBITDA ($B)</th>
+              <th class="right">Mix</th>
+              <th class="right">YoY</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Q1 2025</td><td class="mono right">~$2.30B</td><td class="mono right">~$98M</td><td class="mono right">4.3%</td><td class="mono right" style="color:var(--green)">+38%</td></tr>
+<tr><td>Q2 2025</td><td class="mono right">~$2.34B</td><td class="mono right">~$110M</td><td class="mono right">4.7%</td><td class="mono right" style="color:var(--green)">+42%</td></tr>
+<tr><td>Q3 2025</td><td class="mono right">~$2.39B</td><td class="mono right">~$115M</td><td class="mono right">4.8%</td><td class="mono right" style="color:var(--green)">+44%</td></tr>
+<tr class="hl"><td>Q4 2025</td><td class="mono right">~$2.47B</td><td class="mono right" style="color:var(--accent)">~$127M</td><td class="mono right" style="color:var(--accent)">5.1%</td><td class="mono right" style="color:var(--green)">+47%</td></tr>
+<tr><td>FY2026E</td><td class="mono right">~$10.2B</td><td class="mono right">~$520M</td><td class="mono right">~5.1%</td><td class="mono right" style="color:var(--green)">+7%</td></tr>
+
+          </tbody>
+        </table>
+        <div style="margin-top:1.25rem">
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#4a84e8;display:inline-block"></span>Total Revenue</span>
+            <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#c9993a;display:inline-block"></span>Adj. EBITDA ($B)</span>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="revChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Peer comparison + profitability bars + balance sheet -->
+      <div class="card">
+        <div class="card-head">Peer Valuation Comparison</div>
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th class="right">Mkt Cap</th>
+              <th class="right">Fwd P/E</th>
+              <th class="right">Rev Growth</th>
+              <th class="right">FCF Margin</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hl"><td style="color:var(--accent)"><strong>OSCR</strong></td><td class="mono right">~$3.1B</td><td class="mono right" style="color:var(--accent)">12x</td><td class="mono right" style="color:var(--green)">+43%</td><td class="mono right" style="color:var(--green)">5%</td></tr>
+<tr><td><span>UNH</span></td><td class="mono right">~$393B</td><td class="mono right">13x</td><td class="mono right" style="color:var(--green)">+8%</td><td class="mono right">6%</td></tr>
+<tr><td><span>ELV</span></td><td class="mono right">~$90B</td><td class="mono right">11x</td><td class="mono right" style="color:var(--green)">+6%</td><td class="mono right">5%</td></tr>
+<tr><td><span>CVS</span></td><td class="mono right">~$70B</td><td class="mono right">8x</td><td class="mono right" style="color:var(--green)">+3%</td><td class="mono right">5%</td></tr>
+<tr><td><span>HUM</span></td><td class="mono right">~$25B</td><td class="mono right">15x</td><td class="mono right" style="color:var(--green)">+7%</td><td class="mono right">4%</td></tr>
+
+          </tbody>
+        </table>
+
+        <div style="margin-top:1.5rem">
+          <div class="card-head" style="margin-bottom:1rem">Profitability Benchmarks</div>
+          <div class="bar-row"><div class="bar-lbl">Medical Loss Ratio</div><div class="bar-track"><div class="bar-fill" style="width:84%;background:var(--accent)"></div></div><div class="bar-val">84%</div></div>
+<div class="bar-row"><div class="bar-lbl">Revenue growth FY2025</div><div class="bar-track"><div class="bar-fill" style="width:43%;background:var(--blue)"></div></div><div class="bar-val">43%</div></div>
+<div class="bar-row"><div class="bar-lbl">Adj. EBITDA margin</div><div class="bar-track"><div class="bar-fill" style="width:5%;background:var(--green)"></div></div><div class="bar-val">5%</div></div>
+<div class="bar-row"><div class="bar-lbl">Technology cost advantage</div><div class="bar-track"><div class="bar-fill" style="width:15%;background:var(--muted)"></div></div><div class="bar-val">15%</div></div>
+
+        </div>
+
+        <div style="margin-top:1.5rem">
+          <div class="card-head" style="margin-bottom:1rem">Balance Sheet Snapshot</div>
+          <table class="tbl">
+            <tbody>
+              <tr><td class="dim">Cash & investments</td><td class="mono right" style="color:var(--green)">~$2.5B</td></tr>
+<tr><td class="dim">Total debt</td><td class="mono right" style="color:var(--green)">Minimal</td></tr>
+<tr><td class="dim">ACA individual market share</td><td class="mono right" style="color:var(--green)">~7% of marketplace</td></tr>
+<tr><td class="dim">Member growth YoY</td><td class="mono right" style="color:var(--green)">~20%</td></tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BUSINESS MODEL & MOAT -->
   <section id="moat">
-    <div class="section-head"><div class="section-head-label">Business Description &amp; Moat</div><div class="section-head-line"></div></div>
-    <div class="card" style="margin-bottom:1.25rem">
-      <div class="card-head">Company Overview</div>
-      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">Oscar Health is a technology-driven health insurance company focused on the ACA individual and small group markets. The company uses data analytics and a mobile-first platform to improve member engagement and health outcomes while managing medical costs. Oscar has been expanding rapidly but faces ACA policy uncertainty.</p>
-    </div>
-    <div class="card">
-      <div class="card-head">Competitive Moat</div>
-      <p style="font-size:.88rem;line-height:1.7;color:var(--text)">Oscar's technology platform creates better risk selection, lower administrative costs, and higher member engagement vs traditional insurers. Its partnership with Cigna gives it scale in markets it doesn't operate directly. The ACA individual market is growing as employer coverage declines, creating a secular tailwind.</p>
+    <div class="section-head"><div class="section-head-label">Business Model &amp; Competitive Moat</div><div class="section-head-line"></div></div>
+    <div class="g2">
+
+      <div class="card">
+        <div class="card-head">Revenue Segments</div>
+        <table class="tbl">
+          <thead>
+            <tr><th>Segment</th><th class="right">Mix</th><th>Key Products</th><th>Margin Profile</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Insurance (Core)</strong></td><td class="mono right" style="color:var(--accent)">~97%</td><td class="dim">ACA individual and small group insurance in 20+ states; tech-driven claims processing; preventive care focus</td><td class="mono" style="color:var(--green)">~5% EBITDA margin</td></tr>
+<tr><td><strong>Oscar Technology (+Cigna)</strong></td><td class="mono right" style="color:var(--accent)">~3%</td><td class="dim">Technology platform licensing to Cigna partnership; Cigna leverages Oscar tech for certain markets</td><td class="mono" style="color:var(--green)">High — pure software economics</td></tr>
+
+          </tbody>
+        </table>
+        <div style="margin-top:1.25rem">
+          <div class="card-head" style="margin-bottom:.75rem">Industry Tailwinds (12–24 Months)</div>
+          <table class="tbl">
+            <thead><tr><th>Trend</th><th>Exposure</th><th class="right">Scale</th></tr></thead>
+            <tbody>
+              <tr><td>ACA enrollment growth</td><td class="dim">Marketplace enrollment at all-time highs</td><td class="mono right" style="color:var(--green)">20M+ Americans on ACA plans</td></tr>
+<tr><td>Technology cost advantage</td><td class="dim">15% lower admin cost vs traditional insurers</td><td class="mono right" style="color:var(--green)">Claims automation and digital-first drives efficiency</td></tr>
+<tr><td>Cigna partnership</td><td class="dim">Technology integration expanding</td><td class="mono right" style="color:var(--green)">Capital-light revenue from platform licensing</td></tr>
+<tr><td>Individual market expansion</td><td class="dim">Adding new states each year</td><td class="mono right" style="color:var(--green)">Geographic expansion available runway</td></tr>
+<tr><td>GAAP profitability achieved</td><td class="dim">Full-year profit in 2025</td><td class="mono right" style="color:var(--green)">Credibility shift for institutional investors</td></tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">Competitive Moat Analysis</div>
+        <table class="tbl">
+          <thead><tr><th>Moat Source</th><th>Strength</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Technology platform advantage</td><td><span class="stars">★★★★☆</span></td><td class="dim">Digital-first member engagement, automated prior auth, and lower admin cost vs legacy insurers</td></tr>
+<tr><td>ACA market expertise</td><td><span class="stars">★★★★☆</span></td><td class="dim">7 years of ACA-specific data and risk models — learning curve advantage over new entrants</td></tr>
+<tr><td>ACA policy risk</td><td><span class="stars">⚠ Risk</span></td><td class="dim">ACA subsidies under debate in Congress; any subsidy reduction directly reduces enrollment and pricing power</td></tr>
+<tr><td>Consensus is Hold</td><td><span class="stars">⚠ Risk</span></td><td class="dim">71% of analysts recommend Hold, 14% Buy, 14% Sell — limited analyst enthusiasm at current levels</td></tr>
+<tr><td>MLR near top of range</td><td><span class="stars">⚠ Risk</span></td><td class="dim">84% MLR leaves limited buffer; medical cost inflation could push beyond 85% triggering earnings miss</td></tr>
+
+          </tbody>
+        </table>
+        <div class="quote-block">"Oscar has achieved something rare in health insurance — <strong style='color:var(--accent)'>full-year GAAP profitability while continuing to grow at 40%+.</strong> Our technology advantage is real and compounding, and the ACA individual market remains the most dynamic growth opportunity in American healthcare."<cite>— Mark Bertolini, CEO · Oscar Health (paraphrased from 2025 investor communications)</cite></div>
+      </div>
+
     </div>
   </section>
 
+  <!-- SCENARIOS -->
   <section id="scenarios">
-    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Scenarios</div><div class="section-head-line"></div></div>
+    <div class="section-head"><div class="section-head-label">Bull / Base / Bear Case Scenarios</div><div class="section-head-line"></div></div>
     <div class="g3">
-      <div class="scenario sc-bull"><div class="sc-label">🐂 Bull Case</div><div class="sc-target">$35</div><div class="sc-upside">+119% upside</div><div class="sc-desc">ACA subsidies extended permanently. Medical cost ratio improves to best-in-class. Technology advantage drives profitable growth. Oscar reaches profitability in 2026.</div></div>
-      <div class="scenario sc-base"><div class="sc-label">📊 Base Case</div><div class="sc-target">$22</div><div class="sc-upside">+38% upside</div><div class="sc-desc">Revenue grows 20-25% in 2026. MLR improves modestly. Path to profitability becomes clearer. Stock re-rates on improving fundamentals.</div></div>
-      <div class="scenario sc-bear"><div class="sc-label">🐻 Bear Case</div><div class="sc-target">$5</div><div class="sc-upside">-69% downside</div><div class="sc-desc">ACA subsidies expire or are reduced. Medical cost inflation spikes. Capital-intensive nature of insurance business requires dilutive equity raises.</div></div>
+      <div class="scenario sc-bull">
+        <div class="sc-label">🐂 Bull Case</div>
+        <div class="sc-target">$35</div>
+        <div class="sc-upside">+135% upside</div>
+        <div class="sc-desc">ACA subsidies extended permanently in bipartisan deal. Medical cost ratio improves to 82%. Technology platform licensing becomes $500M+ revenue stream. Cigna expands partnership scope. Oscar added to major indices driving institutional buying.</div>
+      </div>
+      <div class="scenario sc-base">
+        <div class="sc-label">📊 Base Case</div>
+        <div class="sc-target">$17</div>
+        <div class="sc-upside">+14% upside</div>
+        <div class="sc-desc">Revenue grows 7% in 2026. MLR stays in 83-85% range. Cigna tech partnership contributes incrementally. Stock consolidates at current levels pending ACA policy clarity. Consensus $17 hold target.</div>
+      </div>
+      <div class="scenario sc-bear">
+        <div class="sc-label">🐻 Bear Case</div>
+        <div class="sc-target">$5</div>
+        <div class="sc-upside">-66% downside</div>
+        <div class="sc-desc">ACA subsidies reduced or allowed to expire. Enrollment drops significantly. Medical cost inflation pushes MLR above 86%. Cigna renegotiates partnership unfavorably. Dilutive equity raise required.</div>
+      </div>
     </div>
   </section>
 
+  <!-- RISKS & OUTLOOK -->
   <section id="risks">
-    <div class="section-head"><div class="section-head-label">Risk Assessment</div><div class="section-head-line"></div></div>
-    <div class="card"><div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">ACA policy risk</div><div class="risk-desc-text">Federal subsidy changes could dramatically impact enrollment and pricing</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">Medical cost inflation</div><div class="risk-desc-text">Rising healthcare costs compress margins; no clear moat against this</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Profitability</div><div class="risk-desc-text">Still not consistently profitable; path depends on external factors</div></div></div>
-<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Technology</div><div class="risk-desc-text">Digital-first approach is a genuine cost and engagement advantage</div></div></div>
+    <div class="section-head"><div class="section-head-label">Risk Assessment &amp; Forward Outlook</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Key Risks</div>
+        <div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">ACA policy risk</div><div class="risk-desc-text">Congressional debate on ACA subsidies — any reduction devastates enrollment and pricing</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-high">HIGH</div><div><div class="risk-name">MLR compression risk</div><div class="risk-desc-text">84% MLR near ceiling; medical cost inflation could push beyond sustainable levels</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Consensus is Hold</div><div class="risk-desc-text">71% of analysts Hold — limited near-term catalyst for re-rating above consensus</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-med">MED</div><div><div class="risk-name">Scale vs UNH/ELV</div><div class="risk-desc-text">Still tiny vs incumbents; lacks the negotiating leverage of scale</div></div></div>
+<div class="risk-row"><div class="risk-badge rb-low">LOW</div><div><div class="risk-name">Technology</div><div class="risk-desc-text">Digital-first model is real and creates genuine efficiency advantage vs legacy players</div></div></div>
+
+      </div>
+      <div class="card">
+        <div class="card-head">Forward Revenue &amp; Earnings Outlook</div>
+        <table class="tbl">
+          <thead><tr><th>Metric</th><th>FY2025A</th><th>FY2026E</th><th>FY2027E</th></tr></thead>
+          <tbody>
+            <tr><td>Total Revenue</td><td class="mono right">~$9.5B</td><td class="mono right" style="color:var(--green)">~$10.2B</td><td class="mono right" style="color:var(--green)">~$11.5B+</td></tr>
+<tr><td>Members</td><td class="mono right">~1.7M</td><td class="mono right" style="color:var(--green)">~1.85M</td><td class="mono right" style="color:var(--green)">~2.1M+</td></tr>
+<tr><td>Adj. EBITDA</td><td class="mono right">~$450M</td><td class="mono right" style="color:var(--green)">~$520M</td><td class="mono right" style="color:var(--green)">~$650M+</td></tr>
+<tr><td>MLR</td><td class="mono right">~84%</td><td class="mono right" style="color:var(--green)">~83-85%</td><td class="mono right" style="color:var(--green)">~83%</td></tr>
+<tr><td>GAAP Net Income</td><td class="mono right">~$280M</td><td class="mono right" style="color:var(--green)">~$300M+</td><td class="mono right" style="color:var(--green)">~$400M+</td></tr>
+
+          </tbody>
+        </table>
+      
+        <div style="margin-top:1.25rem">
+          <div class="card-head" style="margin-bottom:0.75rem">Near-Term Catalysts</div>
+          <div class="risk-row" ><div class="risk-badge rb-high">2026</div><div><div class="risk-name" style="font-size:0.82rem">ACA Enhanced Subsidy Extension</div><div class="risk-desc-text">Extension confirmed → enrollment growth resumes. +20-35% upside.</div></div></div>
+          <div class="risk-row" ><div class="risk-badge rb-med">FY27</div><div><div class="risk-name" style="font-size:0.82rem">Cigna Licensing Revenue >$200M Annual</div><div class="risk-desc-text">Technology platform business model validated. Re-rates to higher multiple.</div></div></div>
+          <div class="risk-row" style="border:none"><div class="risk-badge rb-med">FY26-27</div><div><div class="risk-name" style="font-size:0.82rem">Employer Market Expansion — First Wins</div><div class="risk-desc-text">ACA concentration reduced. New growth engine beyond marketplace.</div></div></div>
+        </div>
 </div>
+    </div>
   </section>
 
+  <!-- VERDICT -->
   <section id="verdict">
     <div class="section-head"><div class="section-head-label">Analyst Verdict</div><div class="section-head-line"></div></div>
     <div class="verdict">
-      <div class="verdict-label">Bottom Line · BUY · Target $22.00</div>
-      <div class="verdict-text">Oscar Health is a high-risk, high-reward bet on ACA market disruption via technology. The revenue growth is impressive but profitability remains elusive. ACA policy uncertainty is an existential near-term variable. For risk-tolerant investors comfortable with healthcare policy dynamics, 38% upside to consensus offers an interesting entry. <strong style='color:var(--accent)'>Buy (high risk). Target: $22.00.</strong></div>
+      <div class="verdict-label">Bottom Line · HOLD · Target $17.00</div>
+      <div class="verdict-text">Oscar Health achieved full-year GAAP profitability in 2025 — a milestone that validates the technology-driven insurance model. The ACA individual market is growing and Oscar is gaining share at 7% of marketplace enrollment. The Hold rating from 71% of analysts reflects ACA policy uncertainty rather than fundamental business concerns. At 12x forward earnings with 14% upside to consensus, OSCR offers modest near-term appreciation with asymmetric upside ($35 bull case) if ACA subsidies are extended and the MLR improves. A defensive healthcare hold with optionality. <strong style='color:var(--accent)'>Hold. Target: $17.00. Watch ACA subsidy legislation for upgrade catalyst.</strong></div>
     </div>
   </section>
 
   <footer>
     <div><div class="footer-brand">OSCR · EQUITY RESEARCH</div><div>Generated March 15, 2026 · For informational purposes only</div></div>
-    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making any investment decisions.</div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> This report is for informational and educational purposes only. It does not constitute financial or investment advice. Past performance does not guarantee future results. Please consult a licensed financial advisor before making investment decisions.</div>
   </footer>
-</div>
+
+</div><!-- /wrapper -->
+
 <script>
-const observer=new IntersectionObserver((entries)=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}});},{threshold:.1});
-document.querySelectorAll('.card,.metric,.scenario,.verdict').forEach(el=>{el.style.opacity='0';el.style.transform='translateY(12px)';el.style.transition='opacity .45s ease,transform .45s ease';observer.observe(el)});
-setTimeout(()=>document.querySelectorAll('.bar-fill[data-target]').forEach(el=>el.style.width=el.getAttribute('data-target')+'%'),300);
+// Chart.js — Revenue bar chart
+window.addEventListener('load', function() {
+  var ctx = document.getElementById('revChart');
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ["Q1 2025", "Q2 2025", "Q3 2025", "Q4 2025", "FY2026E"],
+        datasets: [
+          {
+            label: 'Total Revenue',
+            data: [2.3, 2.34, 2.39, 2.47, 10.2],
+            backgroundColor: 'rgba(74,132,232,0.55)',
+            borderColor: '#4a84e8',
+            borderWidth: 1,
+            borderRadius: 3
+          },
+          {
+            label: 'Adj. EBITDA ($B)',
+            data: [0.098, 0.11, 0.115, 0.127, 0.52],
+            backgroundColor: 'rgba(201,153,58,0.65)',
+            borderColor: '#c9993a',
+            borderWidth: 1,
+            borderRadius: 3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#111720',
+            borderColor: '#1e2836',
+            borderWidth: 1,
+            titleColor: '#6e7d94',
+            bodyColor: '#dde2ea'
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#6e7d94', font: { size: 11 }, maxRotation: 30 },
+            grid: { display: false },
+            border: { color: '#1e2836' }
+          },
+          y: {
+            ticks: { color: '#6e7d94', font: { size: 11 } },
+            grid: { color: 'rgba(255,255,255,0.04)' },
+            border: { color: '#1e2836' },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+});
 </script>
 </body>
 </html>
