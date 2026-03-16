@@ -9,12 +9,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#07090c;--surface:#0e1117;--surface2:#141a24;--surface3:#1a2232;--border:#1a2232;--border2:#243248;--accent:#c9993a;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+:root{--bg:#263040;--surface:#2e3a4e;--surface2:#36435a;--surface3:#38455c;--border:#38455c;--border2:#445268;--accent:#38bdf8;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e0eef8;--muted:#6888a8;--muted2:#445268}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(201,153,58,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(52,211,153,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(56,189,248,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(52,211,153,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+nav{position:sticky;top:0;z-index:100;background:rgba(38,48,64,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
 .nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
@@ -23,7 +23,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.95);backdrop-filte
 .nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
 .nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
 .nav-d2{color:var(--blue);border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}.nav-d2:hover{background:rgba(91,156,246,.12)}
-.nav-hub{color:var(--accent);border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.08)}.nav-hub:hover{background:rgba(201,153,58,.15)}
+.nav-hub{color:var(--accent);border-color:rgba(56,189,248,.3);background:rgba(56,189,248,.08)}.nav-hub:hover{background:rgba(56,189,248,.15)}
 @media(max-width:700px){.nav-links{display:none}}
 .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
 .hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
@@ -31,7 +31,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.95);backdrop-filte
 .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
 .hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
 .hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,153,58,.08);border:1px solid rgba(201,153,58,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
 .hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
 .hero-right{text-align:right}
 .hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
@@ -65,7 +65,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.95);backdrop-filte
 .tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
 .tbl td.right{text-align:right}
 .tbl td.dim{color:var(--muted);font-size:.78rem}
-.tbl .hl td{background:rgba(201,153,58,.06)}
+.tbl .hl td{background:rgba(56,189,248,.06)}
 .tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
 .analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
 .analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
@@ -386,8 +386,8 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
 <script>
 window.addEventListener('load', function() {
   const isDark = true;
-  Chart.defaults.color = '#64748b';
-  Chart.defaults.borderColor = '#1a2232';
+  Chart.defaults.color = '#6888a8';
+  Chart.defaults.borderColor = '#38455c';
 
   // Radar chart
   const rCtx = document.getElementById('radarChart');
@@ -399,10 +399,10 @@ window.addEventListener('load', function() {
         datasets: [{
           label: 'LLY',
           data: [8, 6, 7, 7, 10],
-          backgroundColor: 'rgba(201,153,58,0.15)',
-          borderColor: '#c9993a',
+          backgroundColor: 'rgba(56,189,248,0.15)',
+          borderColor: '#38bdf8',
           borderWidth: 2,
-          pointBackgroundColor: '#c9993a',
+          pointBackgroundColor: '#38bdf8',
           pointRadius: 4
         }]
       },
@@ -412,10 +412,10 @@ window.addEventListener('load', function() {
         scales: {
           r: {
             min: 0, max: 10,
-            ticks: { stepSize: 2, color: '#334155', backdropColor: 'transparent', font:{size:10} },
-            grid: { color: '#1a2232' },
+            ticks: { stepSize: 2, color: '#445268', backdropColor: 'transparent', font:{size:10} },
+            grid: { color: '#38455c' },
             pointLabels: { color: '#94a3b8', font:{size:11} },
-            angleLines: { color: '#1a2232' }
+            angleLines: { color: '#38455c' }
           }
         },
         plugins: {
