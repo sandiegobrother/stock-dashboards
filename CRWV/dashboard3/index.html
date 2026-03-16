@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CRWV · Moat Analysis · Dashboard 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07090c;--surface:#0e1117;--surface2:#141a24;--surface3:#1a2232;--border:#1a2232;--border2:#243248;--accent:#c9993a;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(201,153,58,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(52,211,153,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:var(--blue);border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}.nav-d2:hover{background:rgba(91,156,246,.12)}
+.nav-hub{color:var(--accent);border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.08)}.nav-hub:hover{background:rgba(201,153,58,.15)}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,153,58,.08);border:1px solid rgba(201,153,58,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero-right{text-align:right}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.moat-ring{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:6px}
+.moat-score{font-family:'IBM Plex Mono',monospace;font-size:3rem;font-weight:500;color:#5b9cf6;line-height:1}
+.moat-denom{font-family:'IBM Plex Mono',monospace;font-size:1.2rem;color:var(--muted);line-height:1;margin-top:auto;margin-bottom:6px}/10
+.moat-label{font-size:.72rem;font-family:'IBM Plex Mono',monospace;color:#5b9cf6;text-transform:uppercase;letter-spacing:.1em}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left}.hero-ticker{font-size:2.8rem}.moat-ring{justify-content:flex-start}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-num{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:280px;margin-top:.5rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:rgba(201,153,58,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #5b9cf6;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:2px 8px;border-radius:3px;font-weight:500;letter-spacing:.04em}
+.pill-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.pill-amber{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">CRWV · MOAT ANALYSIS</a>
+  <ul class="nav-links"><li><a href="#brand">Brand</a></li><li><a href="#network">Network</a></li><li><a href="#switching">Switching</a></li><li><a href="#cost">Cost Adv.</a></li><li><a href="#ip">IP / Tech</a></li><li><a href="#comparison">Vs. Peers</a></li><li><a href="#verdict">Verdict</a></li></ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 3 · Competitive Moat Analysis · March 2026</div>
+        <div class="hero-ticker">CRWV</div>
+        <div class="hero-name">CoreWeave, Inc.</div>
+        <div class="hero-badge">AI HYPERSCALER PURE-PLAY · MICROSOFT ANCHOR + GPU SCALE</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Moat Score</div>
+        <div class="moat-ring">
+          <div class="moat-score">7</div>
+          <div class="moat-denom">/10</div>
+        </div>
+        <div class="moat-label">Narrow-Wide Moat</div>
+        <div class="hero-sub">$1.4B Q2 2025 revenue. $25B+ backlog. Microsoft 62% of revenue. IPO March 2025. 250,000+ GPU cluster scale.</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Brand Strength</div><div class="score-num" style="color:#5b9cf6">7/10</div><div class="score-sub">NVIDIA-blessed AI cloud leader</div></div>
+    <div class="score-item"><div class="score-label">Network Effects</div><div class="score-num" style="color:#5b9cf6">7/10</div><div class="score-sub">Microsoft + hyperscaler ecosystem</div></div>
+    <div class="score-item"><div class="score-label">Switching Costs</div><div class="score-num" style="color:#34d399">8/10</div><div class="score-sub">AI training infrastructure lock-in</div></div>
+    <div class="score-item"><div class="score-label">Cost Advantage</div><div class="score-num" style="color:#5b9cf6">6/10</div><div class="score-sub">250K+ GPU scale + NVIDIA partnership</div></div>
+    <div class="score-item"><div class="score-label">IP / Proprietary Tech</div><div class="score-num" style="color:#34d399">8/10</div><div class="score-sub">AI cluster orchestration + CoreWeave IP</div></div>
+  </div>
+
+  <!-- BRAND -->
+  <section id="brand">
+    <div class="section-head"><div class="section-head-label">1 · Brand Strength</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Brand Assessment · Score 7/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:70%;height:100%;background:#5b9cf6;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6;width:24px;text-align:right">7</span>
+        </div></div>
+        <div class="analysis-text">CoreWeave has rapidly established itself as the premier independent AI cloud hyperscaler — NVIDIA's preferred cloud partner alongside Microsoft, Google, and Oracle. <strong>The March 2025 IPO at $19B+ valuation and Microsoft as a 62% revenue anchor provide institutional credibility that makes CoreWeave a legitimate Tier-1 AI infrastructure company.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Brand Dimensions</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>AI Cloud Pioneer Brand</td><td class='mono right' style='color:var(--green)'>First pure-play AI hyperscaler IPO</td></tr><tr><td style='font-size:.83rem'>NVIDIA Partner Brand</td><td class='mono right' style='color:var(--green)'>Preferred cloud for AI workloads</td></tr><tr><td style='font-size:.83rem'>Microsoft Anchor Brand</td><td class='mono right' style='color:var(--green)'>62% revenue from MSFT validates</td></tr><tr><td style='font-size:.83rem'>IPO Credibility</td><td class='mono right' style='color:var(--green)'>Largest US tech IPO of 2025</td></tr><tr><td style='font-size:.83rem'>Scale Brand</td><td class='mono right' style='color:var(--green)'>250,000+ GPU production environment</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- NETWORK -->
+  <section id="network">
+    <div class="section-head"><div class="section-head-label">2 · Network Effects</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Network Effects · Score 7/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:70%;height:100%;background:#5b9cf6;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6;width:24px;text-align:right">7</span>
+        </div></div>
+        <div class="analysis-text">CoreWeave's network effects operate through the AI developer ecosystem — as the first pure-play AI cloud to achieve hyperscale, CoreWeave's infrastructure has become the reference environment for many AI startups and enterprises. <strong>The $25B+ backlog represents committed enterprise customers whose AI training workloads are being built specifically for CoreWeave's infrastructure — creating reference architecture network effects.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Network Effect Indicators</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>$25B+ Backlog Customers</td><td class='mono right' style='color:var(--blue)'>Multi-year committed revenue</td></tr><tr><td style='font-size:.83rem'>NVIDIA Ecosystem Access</td><td class='mono right' style='color:var(--blue)'>Preferential H100/H200/Blackwell</td></tr><tr><td style='font-size:.83rem'>AI Startup Ecosystem</td><td class='mono right' style='color:var(--blue)'>NVIDIA Inception startup preferred cloud</td></tr><tr><td style='font-size:.83rem'>Enterprise Reference Architecture</td><td class='mono right' style='color:var(--blue)'>AI training on CoreWeave = industry standard</td></tr><tr><td style='font-size:.83rem'>Microsoft Azure Integration</td><td class='mono right' style='color:var(--blue)'>Co-deployment with Azure capabilities</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SWITCHING -->
+  <section id="switching">
+    <div class="section-head"><div class="section-head-label">3 · Switching Costs</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Switching Costs · Score 8/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:80%;height:100%;background:#34d399;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399;width:24px;text-align:right">8</span>
+        </div></div>
+        <div class="analysis-text">AI training workloads optimized for CoreWeave's specific cluster architecture face 3-6 month re-optimization costs to migrate. <strong>Companies with multi-year backlog commitments ($25B+) have signed contracts that create both financial and operational switching costs — breaking a $500M CoreWeave commitment to switch to AWS would trigger penalties and require complete infrastructure re-procurement.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Switching Cost Drivers</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Backlog Contract Penalties</td><td class='mono right' style='color:var(--green)'>Financial cost to break commitments</td></tr><tr><td style='font-size:.83rem'>Training Pipeline Optimization</td><td class='mono right' style='color:var(--green)'>3-6 months re-optimization</td></tr><tr><td style='font-size:.83rem'>InfiniBand Network Config</td><td class='mono right' style='color:var(--green)'>Custom cluster networking</td></tr><tr><td style='font-size:.83rem'>GPU Reservation Agreements</td><td class='mono right' style='color:var(--green)'>Long-lead committed capacity</td></tr><tr><td style='font-size:.83rem'>CUDA Stack Optimization</td><td class='mono right' style='color:var(--green)'>CoreWeave-specific tuning</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COST ADVANTAGE -->
+  <section id="cost">
+    <div class="section-head"><div class="section-head-label">4 · Cost Advantage</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Cost Advantage · Score 6/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:60%;height:100%;background:#fbbf24;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#fbbf24;width:24px;text-align:right">6</span>
+        </div></div>
+        <div class="analysis-text">CoreWeave's 250,000+ GPU fleet at scale creates procurement and utilization advantages that smaller GPU cloud providers cannot match. <strong>However, the $7B+ in debt used to fund GPU procurement is the critical financial risk — CoreWeave must maintain high GPU utilization to service debt while continuing to invest in next-generation hardware.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Cost Structure Highlights</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>GPU Scale</td><td class='mono right' style='color:var(--amber)'>250,000+ H100/H200/Blackwell</td></tr><tr><td style='font-size:.83rem'>NVIDIA GPU Pricing</td><td class='mono right' style='color:var(--amber)'>Preferred pricing at scale</td></tr><tr><td style='font-size:.83rem'>Utilization Rate</td><td class='mono right' style='color:var(--amber)'>High utilization vs smaller rivals</td></tr><tr><td style='font-size:.83rem'>$7B+ Debt Risk</td><td class='mono right' style='color:var(--amber)'>Must maintain GPU utilization</td></tr><tr><td style='font-size:.83rem'>Gross Margin</td><td class='mono right' style='color:var(--amber)'>~40% before debt service</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- IP / TECH -->
+  <section id="ip">
+    <div class="section-head"><div class="section-head-label">5 · Patents &amp; Proprietary Technology</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">IP &amp; Proprietary Tech · Score 8/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:80%;height:100%;background:#a78bfa;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#a78bfa;width:24px;text-align:right">8</span>
+        </div></div>
+        <div class="analysis-text">CoreWeave's IP centers on its GPU cluster orchestration software (Kubernetes-native for AI), InfiniBand network optimization, and the operational expertise accumulated from running the world's largest independent GPU cloud. <strong>The operational playbook for managing 250,000+ GPU clusters at near-100% utilization for AI training workloads represents irreproducible know-how that took years to develop.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">IP &amp; Technology Assets</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Cluster Orchestration Software</td><td class='mono right' style='color:#a78bfa'>Kubernetes-native AI job scheduling</td></tr><tr><td style='font-size:.83rem'>InfiniBand Optimization</td><td class='mono right' style='color:#a78bfa'>High-performance network tuning</td></tr><tr><td style='font-size:.83rem'>GPU Utilization IP</td><td class='mono right' style='color:#a78bfa'>Near-100% utilization techniques</td></tr><tr><td style='font-size:.83rem'>SKAI Platform</td><td class='mono right' style='color:#a78bfa'>AI cloud management platform</td></tr><tr><td style='font-size:.83rem'>Operational Know-how</td><td class='mono right' style='color:#a78bfa'>250K+ GPU management expertise</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section id="comparison">
+    <div class="section-head"><div class="section-head-label">6 · Peer Comparison</div><div class="section-head-line"></div></div>
+    <div style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-head">Competitive Moat Scorecard vs. Top Peers</div>
+        <table class="tbl">
+          <thead><tr>
+            <th>Company</th><th class="right">Brand</th><th class="right">Network</th>
+            <th class="right">Switching</th><th class="right">Cost Adv.</th>
+            <th class="right">IP/Tech</th><th>Overall Moat</th>
+          </tr></thead>
+          <tbody><tr class='hl'>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#34d399">CoreWeave (CRWV)</td>
+          <td class="mono right">7</td>
+          <td class="mono right">7</td>
+          <td class="mono right">8</td>
+          <td class="mono right">6</td>
+          <td class="mono right">8</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:70%;height:100%;background:#34d399;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399">7/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Microsoft Azure</td>
+          <td class="mono right">10</td>
+          <td class="mono right">9</td>
+          <td class="mono right">10</td>
+          <td class="mono right">9</td>
+          <td class="mono right">9</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:100%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">10/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">AWS (Amazon)</td>
+          <td class="mono right">9</td>
+          <td class="mono right">8</td>
+          <td class="mono right">9</td>
+          <td class="mono right">9</td>
+          <td class="mono right">9</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:90%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">9/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Google Cloud (GCP)</td>
+          <td class="mono right">9</td>
+          <td class="mono right">8</td>
+          <td class="mono right">9</td>
+          <td class="mono right">9</td>
+          <td class="mono right">9</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:90%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">9/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Nebius (NBIS)</td>
+          <td class="mono right">6</td>
+          <td class="mono right">7</td>
+          <td class="mono right">8</td>
+          <td class="mono right">7</td>
+          <td class="mono right">8</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:70%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">7/10</span>
+          </div></td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Moat Radar Chart</div>
+        <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Moat Dimension Summary</div>
+        <table class="tbl">
+          <thead><tr><th>Dimension</th><th>Grade</th><th>Commentary</th></tr></thead>
+          <tbody><tr>
+          <td style="font-weight:500;font-size:.85rem">Brand Strength</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#5b9cf6;font-weight:600">B+</span></td>
+          <td class="dim">First pure-play AI hyperscaler IPO — NVIDIA partner + Microsoft anchor</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Network Effects</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#5b9cf6;font-weight:600">B+</span></td>
+          <td class="dim">$25B+ backlog reference architecture + NVIDIA ecosystem access</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Switching Costs</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A</span></td>
+          <td class="dim">Backlog contract penalties + training optimization + cluster re-procurement</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Cost Advantage</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#5b9cf6;font-weight:600">B</span></td>
+          <td class="dim">250K+ GPU scale + NVIDIA preferred pricing — offset by $7B+ debt</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">IP & Patents</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A</span></td>
+          <td class="dim">Cluster orchestration IP + InfiniBand optimization + 250K GPU operational expertise</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRENGTHS & THREATS -->
+  <section id="strengths">
+    <div class="section-head"><div class="section-head-label">7 · Moat Strengths &amp; Threats</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Core Moat Strengths</div>
+        <ul style="list-style:none"><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>$25B+ backlog provides extraordinary multi-year revenue visibility — contracts prevent switching</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>NVIDIA preferred cloud partner: preferential GPU access + ecosystem endorsement</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>First pure-play AI hyperscaler IPO — category-defining position that compounds with AI growth</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>250,000+ GPU fleet: scale that smaller AI clouds simply cannot match for large training runs</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>Microsoft Azure co-deployment capability: enterprise customers can use CoreWeave alongside Azure</li></ul>
+      </div>
+      <div class="card">
+        <div class="card-head">Moat Threats &amp; Watch Items</div>
+        <ul style="list-style:none"><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>$7B+ debt + high GPU lease costs = existential risk if AI investment slows or utilization drops</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Microsoft 62% revenue concentration: single customer dependency is extreme</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>AWS, Azure, GCP are formidable hyperscalers with 10yr infrastructure advantages</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>GPU hardware obsolescence: H100 → Blackwell → future generations require continuous capex reinvestment</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>DeepSeek-style efficiency models could reduce per-training-run GPU requirements significantly</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">8 · Moat Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Competitive Advantage Verdict · CRWV · Overall Moat Score: 7/10 · Narrow-Wide Moat</div>
+      <div class="verdict-text">CoreWeave holds a strong but leverage-dependent moat as the world's first pure-play AI cloud hyperscaler. The $25B+ backlog, NVIDIA preferred partnership, and 250,000+ GPU scale create genuine competitive advantages. The $7B+ debt and Microsoft 62% concentration are the moat's structural vulnerabilities. <strong style='color:#c9993a'>Moat Score: 7/10. Narrow-Wide Moat. GPU scale + backlog + NVIDIA partnership are strong. High leverage and customer concentration are the moat risks.</strong></div>
+    </div>
+  </section>
+
+</div>
+
+<footer style="max-width:1200px;margin:0 auto;padding:2rem 2rem 1rem">
+  <div><div class="footer-brand">CRWV · Moat Analysis</div><div>Dashboard 3 · Competitive Advantage Analysis · March 2026</div></div>
+  <div style="color:var(--muted2);max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. All moat scores are qualitative assessments based on publicly available information. Consult a financial advisor before investing.</div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+  const isDark = true;
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#1a2232';
+
+  // Radar chart
+  const rCtx = document.getElementById('radarChart');
+  if(rCtx) {
+    new Chart(rCtx, {
+      type: 'radar',
+      data: {
+        labels: ['Brand', 'Network Effects', 'Switching Costs', 'Cost Advantage', 'IP / Tech'],
+        datasets: [{
+          label: 'CRWV',
+          data: [7, 7, 8, 6, 8],
+          backgroundColor: 'rgba(201,153,58,0.15)',
+          borderColor: '#c9993a',
+          borderWidth: 2,
+          pointBackgroundColor: '#c9993a',
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            min: 0, max: 10,
+            ticks: { stepSize: 2, color: '#334155', backdropColor: 'transparent', font:{size:10} },
+            grid: { color: '#1a2232' },
+            pointLabels: { color: '#94a3b8', font:{size:11} },
+            angleLines: { color: '#1a2232' }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw + '/10' } }
+        }
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
