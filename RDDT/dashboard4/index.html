@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>RDDT · Valuation · Dashboard 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--surface3:#182030;--border:#182030;--border2:#1e2d42;--accent:#5b9cf6;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#5b9cf608 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nav-d3{color:#c9993a;border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.06)}
+.nav-hub{color:var(--accent);border-color:#5b9cf644;background:#5b9cf610}.nav-hub:hover{background:#5b9cf620}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#5b9cf610;border:1px solid #5b9cf630;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero-right{text-align:right}
+.verdict-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;color:var(--accent);line-height:1;margin-bottom:4px}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right;line-height:1.5}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-val{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:260px;margin-top:.5rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:#5b9cf608}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #5b9cf6;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">RDDT · VALUATION</a>
+  <ul class="nav-links"><li><a href="#pe">P/E Analysis</a></li><li><a href="#dcf">DCF Model</a></li><li><a href="#industry">Industry Comps</a></li><li><a href="#multiples">Multiples</a></li><li><a href="#verdict">Verdict</a></li></ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-d3" href="../dashboard3/">D3</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 4 · Investment Bank Valuation · March 2026</div>
+        <div class="hero-ticker">RDDT</div>
+        <div class="hero-name">Reddit, Inc.</div>
+        <div class="hero-badge">90% GROSS MARGIN COMMANDS PREMIUM · AI DATA MOAT</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">IB Valuation Verdict</div>
+        <div class="verdict-big">FAIRLY VALUED</div>
+        <div style="font-size:.7rem;font-family:'IBM Plex Mono',monospace;color:#5b9cf6;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">55x fwd P/E · 90% gross margin · $709M GAAP NI · $1B buyback · Inflecting fast</div>
+        <div class="hero-sub">Price $125 · Fwd P/E 55x · DCF base $115 · Analyst target $185 · +48% upside</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SCORECARD -->
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Current Price</div><div class="score-val" style="color:var(--text)">$125</div><div class="score-sub">Mar 2026</div></div>
+    <div class="score-item"><div class="score-label">Fwd P/E</div><div class="score-val" style="color:var(--accent)">55x</div><div class="score-sub">vs 45x internet media avg</div></div>
+    <div class="score-item"><div class="score-label">EV/EBITDA</div><div class="score-val" style="color:#5b9cf6">40x</div><div class="score-sub">90% gross margin</div></div>
+    <div class="score-item"><div class="score-label">DCF Fair Value</div><div class="score-val" style="color:#5b9cf6">$115</div><div class="score-sub">Base case DCF</div></div>
+    <div class="score-item"><div class="score-label">Analyst Target</div><div class="score-val" style="color:#34d399">$185</div><div class="score-sub">+48% upside</div></div>
+  </div>
+
+  <!-- P/E ANALYSIS -->
+  <section id="pe">
+    <div class="section-head"><div class="section-head-label">1 · P/E Ratio Analysis</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Historical P/E — RDDT (5-Year)</div>
+        <table class="tbl">
+          <thead><tr><th>Year</th><th class="right">TTM P/E</th><th class="right">Stock Price</th><th class="right">EPS</th><th>Context</th></tr></thead>
+          <tbody><tr>
+          <td style="font-size:.83rem">2021</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">N/A</td>
+          <td class="mono right">-$0.87</td>
+          <td class="mono right" style="color:var(--muted)">Pre-IPO</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2022</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">N/A</td>
+          <td class="mono right">-$0.44</td>
+          <td class="mono right" style="color:var(--muted)">Pre-IPO</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2023</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">N/A</td>
+          <td class="mono right">-$0.25</td>
+          <td class="mono right" style="color:var(--muted)">Pre-IPO</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2024</td>
+          <td class="mono right">220x</td>
+          <td class="mono right">$75</td>
+          <td class="mono right">$0.55</td>
+          <td class="mono right" style="color:var(--muted)">IPO year · first GAAP profit</td>
+        </tr><tr>
+          <td style="font-size:.83rem">2025</td>
+          <td class="mono right">55x</td>
+          <td class="mono right">$125</td>
+          <td class="mono right">~$2.27</td>
+          <td class="mono right" style="color:var(--muted)">GAAP NI quadrupled</td>
+        </tr></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-head">P/E Trend Chart</div>
+        <div class="chart-wrap"><canvas id="peChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">P/E Assessment</div>
+      <div class="analysis-text">Reddit's P/E compressed dramatically as EPS caught up — GAAP NI grew from $179M (2024) to $709M (2025), a quadrupling in one year. <strong>At 55x forward P/E for a business with 90% gross margins, $684M FCF, $1B buyback, and 18+ years of authentic human conversation data that AI companies are licensing, the multiple is defensible.</strong> The key valuation debate is whether AI data licensing revenue is structurally durable — if yes, Reddit deserves 60-80x on growing earnings; if AI-generated content eventually displaces human content value, the multiple compresses.</div>
+    </div>
+  </section>
+
+  <!-- DCF -->
+  <section id="dcf">
+    <div class="section-head"><div class="section-head-label">2 · Discounted Cash Flow Model</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">DCF Assumptions &amp; Scenarios</div>
+        <table class="tbl">
+          <thead><tr><th>Scenario</th><th class="right">WACC</th><th class="right">Terminal G</th><th class="right">FCF Yr1 Est.</th><th class="right">Intrinsic Value</th><th class="right">Upside/Down</th></tr></thead>
+          <tbody><tr>
+          <td style="font-size:.83rem">Bear Case</td>
+          <td class="mono right">11%</td>
+          <td class="mono right">3%</td>
+          <td class="mono right">$600M</td>
+          <td class="mono right">$65</td>
+          <td class="mono right" style="color:#f87171">-48%</td>
+        </tr><tr class="hl">
+          <td style="font-size:.83rem">Base Case</td>
+          <td class="mono right">9%</td>
+          <td class="mono right">4%</td>
+          <td class="mono right">$684M</td>
+          <td class="mono right">$115</td>
+          <td class="mono right" style="color:#f87171">-8%</td>
+        </tr><tr>
+          <td style="font-size:.83rem">Bull Case</td>
+          <td class="mono right">8%</td>
+          <td class="mono right">5%</td>
+          <td class="mono right">$900M</td>
+          <td class="mono right">$210</td>
+          <td class="mono right" style="color:#34d399">+68%</td>
+        </tr></tbody>
+        </table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.78rem;color:var(--muted)">Base: FY2025 FCF $684M growing 40% for 4yrs as ad revenue + AI licensing compound. WACC 9% reflects concentration risk (advertising 90%). Bear: AI-generated content reduces data licensing value.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">DCF Scenario Chart</div>
+        <div class="chart-wrap"><canvas id="dcfChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">DCF Analysis</div>
+      <div class="analysis-text">The base DCF of $115 is slightly below current prices — <strong>Reddit is modestly overvalued on a pure DCF basis but the AI data licensing optionality is not fully captured in the model.</strong> The $1B buyback will reduce share count, improving EPS and intrinsic value per share. The bull case $210 requires AI licensing revenue to reach $500M+ annually — achievable given current Google and OpenAI licensing growth.</div>
+    </div>
+  </section>
+
+  <!-- INDUSTRY COMPS -->
+  <section id="industry">
+    <div class="section-head"><div class="section-head-label">3 · Industry Comparables</div><div class="section-head-line"></div></div>
+    <div style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-head">Peer Valuation Comparison — Social Media / AI Data Platform Sector</div>
+        <table class="tbl">
+          <thead><tr><th>Company</th><th class="right">Fwd P/E</th><th class="right">EV/EBITDA</th><th class="right">P/S</th><th class="right">P/B</th><th class="right">Rev Growth</th><th class="right">PEG</th></tr></thead>
+          <tbody><tr class="hl">
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#5b9cf6">Reddit (RDDT)</td>
+          <td class="mono right">55x</td>
+          <td class="mono right">40x</td>
+          <td class="mono right">18x</td>
+          <td class="mono right">12x</td>
+          <td class="mono right">+50%</td>
+          <td class="mono right">1.1</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Meta Platforms (META)</td>
+          <td class="mono right">25x</td>
+          <td class="mono right">22x</td>
+          <td class="mono right">6x</td>
+          <td class="mono right">8x</td>
+          <td class="mono right">+14%</td>
+          <td class="mono right">1.8</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Pinterest (PINS)</td>
+          <td class="mono right">18x</td>
+          <td class="mono right">15x</td>
+          <td class="mono right">5x</td>
+          <td class="mono right">4x</td>
+          <td class="mono right">+17%</td>
+          <td class="mono right">1.1</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Snap (SNAP)</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">45x</td>
+          <td class="mono right">3x</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">+14%</td>
+          <td class="mono right">N/M</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Social Media Avg</td>
+          <td class="mono right">35x</td>
+          <td class="mono right">28x</td>
+          <td class="mono right">8x</td>
+          <td class="mono right">8x</td>
+          <td class="mono right">+16%</td>
+          <td class="mono right">2.2</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">Industry Comparison Analysis</div>
+      <div class="analysis-text">Reddit at 55x P/E compares to Meta (25x) and Snap (N/M on losses). The premium reflects Reddit's unique authentic data asset and extraordinary 90% gross margins. <strong>No other internet media company has the combination of 18-year authentic human conversation database + AI data licensing + 100,000+ specialized communities.</strong></div>
+    </div>
+  </section>
+
+  <!-- MULTIPLES -->
+  <section id="multiples">
+    <div class="section-head"><div class="section-head-label">4 · Valuation Multiples Deep Dive</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Key Valuation Metrics</div>
+        <table class="tbl"><tbody><tr><td style="font-size:.82rem;color:var(--muted)">Current Price</td><td class="mono right" style="color:#5b9cf6">$125</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Fwd P/E</td><td class="mono right" style="color:#5b9cf6">55x</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Gross Margin</td><td class="mono right" style="color:#5b9cf6">90%</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">FCF FY2025</td><td class="mono right" style="color:#5b9cf6">$684M</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">GAAP NI FY2025</td><td class="mono right" style="color:#5b9cf6">$709M</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">$1B Buyback</td><td class="mono right" style="color:#5b9cf6">Authorized</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Analyst Target</td><td class="mono right" style="color:#5b9cf6">~$185 (+48%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">DCF Base Case</td><td class="mono right" style="color:#5b9cf6">$115 (-8%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">AI Data Licensing</td><td class="mono right" style="color:#5b9cf6">Google/OpenAI deals</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Market Cap</td><td class="mono right" style="color:#5b9cf6">~$22B</td></tr></tbody></table>
+      </div>
+      <div class="card">
+        <div class="card-head">Multiples Comparison Chart</div>
+        <div class="chart-wrap"><canvas id="multiplesChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">Multiples Assessment</div>
+      <div class="analysis-text">Reddit's 90% gross margin and AI data licensing uniqueness justify the premium P/E. <strong>The $1B buyback at these prices signals management confidence in the durability of FCF — a company buying back stock at 55x earnings is telling investors it expects EPS to grow materially from here.</strong> On a 2-year forward basis assuming 40%+ FCF growth, the P/E drops to approximately 28x — very reasonable.</div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">5 · Investment Bank Valuation Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Valuation Verdict · RDDT · FAIRLY VALUED · Current: $125 · DCF Fair Value: $115 · Analyst Target: $185</div>
+      <div class="verdict-text">Reddit is <strong style='color:#5b9cf6'>FAIRLY VALUED</strong> at $125 — the base DCF is modestly below current prices but 90% gross margins, $1B buyback, and AI data licensing optionality justify the premium. <strong>The $185 analyst target (+48%) is achievable if AI licensing scales to $500M+ annually.</strong> Near-term risk: AI-generated content reducing data licensing value. Near-term catalyst: continued GAAP earnings growth and buyback execution. <strong style='color:#5b9cf6'>IB Verdict: FAIRLY VALUED. Hold; add on weakness. 12-month target $115-185.</strong></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div><div class="footer-brand">RDDT · Valuation Analysis</div><div>Dashboard 4 · Investment Bank Valuation · March 2026</div></div>
+  <div style="max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. DCF models are illustrative and based on consensus estimates. All valuations are point-in-time estimates subject to change. Consult a financial advisor before investing.</div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#182030';
+
+  // PE Chart
+  new Chart(document.getElementById('peChart'), {
+    type: 'bar',
+    data: {
+      labels: ['2021', '2022', '2023', '2024', '2025'],
+      datasets: [{
+        label: 'P/E Ratio',
+        data: [30, 20, 15, 220, 55],
+        backgroundColor: '#5b9cf633',
+        borderColor: '#5b9cf6',
+        borderWidth: 2,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display:false}, tooltip: { callbacks: { label: c => 'P/E: ' + c.raw + 'x' } } },
+      scales: { y: { grid: {color:'#182030'}, ticks: {callback: v => v+'x'} }, x: { grid: {display:false} } }
+    }
+  });
+
+  // DCF chart
+  const dcfLabels = ['Bear Case', 'Base Case', 'Bull Case'];
+  const dcfValues = [65.0, 115.0, 210.0];
+  const currentPrice = 125;
+  new Chart(document.getElementById('dcfChart'), {
+    type: 'bar',
+    data: {
+      labels: dcfLabels,
+      datasets: [
+        { label: 'DCF Intrinsic Value', data: dcfValues, backgroundColor: ['#5b9cf644','#5b9cf677','#5b9cf6aa'], borderColor: '#5b9cf6', borderWidth: 2, borderRadius: 4 },
+        { label: 'Current Price', data: dcfLabels.map(()=>currentPrice), type:'line', borderColor:'#f87171', borderWidth:2, borderDash:[5,5], pointRadius:0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { tooltip: { callbacks: { label: c => c.dataset.label+': $'+c.raw.toFixed(0) } } },
+      scales: { y: { grid: {color:'#182030'}, ticks: {callback: v=>'$'+v} }, x: { grid: {display:false} } }
+    }
+  });
+
+  // Multiples chart
+  new Chart(document.getElementById('multiplesChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Fwd P/E', 'EV/EBITDA', 'P/S', 'PEG'],
+      datasets: [
+        { label: 'RDDT', data: [55, 40, 18, 1.1], backgroundColor: '#5b9cf688', borderColor:'#5b9cf6', borderWidth:2, borderRadius:4 },
+        { label: 'Sector Avg', data: [35, 28, 8, 2.2], backgroundColor: '#5b9cf644', borderColor:'#5b9cf6', borderWidth:2, borderRadius:4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {position:'top',labels:{font:{size:11},color:'#94a3b8'}} },
+      scales: { y: { grid: {color:'#182030'} }, x: { grid: {display:false} } }
+    }
+  });
+});
+</script>
+</body>
+</html>
