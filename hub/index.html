@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Stock Research Hub · 32 Tickers · 10 Dashboards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07090c;--surface:#0f1520;--surface2:#141d2b;--surface3:#1a2436;
+  --border:#1e2d42;--border2:#253550;
+  --gold:#c9993a;--blue:#4a84e8;--green:#3bbf72;--red:#df5454;--purple:#a78bfa;
+  --text:#dde2ea;--muted:#6e7d94;--muted2:#3a4a5e;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(74,132,232,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(74,132,232,.015) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ── NAV ── */
+nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-brand{font-family:'IBM Plex Mono',monospace;font-size:.9rem;font-weight:500;color:var(--gold);letter-spacing:.1em}
+.nav-meta{font-size:.72rem;color:var(--muted);letter-spacing:.06em}
+.nav-stats{display:flex;gap:1.5rem}
+.nav-stat{text-align:right}
+.nav-stat-val{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--text)}
+.nav-stat-lbl{font-size:.6rem;color:var(--muted2);text-transform:uppercase;letter-spacing:.08em}
+@media(max-width:600px){.nav-stats{display:none}}
+
+/* ── WRAPPER ── */
+.wrapper{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:0 2rem 5rem}
+
+/* ── HERO ── */
+.hero{padding:3rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-title{font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:700;line-height:1.15;margin-bottom:.6rem}
+.hero-title span{color:var(--gold)}
+.hero-sub{font-size:.95rem;color:var(--muted);max-width:640px;line-height:1.65;margin-bottom:1.5rem}
+.hero-chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.08em;padding:4px 12px;border-radius:4px;border:1px solid;text-transform:uppercase}
+.chip-gold{border-color:rgba(201,153,58,.35);color:var(--gold);background:rgba(201,153,58,.07)}
+.chip-blue{border-color:rgba(74,132,232,.35);color:var(--blue);background:rgba(74,132,232,.07)}
+.chip-green{border-color:rgba(59,191,114,.35);color:var(--green);background:rgba(59,191,114,.07)}
+
+/* ── TOOLBAR ── */
+.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:1.5rem}
+.search-wrap{position:relative;flex:1;min-width:220px;max-width:340px}
+.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.55rem .9rem .55rem 2.2rem;font-size:.85rem;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--blue)}
+.search-wrap input::placeholder{color:var(--muted2)}
+.search-icon{position:absolute;left:.7rem;top:50%;transform:translateY(-50%);width:14px;height:14px;opacity:.4;pointer-events:none}
+.filter-btns{display:flex;gap:6px;flex-wrap:wrap}
+.fbtn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:4px;border:1px solid var(--border);color:var(--muted);background:transparent;cursor:pointer;transition:all .2s}
+.fbtn:hover,.fbtn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,153,58,.07)}
+.expand-all-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;padding:5px 14px;border-radius:4px;border:1px solid var(--border2);color:var(--muted);background:transparent;cursor:pointer;transition:all .2s;margin-left:auto}
+.expand-all-btn:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ── RESULTS COUNT ── */
+.results-count{font-size:.75rem;color:var(--muted);margin-bottom:1rem;font-family:'IBM Plex Mono',monospace}
+
+/* ── TICKER ROW ── */
+.ticker-list{display:flex;flex-direction:column;gap:4px}
+.ticker-row{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .2s}
+.ticker-row:hover{border-color:var(--border2)}
+.ticker-row.expanded{border-color:var(--gold)}
+
+/* TICKER HEADER (clickable) */
+.ticker-header{display:grid;grid-template-columns:56px 1fr auto auto auto auto 32px;gap:0;align-items:center;padding:.75rem 1rem;cursor:pointer;user-select:none;transition:background .15s}
+.ticker-header:hover{background:rgba(255,255,255,.02)}
+.th-ticker{font-family:'IBM Plex Mono',monospace;font-size:.95rem;font-weight:500;color:var(--gold)}
+.th-info{padding:0 1rem}
+.th-company{font-size:.85rem;font-weight:400;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px}
+.th-sector{font-size:.68rem;color:var(--muted);margin-top:1px}
+.th-price{font-family:'IBM Plex Mono',monospace;font-size:.85rem;color:var(--text);text-align:right;padding:0 1rem;white-space:nowrap}
+.th-target{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--gold);text-align:right;padding:0 1rem;white-space:nowrap}
+.th-upside{font-family:'IBM Plex Mono',monospace;font-size:.8rem;text-align:right;padding:0 1.5rem 0 0;white-space:nowrap}
+.th-badge{font-family:'IBM Plex Mono',monospace;font-size:.58rem;letter-spacing:.06em;padding:3px 9px;border-radius:3px;white-space:nowrap;font-weight:500}
+.badge-sb{background:rgba(59,191,114,.12);color:var(--green);border:1px solid rgba(59,191,114,.25)}
+.badge-b {background:rgba(74,132,232,.12);color:var(--blue); border:1px solid rgba(74,132,232,.25)}
+.badge-h {background:rgba(201,153,58,.12);color:var(--gold); border:1px solid rgba(201,153,58,.25)}
+.badge-s {background:rgba(223,84,84,.12); color:var(--red);  border:1px solid rgba(223,84,84,.25)}
+.badge-e {background:rgba(163,139,250,.12);color:var(--purple);border:1px solid rgba(163,139,250,.25)}
+.th-chevron{display:flex;align-items:center;justify-content:center;transition:transform .25s;color:var(--muted)}
+.ticker-row.expanded .th-chevron{transform:rotate(180deg)}
+@media(max-width:768px){
+  .ticker-header{grid-template-columns:52px 1fr auto 30px}
+  .th-price,.th-target,.th-upside{display:none}
+}
+
+/* DASHBOARD PANEL */
+.dash-panel{display:none;border-top:1px solid var(--border)}
+.ticker-row.expanded .dash-panel{display:block}
+.dash-panel-inner{padding:1rem 1rem 1.25rem;background:var(--surface2)}
+.dash-panel-title{font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:.9rem;font-family:'IBM Plex Mono',monospace}
+.dash-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+@media(max-width:900px){.dash-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:500px){.dash-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* DASHBOARD CARD */
+.dash-card{position:relative;background:var(--surface3);border:1px solid var(--border);border-radius:7px;padding:.85rem 1rem;text-decoration:none;display:flex;flex-direction:column;gap:4px;transition:all .2s;cursor:pointer}
+.dash-card:hover{border-color:var(--gold);transform:translateY(-1px);background:rgba(201,153,58,.05)}
+.dash-card.locked{cursor:not-allowed;opacity:.45}
+.dash-card.locked:hover{transform:none;border-color:var(--border);background:var(--surface3)}
+.dash-card.available{border-color:rgba(201,153,58,.3)}
+.dc-num{font-family:'IBM Plex Mono',monospace;font-size:.6rem;color:var(--muted2);letter-spacing:.1em;text-transform:uppercase}
+.dc-title{font-size:.8rem;font-weight:500;color:var(--text);line-height:1.3}
+.dc-desc{font-size:.68rem;color:var(--muted);line-height:1.4}
+.dc-status{position:absolute;top:.6rem;right:.7rem}
+.dc-live{font-family:'IBM Plex Mono',monospace;font-size:.55rem;background:rgba(59,191,114,.12);color:var(--green);border:1px solid rgba(59,191,114,.3);padding:1px 6px;border-radius:3px;letter-spacing:.06em}
+.dc-soon{font-family:'IBM Plex Mono',monospace;font-size:.55rem;background:rgba(201,153,58,.1);color:var(--gold);border:1px solid rgba(201,153,58,.2);padding:1px 6px;border-radius:3px;letter-spacing:.06em}
+.dc-lock{font-size:.65rem;opacity:.5}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-size:.85rem;margin-bottom:6px}
+
+/* DASHBOARD LEGEND */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2rem}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--muted)}
+.legend-dot{width:8px;height:8px;border-radius:2px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">📊 RESEARCH HUB</div>
+  <div class="nav-stats">
+    <div class="nav-stat"><div class="nav-stat-val">32</div><div class="nav-stat-lbl">Tickers</div></div>
+    <div class="nav-stat"><div class="nav-stat-val">10</div><div class="nav-stat-lbl">Dashboards</div></div>
+    <div class="nav-stat"><div class="nav-stat-val">320</div><div class="nav-stat-lbl">Total Reports</div></div>
+  </div>
+</nav>
+
+<div class="wrapper">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Wall Street · Research Platform · March 15, 2026</div>
+    <h1 class="hero-title">Your <span>Research Hub</span></h1>
+    <p class="hero-sub">32 tickers × 10 research dashboards. Click any ticker to expand and select a dashboard. Each dashboard covers a different analytical lens — from equity research to deep financials, technicals, options flow, and more.</p>
+    <div class="hero-chips">
+      <span class="chip chip-gold">32 Tickers</span>
+      <span class="chip chip-blue">10 Dashboard Types</span>
+      <span class="chip chip-green">Live on GitHub Pages</span>
+    </div>
+  </div>
+
+  <!-- DASHBOARD LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Live — Dashboard available</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--gold)"></div>Coming soon — In development</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--muted2)"></div>Locked — Prompt not yet provided</div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="searchInput" placeholder="Search ticker or company..." oninput="filterTickers()">
+    </div>
+    <div class="filter-btns">
+      <button class="fbtn active" onclick="filterBy('all',this)">All (32)</button>
+      <button class="fbtn" onclick="filterBy('STRONG BUY',this)">Strong Buy</button>
+      <button class="fbtn" onclick="filterBy('BUY',this)">Buy</button>
+      <button class="fbtn" onclick="filterBy('HOLD',this)">Hold</button>
+      <button class="fbtn" onclick="filterBy('semi',this)">Semis</button>
+      <button class="fbtn" onclick="filterBy('ai',this)">AI/Tech</button>
+      <button class="fbtn" onclick="filterBy('health',this)">Healthcare</button>
+      <button class="fbtn" onclick="filterBy('consumer',this)">Consumer</button>
+    </div>
+    <button class="expand-all-btn" onclick="toggleAll()">Expand All</button>
+  </div>
+
+  <div class="results-count" id="resultsCount">Showing 32 of 32 tickers</div>
+
+  <!-- TICKER LIST -->
+  <div class="ticker-list" id="tickerList"></div>
+
+  <footer>
+    <div><div class="footer-brand">📊 STOCK RESEARCH HUB</div><div>32 Tickers · 10 Dashboard Types · March 15, 2026</div></div>
+    <div style="max-width:520px"><strong>Disclaimer:</strong> All dashboards are for informational and educational purposes only. Nothing constitutes financial or investment advice. Please consult a licensed financial advisor before making any investment decisions.</div>
+  </footer>
+</div>
+
+<script>
+// ── TICKER DATA ──────────────────────────────────────────────────────────────
+const tickers = [
+  {t:"ALAB",name:"Astera Labs, Inc.",         sector:"Semiconductors · AI Connectivity", price:"$119.51",target:"$194.71",upside:"+63%",badge:"sb",tags:"semi ai"},
+  {t:"APP", name:"AppLovin Corporation",       sector:"Ad Technology · AI Marketing",     price:"$386.00",target:"$734.39",upside:"+90%",badge:"sb",tags:"ai tech"},
+  {t:"AVGO",name:"Broadcom Inc.",              sector:"Semiconductors · Infrastructure Software",price:"$322.00",target:"$467.68",upside:"+45%",badge:"sb",tags:"semi ai",d1:true,d2:true},
+  {t:"BE",  name:"Bloom Energy Corporation",   sector:"Clean Energy · Fuel Cells",        price:"$105.22",target:"$131.87",upside:"+25%",badge:"h", tags:"energy"},
+  {t:"CAVA",name:"CAVA Group, Inc.",           sector:"Restaurants · Fast Casual",        price:"$83.00", target:"$83.33", upside:"+0%", badge:"b", tags:"consumer"},
+  {t:"CRCL",name:"Circle Internet Group",      sector:"Fintech · Stablecoin",             price:"$101.69",target:"$131.69",upside:"+29%",badge:"b", tags:"ai tech"},
+  {t:"CRDO",name:"Credo Technology Group",     sector:"Semiconductors · AI Networking",   price:"$93.00", target:"$187.50",upside:"+102%",badge:"sb",tags:"semi ai"},
+  {t:"CRWD",name:"CrowdStrike Holdings, Inc.", sector:"Cybersecurity · AI Security",      price:"$370.00",target:"$432.75",upside:"+17%",badge:"b", tags:"ai tech"},
+  {t:"CRWV",name:"CoreWeave, Inc.",            sector:"AI Cloud Infrastructure",          price:"$73.00", target:"$121.00",upside:"+66%",badge:"b", tags:"ai tech"},
+  {t:"CVNA",name:"Carvana Co.",                sector:"Automotive E-commerce",            price:"$220.00",target:"$305.00",upside:"+39%",badge:"b", tags:"consumer"},
+  {t:"EOSE",name:"Eos Energy Enterprises",     sector:"Energy Storage · Zinc Batteries",  price:"$5.70",  target:"$8.00",  upside:"+40%",badge:"b", tags:"energy"},
+  {t:"HIMS",name:"Hims & Hers Health, Inc.",   sector:"Digital Health · GLP-1",           price:"$23.47", target:"$29.00", upside:"+24%",badge:"b", tags:"health"},
+  {t:"LLY", name:"Eli Lilly and Company",      sector:"Pharmaceuticals · GLP-1",          price:"$790.00",target:"$1,174",  upside:"+49%",badge:"b", tags:"health"},
+  {t:"LULU",name:"lululemon athletica inc.",   sector:"Apparel · Athleisure",             price:"$290.00",target:"$337.00",upside:"+16%",badge:"h", tags:"consumer"},
+  {t:"MELI",name:"MercadoLibre, Inc.",         sector:"Latin America E-commerce · Fintech",price:"$1,773",target:"$2,738", upside:"+54%",badge:"sb",tags:"consumer ai"},
+  {t:"META",name:"Meta Platforms, Inc.",       sector:"Social Media · AI",                price:"$716.00",target:"$885.00",upside:"+24%",badge:"sb",tags:"ai tech"},
+  {t:"MRVL",name:"Marvell Technology, Inc.",   sector:"Semiconductors · AI Silicon",      price:"$91.72", target:"$117.24",upside:"+28%",badge:"sb",tags:"semi ai"},
+  {t:"MSTR",name:"Strategy Inc. (MicroStrategy)",sector:"Bitcoin Treasury",              price:"$280.00",target:"$376.00",upside:"+34%",badge:"b", tags:"ai tech"},
+  {t:"NBIS",name:"Nebius Group N.V.",          sector:"AI Cloud · European",              price:"$32.00", target:"$72.50", upside:"+127%",badge:"sb",tags:"ai tech"},
+  {t:"NFLX",name:"Netflix, Inc.",              sector:"Streaming · Entertainment",        price:"$980.00",target:"$1,100",  upside:"+12%",badge:"b", tags:"consumer"},
+  {t:"NVDA",name:"NVIDIA Corporation",         sector:"Semiconductors · AI Platform",     price:"$116.00",target:"$264.05",upside:"+127%",badge:"sb",tags:"semi ai"},
+  {t:"ORCL",name:"Oracle Corporation",         sector:"Enterprise Software · AI Cloud",   price:"$188.00",target:"$220.00",upside:"+17%",badge:"b", tags:"ai tech"},
+  {t:"OSCR",name:"Oscar Health, Inc.",         sector:"Health Insurance · ACA",           price:"$14.88", target:"$17.00", upside:"+14%",badge:"h", tags:"health"},
+  {t:"PLTR",name:"Palantir Technologies Inc.", sector:"AI Platform · Defense",            price:"$85.00", target:"$193.78",upside:"+128%",badge:"b",tags:"ai tech"},
+  {t:"RDDT",name:"Reddit, Inc.",               sector:"Social Media · AI Data",           price:"$170.00",target:"$225.69",upside:"+33%",badge:"b", tags:"ai tech"},
+  {t:"SMCL",name:"Sembcorp Marine",            sector:"Marine Engineering · Energy",      price:"$12.00", target:"$18.00", upside:"+50%",badge:"b", tags:"energy"},
+  {t:"SNDK",name:"Sandisk Corporation",        sector:"NAND Flash Memory",                price:"$619.08",target:"$537.31",upside:"-13%",badge:"b", tags:"semi"},
+  {t:"SOXL",name:"Direxion Daily Semi 3X ETF", sector:"Leveraged ETF · Semiconductors",  price:"~$18.00",target:"N/A",    upside:"3x SOX",badge:"e",tags:"semi"},
+  {t:"TEM", name:"Tempus AI, Inc.",            sector:"AI Healthcare · Precision Medicine",price:"$56.50",target:"$78.15", upside:"+38%",badge:"b", tags:"health ai"},
+  {t:"TMDX",name:"TransMedics Group, Inc.",    sector:"Medical Devices · Organ Transplant",price:"$145.30",target:"$160.50",upside:"+10%",badge:"b",tags:"health"},
+  {t:"TSLA",name:"Tesla, Inc.",                sector:"EV / Energy / AI / Robotics",      price:"$248.00",target:"$396.23",upside:"+60%",badge:"h", tags:"consumer ai"},
+  {t:"UNH", name:"UnitedHealth Group",         sector:"Health Insurance · Optum",         price:"$430.00",target:"$620.00",upside:"+44%",badge:"b", tags:"health"},
+];
+
+// ── DASHBOARD DEFINITIONS ──────────────────────────────────────────────────
+const dashboards = [
+  {num:1, title:"Equity Research",       desc:"Full Wall Street analysis · Financials, moat, scenarios, verdict",       key:"d1"},
+  {num:2, title:"Deep Financial Breakdown",desc:"5-yr revenue, net income, FCF, margins, debt, ROE analysis",            key:"d2"},
+  {num:3, title:"Technical Analysis",    desc:"Price trends, RSI, MACD, support/resistance, moving averages",           key:"d3"},
+  {num:4, title:"Options & Sentiment",   desc:"Unusual options activity, put/call ratio, short interest, insider trades",key:"d4"},
+  {num:5, title:"Competitive Landscape", desc:"Industry map, market share, competitor matrix, moat deep dive",          key:"d5"},
+  {num:6, title:"Macro & Sector Trends", desc:"Industry tailwinds/headwinds, regulatory environment, macro exposure",   key:"d6"},
+  {num:7, title:"Management & ESG",      desc:"Leadership track record, governance scores, ESG ratings, culture",       key:"d7"},
+  {num:8, title:"News & Catalyst Tracker",desc:"Recent headlines, upcoming catalysts, earnings dates, analyst changes",  key:"d8"},
+  {num:9, title:"Valuation Deep Dive",   desc:"DCF model, comparables, EV/EBITDA, P/S, sum-of-the-parts analysis",     key:"d9"},
+  {num:10,title:"AI & Innovation Index", desc:"AI product pipeline, R&D spend, patent activity, innovation score",      key:"d10"},
+];
+
+const badgeMap = {sb:"STRONG BUY",b:"BUY",h:"HOLD",s:"SELL",e:"ETF"};
+const badgeClass = {sb:"badge-sb",b:"badge-b",h:"badge-h",s:"badge-s",e:"badge-e"};
+
+function upside_color(u) {
+  if (!u || u==="N/A" || u.includes("SOX")) return "color:var(--muted)";
+  const v = parseFloat(u);
+  if (v >= 30) return "color:var(--green)";
+  if (v >= 10) return "color:var(--blue)";
+  if (v >= 0)  return "color:var(--muted)";
+  return "color:var(--red)";
+}
+
+function getDashUrl(ticker, d) {
+  if (d.num === 1) return "./" + ticker + "/";
+  return "./" + ticker + "/dashboard" + d.num + "/";
+}
+
+function isLive(ticker, d) {
+  const t = tickers.find(x => x.t === ticker);
+  return t && t[d.key] === true;
+}
+
+function buildRow(t) {
+  const live_d1 = t.d1 ? true : false;
+  const live_d2 = t.d2 ? true : false;
+
+  const dashCards = dashboards.map(d => {
+    const live = (d.num===1 && live_d1) || (d.num===2 && live_d2);
+    const url = getDashUrl(t.t, d);
+    if (live) {
+      return `<a class="dash-card available" href="${url}">
+        <div class="dc-status"><span class="dc-live">LIVE</span></div>
+        <div class="dc-num">Dashboard ${d.num}</div>
+        <div class="dc-title">${d.title}</div>
+        <div class="dc-desc">${d.desc}</div>
+      </a>`;
+    } else if (d.num <= 2) {
+      return `<div class="dash-card locked">
+        <div class="dc-status"><span class="dc-soon">SOON</span></div>
+        <div class="dc-num">Dashboard ${d.num}</div>
+        <div class="dc-title">${d.title}</div>
+        <div class="dc-desc">${d.desc}</div>
+      </div>`;
+    } else {
+      return `<div class="dash-card locked">
+        <div class="dc-status"><span class="dc-lock">🔒</span></div>
+        <div class="dc-num">Dashboard ${d.num}</div>
+        <div class="dc-title">${d.title}</div>
+        <div class="dc-desc">${d.desc}</div>
+      </div>`;
+    }
+  }).join('');
+
+  return `<div class="ticker-row" id="row-${t.t}" data-tags="${t.tags}" data-badge="${t.badge}">
+    <div class="ticker-header" onclick="toggle('${t.t}')">
+      <div class="th-ticker">${t.t}</div>
+      <div class="th-info">
+        <div class="th-company">${t.name}</div>
+        <div class="th-sector">${t.sector}</div>
+      </div>
+      <div class="th-price">${t.price}</div>
+      <div class="th-target" style="color:var(--gold)">${t.target}</div>
+      <div class="th-upside" style="${upside_color(t.upside)}">${t.upside}</div>
+      <div><span class="th-badge ${badgeClass[t.badge]}">${badgeMap[t.badge]}</span></div>
+      <div class="th-chevron">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+    <div class="dash-panel">
+      <div class="dash-panel-inner">
+        <div class="dash-panel-title">${t.t} · Select a Dashboard</div>
+        <div class="dash-grid">${dashCards}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function render(subset) {
+  const list = subset || tickers;
+  document.getElementById('tickerList').innerHTML = list.map(buildRow).join('');
+  document.getElementById('resultsCount').textContent = 'Showing ' + list.length + ' of ' + tickers.length + ' tickers';
+}
+
+// ── TOGGLE ────────────────────────────────────────────────────────────────────
+function toggle(ticker) {
+  const row = document.getElementById('row-' + ticker);
+  if (!row) return;
+  const wasOpen = row.classList.contains('expanded');
+  // Close all
+  document.querySelectorAll('.ticker-row.expanded').forEach(r => r.classList.remove('expanded'));
+  // Toggle this one
+  if (!wasOpen) row.classList.add('expanded');
+}
+
+let allExpanded = false;
+function toggleAll() {
+  const rows = document.querySelectorAll('.ticker-row:not([style*="none"])');
+  allExpanded = !allExpanded;
+  rows.forEach(r => allExpanded ? r.classList.add('expanded') : r.classList.remove('expanded'));
+  document.querySelector('.expand-all-btn').textContent = allExpanded ? 'Collapse All' : 'Expand All';
+}
+
+// ── FILTER ────────────────────────────────────────────────────────────────────
+let currentFilter = 'all';
+let currentSearch = '';
+
+function filterBy(type, btn) {
+  currentFilter = type;
+  document.querySelectorAll('.fbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function filterTickers() {
+  currentSearch = document.getElementById('searchInput').value.toLowerCase();
+  applyFilters();
+}
+
+function applyFilters() {
+  let filtered = tickers;
+
+  if (currentFilter !== 'all') {
+    if (currentFilter === 'STRONG BUY') filtered = filtered.filter(t => t.badge === 'sb');
+    else if (currentFilter === 'BUY')   filtered = filtered.filter(t => t.badge === 'b');
+    else if (currentFilter === 'HOLD')  filtered = filtered.filter(t => t.badge === 'h');
+    else filtered = filtered.filter(t => t.tags.includes(currentFilter));
+  }
+
+  if (currentSearch) {
+    filtered = filtered.filter(t =>
+      t.t.toLowerCase().includes(currentSearch) ||
+      t.name.toLowerCase().includes(currentSearch) ||
+      t.sector.toLowerCase().includes(currentSearch)
+    );
+  }
+
+  render(filtered);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
