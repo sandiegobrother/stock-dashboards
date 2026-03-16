@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>AVGO · Moat Analysis · Dashboard 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07090c;--surface:#0e1117;--surface2:#141a24;--surface3:#1a2232;--border:#1a2232;--border2:#243248;--accent:#c9993a;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(201,153,58,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(52,211,153,.03) 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,9,12,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:var(--blue);border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}.nav-d2:hover{background:rgba(91,156,246,.12)}
+.nav-hub{color:var(--accent);border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.08)}.nav-hub:hover{background:rgba(201,153,58,.15)}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(201,153,58,.08);border:1px solid rgba(201,153,58,.25);border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero-right{text-align:right}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.moat-ring{display:flex;align-items:center;justify-content:flex-end;gap:12px;margin-bottom:6px}
+.moat-score{font-family:'IBM Plex Mono',monospace;font-size:3rem;font-weight:500;color:#34d399;line-height:1}
+.moat-denom{font-family:'IBM Plex Mono',monospace;font-size:1.2rem;color:var(--muted);line-height:1;margin-top:auto;margin-bottom:6px}/10
+.moat-label{font-size:.72rem;font-family:'IBM Plex Mono',monospace;color:#34d399;text-transform:uppercase;letter-spacing:.1em}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left}.hero-ticker{font-size:2.8rem}.moat-ring{justify-content:flex-start}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-num{font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:280px;margin-top:.5rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:rgba(201,153,58,.06)}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #34d399;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:2px 8px;border-radius:3px;font-weight:500;letter-spacing:.04em}
+.pill-green{background:rgba(52,211,153,.12);color:var(--green);border:1px solid rgba(52,211,153,.25)}
+.pill-amber{background:rgba(251,191,36,.12);color:var(--amber);border:1px solid rgba(251,191,36,.25)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">AVGO · MOAT ANALYSIS</a>
+  <ul class="nav-links"><li><a href="#brand">Brand</a></li><li><a href="#network">Network</a></li><li><a href="#switching">Switching</a></li><li><a href="#cost">Cost Adv.</a></li><li><a href="#ip">IP / Tech</a></li><li><a href="#comparison">Vs. Peers</a></li><li><a href="#verdict">Verdict</a></li></ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 3 · Competitive Moat Analysis · March 2026</div>
+        <div class="hero-ticker">AVGO</div>
+        <div class="hero-name">Broadcom Inc.</div>
+        <div class="hero-badge">MISSION-CRITICAL ENTERPRISE LOCK-IN · VMware FORTRESS</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Moat Score</div>
+        <div class="moat-ring">
+          <div class="moat-score">9</div>
+          <div class="moat-denom">/10</div>
+        </div>
+        <div class="moat-label">Wide Moat</div>
+        <div class="hero-sub">VMware 350,000+ enterprise customers. ~98% renewal rate. Custom AI ASIC for Google/Meta/Apple. 64%+ gross margin.</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Brand Strength</div><div class="score-num" style="color:#34d399">8/10</div><div class="score-sub">VMware + chip heritage</div></div>
+    <div class="score-item"><div class="score-label">Network Effects</div><div class="score-num" style="color:#5b9cf6">7/10</div><div class="score-sub">75K partner ecosystem</div></div>
+    <div class="score-item"><div class="score-label">Switching Costs</div><div class="score-num" style="color:#34d399">10/10</div><div class="score-sub">$5-50M migration cost</div></div>
+    <div class="score-item"><div class="score-label">Cost Advantage</div><div class="score-num" style="color:#34d399">8/10</div><div class="score-sub">64%+ GM software mix</div></div>
+    <div class="score-item"><div class="score-label">IP / Proprietary Tech</div><div class="score-num" style="color:#34d399">9/10</div><div class="score-sub">VMware IP + Tomahawk ASIC</div></div>
+  </div>
+
+  <!-- BRAND -->
+  <section id="brand">
+    <div class="section-head"><div class="section-head-label">1 · Brand Strength</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Brand Assessment · Score 8/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:80%;height:100%;background:#34d399;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399;width:24px;text-align:right">8</span>
+        </div></div>
+        <div class="analysis-text">Broadcom commands premier enterprise brand recognition post-VMware. <strong>VMware represents the gold standard in enterprise virtualization — 350,000+ customers, many with VMware at the core of their data centers for 20+ years.</strong> In custom silicon, Broadcom is the preferred ASIC partner for Google (TPU), Meta (MTIA), and Apple (biometrics/connectivity).</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Brand Dimensions</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>VMware Brand</td><td class='mono right' style='color:var(--green)'>20yr virtualization standard</td></tr><tr><td style='font-size:.83rem'>Semiconductor Brand</td><td class='mono right' style='color:var(--green)'>Top-3 data center chip supplier</td></tr><tr><td style='font-size:.83rem'>Custom ASIC Brand</td><td class='mono right' style='color:var(--green)'>Google/Meta/Apple partner</td></tr><tr><td style='font-size:.83rem'>Tomahawk Brand</td><td class='mono right' style='color:var(--green)'>Hyperscale switching standard</td></tr><tr><td style='font-size:.83rem'>Enterprise Software Brand</td><td class='mono right' style='color:var(--green)'>Post-acquisition building</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- NETWORK -->
+  <section id="network">
+    <div class="section-head"><div class="section-head-label">2 · Network Effects</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Network Effects · Score 7/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:70%;height:100%;background:#5b9cf6;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6;width:24px;text-align:right">7</span>
+        </div></div>
+        <div class="analysis-text">VMware's partner ecosystem of 75,000+ ISVs and certified professionals creates a self-reinforcing lock-in network. <strong>Every VMware-certified admin and every VMware-compatible ISV solution deepens enterprise dependency — making migration not just technically complex but organizationally and vendor-relationship-wise disruptive.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Network Effect Indicators</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>VMware Partner Ecosystem</td><td class='mono right' style='color:var(--blue)'>75,000+ certified ISVs</td></tr><tr><td style='font-size:.83rem'>VMware Certified Admins</td><td class='mono right' style='color:var(--blue)'>500,000+ globally</td></tr><tr><td style='font-size:.83rem'>Custom ASIC Multi-gen</td><td class='mono right' style='color:var(--blue)'>Google/Meta multi-year partnerships</td></tr><tr><td style='font-size:.83rem'>Tomahawk Reference Design</td><td class='mono right' style='color:var(--blue)'>Hyperscale switching standard</td></tr><tr><td style='font-size:.83rem'>Semiconductor Relationships</td><td class='mono right' style='color:var(--blue)'>Multi-decade customer loyalty</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SWITCHING -->
+  <section id="switching">
+    <div class="section-head"><div class="section-head-label">3 · Switching Costs</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Switching Costs · Score 10/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:100%;height:100%;background:#34d399;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399;width:24px;text-align:right">10</span>
+        </div></div>
+        <div class="analysis-text">VMware's switching costs are among the highest in enterprise technology. <strong>A full VMware migration costs $5-50M+ in professional services, takes 18-36 months, and requires retraining thousands of IT staff — making 'rip and replace' economically irrational for most enterprises.</strong> ~98% annual renewal rates prove the moat empirically.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">Switching Cost Drivers</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>VMware Migration Cost</td><td class='mono right' style='color:var(--green)'>$5-50M per enterprise</td></tr><tr><td style='font-size:.83rem'>Migration Timeline</td><td class='mono right' style='color:var(--green)'>18-36 months typically</td></tr><tr><td style='font-size:.83rem'>Staff Retraining</td><td class='mono right' style='color:var(--green)'>$10,000+ per VMware admin</td></tr><tr><td style='font-size:.83rem'>Custom ASIC Design Cycle</td><td class='mono right' style='color:var(--green)'>2-3 years per generation</td></tr><tr><td style='font-size:.83rem'>Annual Renewal Rate</td><td class='mono right' style='color:var(--green)'>~98%</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COST ADVANTAGE -->
+  <section id="cost">
+    <div class="section-head"><div class="section-head-label">4 · Cost Advantage</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">Cost Advantage · Score 8/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:80%;height:100%;background:#fbbf24;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#fbbf24;width:24px;text-align:right">8</span>
+        </div></div>
+        <div class="analysis-text">64%+ gross margins post-VMware reflect the near-zero marginal cost of software licensing. <strong>The 'Broadcom playbook' — acquire mission-critical software, optimize pricing — is controversial but produces extraordinary unit economics as software now exceeds 60% of revenue.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Cost Structure Highlights</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>Post-VMware Gross Margin</td><td class='mono right' style='color:var(--amber)'>64%+ expanding to 70%+</td></tr><tr><td style='font-size:.83rem'>Software Revenue Mix</td><td class='mono right' style='color:var(--amber)'>60%+ of total</td></tr><tr><td style='font-size:.83rem'>VMware Infrastructure Margin</td><td class='mono right' style='color:var(--amber)'>~90%+ on incremental users</td></tr><tr><td style='font-size:.83rem'>Fabless Manufacturing</td><td class='mono right' style='color:var(--amber)'>No fab capex burden</td></tr><tr><td style='font-size:.83rem'>R&D Focus</td><td class='mono right' style='color:var(--amber)'>Core IP only — efficiency</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- IP / TECH -->
+  <section id="ip">
+    <div class="section-head"><div class="section-head-label">5 · Patents &amp; Proprietary Technology</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="analysis">
+        <div class="analysis-title">IP &amp; Proprietary Tech · Score 9/10</div>
+        <div style="margin-bottom:.75rem"><div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden">
+            <div style="width:90%;height:100%;background:#a78bfa;border-radius:4px"></div>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#a78bfa;width:24px;text-align:right">9</span>
+        </div></div>
+        <div class="analysis-text">Broadcom's IP: VMware hypervisor (20yr $28B R&D), Tomahawk 5 switch ASIC (51.2 Tbps — hyperscale backbone), custom AI ASICs for Google TPU/Meta MTIA, and Apple's iPhone connectivity chipsets. <strong>The Tomahawk switch ASIC series is the capacity backbone of most hyperscale data centers — a position built on 20+ years of compound development that Cisco or Marvell cannot quickly challenge.</strong></div>
+      </div>
+      <div class="card">
+        <div class="card-head">IP &amp; Technology Assets</div>
+        <table class="tbl"><tbody>
+        <tr><td style='font-size:.83rem'>VMware Hypervisor IP</td><td class='mono right' style='color:#a78bfa'>$28B R&D · 20yr development</td></tr><tr><td style='font-size:.83rem'>Tomahawk 5 ASIC</td><td class='mono right' style='color:#a78bfa'>51.2 Tbps hyperscale backbone</td></tr><tr><td style='font-size:.83rem'>Google TPU Co-design</td><td class='mono right' style='color:#a78bfa'>Multi-generation partnership IP</td></tr><tr><td style='font-size:.83rem'>Apple Connectivity Chipset</td><td class='mono right' style='color:#a78bfa'>iPhone biometrics + Wi-Fi</td></tr><tr><td style='font-size:.83rem'>Storage Controller</td><td class='mono right' style='color:#a78bfa'>90%+ enterprise market share</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section id="comparison">
+    <div class="section-head"><div class="section-head-label">6 · Peer Comparison</div><div class="section-head-line"></div></div>
+    <div style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-head">Competitive Moat Scorecard vs. Top Peers</div>
+        <table class="tbl">
+          <thead><tr>
+            <th>Company</th><th class="right">Brand</th><th class="right">Network</th>
+            <th class="right">Switching</th><th class="right">Cost Adv.</th>
+            <th class="right">IP/Tech</th><th>Overall Moat</th>
+          </tr></thead>
+          <tbody><tr class='hl'>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#34d399">Broadcom (AVGO)</td>
+          <td class="mono right">8</td>
+          <td class="mono right">7</td>
+          <td class="mono right">10</td>
+          <td class="mono right">8</td>
+          <td class="mono right">9</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:90%;height:100%;background:#34d399;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#34d399">9/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Microsoft (MSFT)</td>
+          <td class="mono right">10</td>
+          <td class="mono right">9</td>
+          <td class="mono right">10</td>
+          <td class="mono right">9</td>
+          <td class="mono right">9</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:100%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">10/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Cisco (CSCO)</td>
+          <td class="mono right">8</td>
+          <td class="mono right">7</td>
+          <td class="mono right">8</td>
+          <td class="mono right">7</td>
+          <td class="mono right">7</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:80%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">8/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Marvell (MRVL)</td>
+          <td class="mono right">6</td>
+          <td class="mono right">5</td>
+          <td class="mono right">7</td>
+          <td class="mono right">7</td>
+          <td class="mono right">8</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:70%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">7/10</span>
+          </div></td>
+        </tr><tr >
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Nutanix (NTNX)</td>
+          <td class="mono right">6</td>
+          <td class="mono right">5</td>
+          <td class="mono right">7</td>
+          <td class="mono right">6</td>
+          <td class="mono right">6</td>
+          <td><div style="display:flex;align-items:center;gap:6px">
+            <div style="width:60px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden">
+              <div style="width:60%;height:100%;background:#5b9cf6;border-radius:3px"></div>
+            </div>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:.78rem;color:#5b9cf6">6/10</span>
+          </div></td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Moat Radar Chart</div>
+        <div class="chart-wrap"><canvas id="radarChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">Moat Dimension Summary</div>
+        <table class="tbl">
+          <thead><tr><th>Dimension</th><th>Grade</th><th>Commentary</th></tr></thead>
+          <tbody><tr>
+          <td style="font-weight:500;font-size:.85rem">Brand Strength</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A</span></td>
+          <td class="dim">VMware + semiconductor heritage = premier enterprise brand</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Network Effects</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#5b9cf6;font-weight:600">B+</span></td>
+          <td class="dim">75,000 partner ecosystem + VMware admin community</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Switching Costs</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A+</span></td>
+          <td class="dim">VMware migration $5-50M · 18-36 months · ~98% renewal</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">Cost Advantage</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A</span></td>
+          <td class="dim">64%+ gross margin · software near-zero marginal cost</td>
+        </tr><tr>
+          <td style="font-weight:500;font-size:.85rem">IP & Patents</td>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-size:.9rem;color:#34d399;font-weight:600">A+</span></td>
+          <td class="dim">Tomahawk ASIC + VMware hypervisor + custom AI silicon</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- STRENGTHS & THREATS -->
+  <section id="strengths">
+    <div class="section-head"><div class="section-head-label">7 · Moat Strengths &amp; Threats</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Core Moat Strengths</div>
+        <ul style="list-style:none"><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>~98% annual VMware renewal rate — empirical proof of switching cost moat</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>VMware migration $5-50M+ makes switching economically irrational for most enterprises</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>Custom ASIC for Google/Meta — irreversible multi-year design commitments</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>Tomahawk switch ASIC is the hyperscale networking backbone — 20+ year position</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--green);flex-shrink:0">✓</span>60%+ software revenue at ~90% incremental margins — cost structure transformation complete</li></ul>
+      </div>
+      <div class="card">
+        <div class="card-head">Moat Threats &amp; Watch Items</div>
+        <ul style="list-style:none"><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>VMware customers evaluating Nutanix, Red Hat alternatives post aggressive price increases</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>EU/US regulatory scrutiny of VMware pricing post-acquisition</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Custom ASIC competition from Marvell and internal hyperscaler silicon teams</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Hock Tan CEO succession risk — acquisition strategy deeply personal</li><li style="padding:.35rem 0;border-bottom:1px solid var(--border);font-size:.85rem;display:flex;gap:8px;align-items:flex-start"><span style="color:var(--red);flex-shrink:0">⚠</span>Semiconductor cyclicality in broadband/storage segments</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">8 · Moat Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Competitive Advantage Verdict · AVGO · Overall Moat Score: 9/10 · Wide Moat</div>
+      <div class="verdict-text">Broadcom holds one of the deepest enterprise technology moats — VMware's mission-critical position in 350,000+ data centers creates switching costs that make competitive displacement nearly economically impossible. ~98% renewal rates prove the moat empirically. Custom AI ASIC partnerships with Google and Meta add a second structural moat. <strong style='color:#34d399'>Moat Score: 9/10. Wide Moat. VMware switching costs + custom silicon IP = irreplaceable enterprise infrastructure.</strong></div>
+    </div>
+  </section>
+
+</div>
+
+<footer style="max-width:1200px;margin:0 auto;padding:2rem 2rem 1rem">
+  <div><div class="footer-brand">AVGO · Moat Analysis</div><div>Dashboard 3 · Competitive Advantage Analysis · March 2026</div></div>
+  <div style="color:var(--muted2);max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. All moat scores are qualitative assessments based on publicly available information. Consult a financial advisor before investing.</div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+  const isDark = true;
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#1a2232';
+
+  // Radar chart
+  const rCtx = document.getElementById('radarChart');
+  if(rCtx) {
+    new Chart(rCtx, {
+      type: 'radar',
+      data: {
+        labels: ['Brand', 'Network Effects', 'Switching Costs', 'Cost Advantage', 'IP / Tech'],
+        datasets: [{
+          label: 'AVGO',
+          data: [8, 7, 10, 8, 9],
+          backgroundColor: 'rgba(201,153,58,0.15)',
+          borderColor: '#c9993a',
+          borderWidth: 2,
+          pointBackgroundColor: '#c9993a',
+          pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          r: {
+            min: 0, max: 10,
+            ticks: { stepSize: 2, color: '#334155', backdropColor: 'transparent', font:{size:10} },
+            grid: { color: '#1a2232' },
+            pointLabels: { color: '#94a3b8', font:{size:11} },
+            angleLines: { color: '#1a2232' }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ctx.dataset.label + ': ' + ctx.raw + '/10' } }
+        }
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
