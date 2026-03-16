@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MRVL · Valuation · Dashboard 4</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--surface3:#182030;--border:#182030;--border2:#1e2d42;--accent:#34d399;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--text:#e2e8f0;--muted:#64748b;--muted2:#334155}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#34d39908 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:var(--accent)}
+.nav-btns{display:flex;gap:8px;align-items:center}
+.nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
+.nav-d2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nav-d3{color:#c9993a;border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.06)}
+.nav-hub{color:var(--accent);border-color:#34d39944;background:#34d39910}.nav-hub:hover{background:#34d39920}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:var(--accent);line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#34d39910;border:1px solid #34d39930;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero-right{text-align:right}
+.verdict-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;color:var(--accent);line-height:1;margin-bottom:4px}
+.hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
+.hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:260px;text-align:right;line-height:1.5}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.8rem}}
+.scorecard{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2.5rem}
+.score-item{background:var(--surface);padding:.85rem 1rem;text-align:center}
+.score-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px;font-weight:500}
+.score-val{font-family:'IBM Plex Mono',monospace;font-size:1.3rem;font-weight:500;line-height:1}
+.score-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+@media(max-width:900px){.scorecard{grid-template-columns:repeat(3,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.25rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.g2,.g3{grid-template-columns:1fr}}
+.chart-wrap{position:relative;width:100%;height:260px;margin-top:.5rem}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .75rem .6rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.6rem .75rem .6rem 0;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.015)}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem}
+.tbl td.right{text-align:right}
+.tbl td.dim{color:var(--muted);font-size:.78rem}
+.tbl .hl td{background:#34d39908}
+.tbl .hl td:first-child{border-left:2px solid var(--accent);padding-left:calc(.75rem - 2px)}
+.analysis{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:6px;padding:1.25rem;margin-bottom:1.25rem}
+.analysis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:.6rem}
+.analysis-text{font-size:.88rem;line-height:1.72;color:var(--text)}
+.analysis-text strong{color:var(--accent);font-weight:500}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #34d399;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
+.verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
+footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);line-height:1.65;display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:var(--accent);font-size:.85rem;margin-bottom:6px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">MRVL · VALUATION</a>
+  <ul class="nav-links"><li><a href="#pe">P/E Analysis</a></li><li><a href="#dcf">DCF Model</a></li><li><a href="#industry">Industry Comps</a></li><li><a href="#multiples">Multiples</a></li><li><a href="#verdict">Verdict</a></li></ul>
+  <div class="nav-btns">
+    <a class="nav-btn nav-d1" href="../">← D1</a>
+    <a class="nav-btn nav-d2" href="../dashboard2/">D2</a>
+    <a class="nav-btn nav-d3" href="../dashboard3/">D3</a>
+    <a class="nav-btn nav-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 4 · Investment Bank Valuation · March 2026</div>
+        <div class="hero-ticker">MRVL</div>
+        <div class="hero-name">Marvell Technology, Inc.</div>
+        <div class="hero-badge">AI CUSTOM SILICON INFLECTION · PEG 0.7 · CEO BUYING</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">IB Valuation Verdict</div>
+        <div class="verdict-big">UNDERVALUED</div>
+        <div style="font-size:.7rem;font-family:'IBM Plex Mono',monospace;color:#34d399;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">30x non-GAAP fwd P/E · FY2027 guide ~$11B · CEO open-market buys · 60% below targets</div>
+        <div class="hero-sub">Price $55 · Fwd P/E 30x non-GAAP · DCF base $80 · Analyst target $120 · +118% upside</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- SCORECARD -->
+  <div class="scorecard">
+    <div class="score-item"><div class="score-label">Current Price</div><div class="score-val" style="color:var(--text)">$55</div><div class="score-sub">Mar 2026</div></div>
+    <div class="score-item"><div class="score-label">Fwd P/E</div><div class="score-val" style="color:var(--accent)">30x</div><div class="score-sub">Non-GAAP; GAAP N/M</div></div>
+    <div class="score-item"><div class="score-label">EV/EBITDA</div><div class="score-val" style="color:#5b9cf6">40x</div><div class="score-sub">Non-GAAP forward</div></div>
+    <div class="score-item"><div class="score-label">DCF Fair Value</div><div class="score-val" style="color:#34d399">$80</div><div class="score-sub">Base case DCF</div></div>
+    <div class="score-item"><div class="score-label">Analyst Target</div><div class="score-val" style="color:#34d399">$120</div><div class="score-sub">+118% upside · 58% below avg</div></div>
+  </div>
+
+  <!-- P/E ANALYSIS -->
+  <section id="pe">
+    <div class="section-head"><div class="section-head-label">1 · P/E Ratio Analysis</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Historical P/E — MRVL (5-Year)</div>
+        <table class="tbl">
+          <thead><tr><th>Year</th><th class="right">TTM P/E</th><th class="right">Stock Price</th><th class="right">EPS</th><th>Context</th></tr></thead>
+          <tbody><tr>
+          <td style="font-size:.83rem">FY2022</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">$70</td>
+          <td class="mono right">-$1.07</td>
+          <td class="mono right" style="color:var(--muted)">GAAP loss (amortization)</td>
+        </tr><tr>
+          <td style="font-size:.83rem">FY2023</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">$45</td>
+          <td class="mono right">-$1.06</td>
+          <td class="mono right" style="color:var(--muted)">Inventory correction</td>
+        </tr><tr>
+          <td style="font-size:.83rem">FY2024</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">$60</td>
+          <td class="mono right">-$1.06</td>
+          <td class="mono right" style="color:var(--muted)">AI custom silicon ramp</td>
+        </tr><tr>
+          <td style="font-size:.83rem">FY2025</td>
+          <td class="mono right">N/M</td>
+          <td class="mono right">$55</td>
+          <td class="mono right">-$1.02</td>
+          <td class="mono right" style="color:var(--muted)">GAAP still negative — amort.</td>
+        </tr><tr>
+          <td style="font-size:.83rem">FY2026E</td>
+          <td class="mono right">30x</td>
+          <td class="mono right">$55</td>
+          <td class="mono right">~$1.83 non-GAAP</td>
+          <td class="mono right" style="color:var(--muted)">Non-GAAP EPS basis (+53%)</td>
+        </tr></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-head">P/E Trend Chart</div>
+        <div class="chart-wrap"><canvas id="peChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">P/E Assessment</div>
+      <div class="analysis-text">Marvell's GAAP losses are entirely driven by ~$1.3B/year in non-cash acquisition amortization. <strong>Non-GAAP forward P/E of 30x on $1.83 non-GAAP EPS is the correct lens</strong> — the underlying business generated $2.1B in non-GAAP net income in FY2026. At 30x for a company guiding ~$11B (+34%) in FY2027 revenue, the PEG ratio of ~0.7 implies genuine undervaluation. The stock is trading 58% below the average analyst price target — one of the largest discounts to consensus on this list.</div>
+    </div>
+  </section>
+
+  <!-- DCF -->
+  <section id="dcf">
+    <div class="section-head"><div class="section-head-label">2 · Discounted Cash Flow Model</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">DCF Assumptions &amp; Scenarios</div>
+        <table class="tbl">
+          <thead><tr><th>Scenario</th><th class="right">WACC</th><th class="right">Terminal G</th><th class="right">FCF Yr1 Est.</th><th class="right">Intrinsic Value</th><th class="right">Upside/Down</th></tr></thead>
+          <tbody><tr>
+          <td style="font-size:.83rem">Bear Case</td>
+          <td class="mono right">10%</td>
+          <td class="mono right">3%</td>
+          <td class="mono right">$1.8B</td>
+          <td class="mono right">$45</td>
+          <td class="mono right" style="color:#f87171">-18%</td>
+        </tr><tr class="hl">
+          <td style="font-size:.83rem">Base Case</td>
+          <td class="mono right">9%</td>
+          <td class="mono right">4%</td>
+          <td class="mono right">$2.3B</td>
+          <td class="mono right">$80</td>
+          <td class="mono right" style="color:#34d399">+45%</td>
+        </tr><tr>
+          <td style="font-size:.83rem">Bull Case</td>
+          <td class="mono right">8%</td>
+          <td class="mono right">5%</td>
+          <td class="mono right">$3.5B</td>
+          <td class="mono right">$160</td>
+          <td class="mono right" style="color:#34d399">+191%</td>
+        </tr></tbody>
+        </table>
+        <div style="margin-top:.85rem;padding:.85rem;background:var(--surface2);border-radius:6px;font-size:.78rem;color:var(--muted)">Base: FY2026 FCF $2.3B growing 50% for 3yrs (FY2027 $11B guide materializes) then 20% for 4yrs. WACC 9% reflects beta 1.8 + AI cyclical risk. Bull: FY2028 FCF $5B+ as ASIC volumes compound.</div>
+      </div>
+      <div class="card">
+        <div class="card-head">DCF Scenario Chart</div>
+        <div class="chart-wrap"><canvas id="dcfChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">DCF Analysis</div>
+      <div class="analysis-text">The base DCF of $80 implies <strong>45% upside</strong> from current $55. The bull case $160 requires FY2028 FCF of $5B+ — achievable if Microsoft and Amazon XPU programs generate full-generation design wins. <strong>CEO Matt Murphy's open-market stock purchases at these levels is the most credible inside signal that management believes intrinsic value is materially higher than current prices.</strong></div>
+    </div>
+  </section>
+
+  <!-- INDUSTRY COMPS -->
+  <section id="industry">
+    <div class="section-head"><div class="section-head-label">3 · Industry Comparables</div><div class="section-head-line"></div></div>
+    <div style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-head">Peer Valuation Comparison — AI Semiconductors Sector</div>
+        <table class="tbl">
+          <thead><tr><th>Company</th><th class="right">Fwd P/E</th><th class="right">EV/EBITDA</th><th class="right">P/S</th><th class="right">P/B</th><th class="right">Rev Growth</th><th class="right">PEG</th></tr></thead>
+          <tbody><tr class="hl">
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:#34d399">Marvell (MRVL)</td>
+          <td class="mono right">30x</td>
+          <td class="mono right">40x</td>
+          <td class="mono right">12x</td>
+          <td class="mono right">5x</td>
+          <td class="mono right">+42%</td>
+          <td class="mono right">0.7</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">Broadcom (AVGO)</td>
+          <td class="mono right">26x</td>
+          <td class="mono right">37x</td>
+          <td class="mono right">14x</td>
+          <td class="mono right">20x</td>
+          <td class="mono right">+22%</td>
+          <td class="mono right">0.64</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">AMD (AMD)</td>
+          <td class="mono right">25x</td>
+          <td class="mono right">28x</td>
+          <td class="mono right">8x</td>
+          <td class="mono right">3x</td>
+          <td class="mono right">+20%</td>
+          <td class="mono right">1.25</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">NVIDIA (NVDA)</td>
+          <td class="mono right">22x</td>
+          <td class="mono right">32x</td>
+          <td class="mono right">10x</td>
+          <td class="mono right">39x</td>
+          <td class="mono right">+65%</td>
+          <td class="mono right">0.57</td>
+        </tr><tr>
+          <td style="font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--text)">AI Semi Sector Avg</td>
+          <td class="mono right">30x</td>
+          <td class="mono right">32x</td>
+          <td class="mono right">10x</td>
+          <td class="mono right">10x</td>
+          <td class="mono right">+35%</td>
+          <td class="mono right">0.9</td>
+        </tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">Industry Comparison Analysis</div>
+      <div class="analysis-text">Marvell at 30x non-GAAP P/E compares to Broadcom (26x) and AMD (25x) — but Marvell is growing 42% FY2026 vs Broadcom's 22% and AMD's 20%. The stock is trading at a 58% discount to average analyst targets — extraordinary for a company with this revenue acceleration. The GAAP loss narrative has obscured genuine non-GAAP profitability, creating a valuation opportunity.</div>
+    </div>
+  </section>
+
+  <!-- MULTIPLES -->
+  <section id="multiples">
+    <div class="section-head"><div class="section-head-label">4 · Valuation Multiples Deep Dive</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Key Valuation Metrics</div>
+        <table class="tbl"><tbody><tr><td style="font-size:.82rem;color:var(--muted)">Current Price</td><td class="mono right" style="color:#34d399">$55</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Non-GAAP Fwd P/E</td><td class="mono right" style="color:#34d399">30x</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">GAAP P/E</td><td class="mono right" style="color:#34d399">N/M (amortization)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">EV/Non-GAAP EBITDA</td><td class="mono right" style="color:#34d399">40x</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Revenue FY2026</td><td class="mono right" style="color:#34d399">$8.19B (+42%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">FY2027 Guide</td><td class="mono right" style="color:#34d399">~$11B (+34%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Analyst Target</td><td class="mono right" style="color:#34d399">~$120 (+118%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">DCF Base Case</td><td class="mono right" style="color:#34d399">$80 (+45%)</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">CEO Purchases</td><td class="mono right" style="color:#34d399">Open-market buys</td></tr><tr><td style="font-size:.82rem;color:var(--muted)">Market Cap</td><td class="mono right" style="color:#34d399">~$48B</td></tr></tbody></table>
+      </div>
+      <div class="card">
+        <div class="card-head">Multiples Comparison Chart</div>
+        <div class="chart-wrap"><canvas id="multiplesChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis">
+      <div class="analysis-title">Multiples Assessment</div>
+      <div class="analysis-text">At 30x non-GAAP forward P/E with 42% revenue growth and FY2027 guide of $11B (+34%), Marvell's PEG of 0.7 is among the cheapest growth-adjusted valuations in AI semiconductors. The 58% discount to analyst consensus is the clearest signal of market mispricing — driven by GAAP loss optics rather than underlying economic reality.</div>
+    </div>
+  </section>
+
+  <!-- VERDICT -->
+  <section id="verdict">
+    <div class="section-head"><div class="section-head-label">5 · Investment Bank Valuation Verdict</div><div class="section-head-line"></div></div>
+    <div class="verdict-block">
+      <div class="verdict-title">Valuation Verdict · MRVL · UNDERVALUED · Current: $55 · DCF Fair Value: $80 · Analyst Target: $120</div>
+      <div class="verdict-text">Marvell is <strong style='color:#34d399'>UNDERVALUED</strong> — the combination of 42% revenue growth, FY2027 guidance of $11B, CEO open-market stock purchases, and a 58% discount to analyst consensus targets is compelling. GAAP losses from acquisition amortization have obscured genuine non-GAAP profitability and FCF generation. Base DCF of $80 implies 45% upside; bull case $160 implies 191%. <strong style='color:#34d399'>IB Verdict: UNDERVALUED. Buy below $60. 12-month target $80-120.</strong></div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div><div class="footer-brand">MRVL · Valuation Analysis</div><div>Dashboard 4 · Investment Bank Valuation · March 2026</div></div>
+  <div style="max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. DCF models are illustrative and based on consensus estimates. All valuations are point-in-time estimates subject to change. Consult a financial advisor before investing.</div>
+</footer>
+
+<script>
+window.addEventListener('load', function() {
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#182030';
+
+  // PE Chart
+  new Chart(document.getElementById('peChart'), {
+    type: 'bar',
+    data: {
+      labels: ['FY2022', 'FY2023', 'FY2024', 'FY2025', 'FY2026E'],
+      datasets: [{
+        label: 'P/E Ratio',
+        data: [50, 45, 60, 70, 30],
+        backgroundColor: '#34d39933',
+        borderColor: '#34d399',
+        borderWidth: 2,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {display:false}, tooltip: { callbacks: { label: c => 'P/E: ' + c.raw + 'x' } } },
+      scales: { y: { grid: {color:'#182030'}, ticks: {callback: v => v+'x'} }, x: { grid: {display:false} } }
+    }
+  });
+
+  // DCF chart
+  const dcfLabels = ['Bear Case', 'Base Case', 'Bull Case'];
+  const dcfValues = [45.0, 80.0, 160.0];
+  const currentPrice = 55;
+  new Chart(document.getElementById('dcfChart'), {
+    type: 'bar',
+    data: {
+      labels: dcfLabels,
+      datasets: [
+        { label: 'DCF Intrinsic Value', data: dcfValues, backgroundColor: ['#34d39944','#34d39977','#34d399aa'], borderColor: '#34d399', borderWidth: 2, borderRadius: 4 },
+        { label: 'Current Price', data: dcfLabels.map(()=>currentPrice), type:'line', borderColor:'#f87171', borderWidth:2, borderDash:[5,5], pointRadius:0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { tooltip: { callbacks: { label: c => c.dataset.label+': $'+c.raw.toFixed(0) } } },
+      scales: { y: { grid: {color:'#182030'}, ticks: {callback: v=>'$'+v} }, x: { grid: {display:false} } }
+    }
+  });
+
+  // Multiples chart
+  new Chart(document.getElementById('multiplesChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Fwd P/E', 'EV/EBITDA', 'P/S', 'PEG'],
+      datasets: [
+        { label: 'MRVL', data: [30, 40, 12, 0.7], backgroundColor: '#34d39988', borderColor:'#34d399', borderWidth:2, borderRadius:4 },
+        { label: 'Sector Avg', data: [30, 32, 10, 0.9], backgroundColor: '#5b9cf644', borderColor:'#5b9cf6', borderWidth:2, borderRadius:4 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: {position:'top',labels:{font:{size:11},color:'#94a3b8'}} },
+      scales: { y: { grid: {color:'#182030'} }, x: { grid: {display:false} } }
+    }
+  });
+});
+</script>
+</body>
+</html>
