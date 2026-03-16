@@ -9,19 +9,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--border:#182030;--border2:#1e2d42;--text:#e2e8f0;--muted:#64748b;--muted2:#334155;--green:#34d399;--red:#f87171;--amber:#f59e0b;--blue:#5b9cf6}
+:root{--bg:#263040;--surface:#2e3a4e;--surface2:#36435a;--border:#38455c;--border2:#445268;--text:#e0eef8;--muted:#6888a8;--muted2:#445268;--green:#34d399;--red:#f87171;--amber:#f59e0b;--blue:#5b9cf6}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#f59e0b08 0%,transparent 60%);pointer-events:none;z-index:0}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+nav{position:sticky;top:0;z-index:100;background:rgba(38,48,64,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:#f59e0b;letter-spacing:.1em;text-decoration:none}
 .nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .75rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all .2s}
 .nav-links a:hover{color:var(--text);border-bottom-color:#f59e0b}
 .nav-btns{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
 .nb{font-family:'IBM Plex Mono',monospace;font-size:.58rem;padding:3px 9px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
-.nb1{color:var(--muted);border-color:var(--border2)}.nb2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}.nb3{color:#c9993a;border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.06)}.nb4{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}.nb5{color:#f97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.06)}.nb6{color:#34d399;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06)}.nb7{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}.nb-hub{color:#f59e0b;border-color:#f59e0b44;background:#f59e0b10}
+.nb1{color:var(--muted);border-color:var(--border2)}.nb2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}.nb3{color:#38bdf8;border-color:rgba(56,189,248,.3);background:rgba(56,189,248,.06)}.nb4{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}.nb5{color:#f97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.06)}.nb6{color:#34d399;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06)}.nb7{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}.nb-hub{color:#f59e0b;border-color:#f59e0b44;background:#f59e0b10}
 @media(max-width:700px){.nav-links{display:none}}
 .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
 .hero{padding:3rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
@@ -284,8 +284,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 0 1rem;font-size:.72rem
 </footer>
 <script>
 window.addEventListener('load', function() {
-  Chart.defaults.color = '#64748b';
-  Chart.defaults.borderColor = '#182030';
+  Chart.defaults.color = '#6888a8';
+  Chart.defaults.borderColor = '#38455c';
   const revData = { actual: 0.579, estimate: 0.545 };
   const epsData = { actual: -0.08, estimate: -0.12 };
   const prev_revs = [0.406, 0.457, 0.578, 0.579];
@@ -298,7 +298,7 @@ window.addEventListener('load', function() {
       labels: quarters,
       datasets: [
         { label: 'Revenue ($B)', data: prev_revs, backgroundColor: '#f59e0b33', borderColor: '#f59e0b', borderWidth: 2, borderRadius: 4 },
-        { label: 'Estimate', data: prev_revs.map((_,i) => i===quarters.length-1 ? revData.estimate : null), type:'line', borderColor:'#64748b', borderDash:[5,4], borderWidth:2, pointRadius:0 }
+        { label: 'Estimate', data: prev_revs.map((_,i) => i===quarters.length-1 ? revData.estimate : null), type:'line', borderColor:'#6888a8', borderDash:[5,4], borderWidth:2, pointRadius:0 }
       ]
     },
     options: {
@@ -306,7 +306,7 @@ window.addEventListener('load', function() {
       plugins:{legend:{position:'top',labels:{font:{size:10},color:'#94a3b8'}},
         tooltip:{callbacks:{label:function(c){return c.dataset.label+': $'+c.raw+'B'}}}
       },
-      scales:{y:{grid:{color:'#182030'},ticks:{callback:function(v){return '$'+v+'B'}}},x:{grid:{display:false}}}
+      scales:{y:{grid:{color:'#38455c'},ticks:{callback:function(v){return '$'+v+'B'}}},x:{grid:{display:false}}}
     }
   });
 
@@ -316,7 +316,7 @@ window.addEventListener('load', function() {
       labels: quarters,
       datasets: [
         { label: 'EPS ($)', data: prev_eps, backgroundColor: '#34d39933', borderColor: '#34d399', borderWidth: 2, borderRadius: 4 },
-        { label: 'Estimate', data: prev_eps.map((_,i) => i===quarters.length-1 ? epsData.estimate : null), type:'line', borderColor:'#64748b', borderDash:[5,4], borderWidth:2, pointRadius:0 }
+        { label: 'Estimate', data: prev_eps.map((_,i) => i===quarters.length-1 ? epsData.estimate : null), type:'line', borderColor:'#6888a8', borderDash:[5,4], borderWidth:2, pointRadius:0 }
       ]
     },
     options: {
@@ -324,7 +324,7 @@ window.addEventListener('load', function() {
       plugins:{legend:{position:'top',labels:{font:{size:10},color:'#94a3b8'}},
         tooltip:{callbacks:{label:function(c){return c.dataset.label+': $'+c.raw}}}
       },
-      scales:{y:{grid:{color:'#182030'},ticks:{callback:function(v){return '$'+v}}},x:{grid:{display:false}}}
+      scales:{y:{grid:{color:'#38455c'},ticks:{callback:function(v){return '$'+v}}},x:{grid:{display:false}}}
     }
   });
 });
