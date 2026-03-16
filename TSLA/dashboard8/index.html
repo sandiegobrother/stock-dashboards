@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TSLA · Earnings Breakdown · Dashboard 8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#06080b;--surface:#0d1118;--surface2:#131a24;--border:#182030;--border2:#1e2d42;--text:#e2e8f0;--muted:#64748b;--muted2:#334155;--green:#34d399;--red:#f87171;--amber:#f59e0b;--blue:#5b9cf6}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#f59e0b08 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(6,8,11,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:#f59e0b;letter-spacing:.1em;text-decoration:none}
+.nav-links{display:flex;list-style:none}
+.nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .75rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all .2s}
+.nav-links a:hover{color:var(--text);border-bottom-color:#f59e0b}
+.nav-btns{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.nb{font-family:'IBM Plex Mono',monospace;font-size:.58rem;padding:3px 9px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
+.nb1{color:var(--muted);border-color:var(--border2)}.nb2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}.nb3{color:#c9993a;border-color:rgba(201,153,58,.3);background:rgba(201,153,58,.06)}.nb4{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}.nb5{color:#f97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.06)}.nb6{color:#34d399;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06)}.nb7{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}.nb-hub{color:#f59e0b;border-color:#f59e0b44;background:#f59e0b10}
+@media(max-width:700px){.nav-links{display:none}}
+.wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.hero{padding:3rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
+.hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:#f59e0b;line-height:1;margin-bottom:.4rem}
+.hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.5rem}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#f59e0b10;border:1px solid #f59e0b30;border-radius:4px;padding:4px 12px;font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:#f59e0b;letter-spacing:.08em}
+.hero-right{text-align:right}
+.hero-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:3px}
+.verdict-big{font-family:'IBM Plex Mono',monospace;font-size:1.8rem;font-weight:600;line-height:1;margin-bottom:4px}
+.hero-sub{font-size:.77rem;color:var(--muted);margin-top:6px;max-width:280px;text-align:right;line-height:1.5}
+@media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.6rem}}
+.beat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-radius:8px;overflow:hidden;margin-bottom:2rem}
+.beat-item{background:var(--surface);padding:1rem;text-align:center}
+.beat-label{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:5px}
+.beat-val{font-family:'IBM Plex Mono',monospace;font-size:1.35rem;font-weight:500;line-height:1;margin-bottom:3px}
+.beat-sub{font-size:.65rem;color:var(--muted)}
+@media(max-width:700px){.beat-grid{grid-template-columns:repeat(2,1fr)}}
+.section-head{display:flex;align-items:center;gap:.75rem;margin:2.5rem 0 1.1rem}
+.section-head-line{flex:1;height:1px;background:var(--border)}
+.section-head-label{font-family:'Playfair Display',serif;font-size:.78rem;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.3rem}
+.card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:.9rem;padding-bottom:.65rem;border-bottom:1px solid var(--border)}
+.tbl{width:100%;border-collapse:collapse;font-size:.85rem}
+.tbl th{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);text-align:left;padding:0 .6rem .55rem 0;border-bottom:1px solid var(--border);font-weight:500}
+.tbl td{padding:.55rem .6rem .55rem 0;border-bottom:1px solid var(--border);vertical-align:middle;font-size:.82rem}
+.tbl tr:last-child td{border-bottom:none}
+.tbl td.mono{font-family:'IBM Plex Mono',monospace;font-size:.78rem}
+.tbl td.right{text-align:right}
+.reaction-box{background:var(--surface);border:1px solid var(--border);border-left:3px solid #f87171;border-radius:8px;padding:1.3rem;margin-bottom:1.25rem}
+.analysis-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #f59e0b;border-radius:8px;padding:1.3rem;margin-bottom:1.25rem}
+.block-title{font-family:'IBM Plex Mono',monospace;font-size:.62rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.65rem}
+.block-body{font-size:.88rem;line-height:1.72;color:var(--text)}
+.block-body strong{color:#f59e0b;font-weight:500}
+.chart-wrap{position:relative;width:100%;height:220px}
+.quote-block{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:1rem 1.2rem;margin:.85rem 0;font-size:.87rem;line-height:1.7;color:var(--text);font-style:italic}
+.quote-attr{font-family:'IBM Plex Mono',monospace;font-size:.65rem;color:var(--muted2);margin-top:.4rem;font-style:normal}
+footer{border-top:1px solid var(--border);padding:1.5rem 0 1rem;font-size:.72rem;color:var(--muted2);display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:#f59e0b;font-size:.82rem;margin-bottom:5px}
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="#">TSLA · EARNINGS</a>
+  <ul class="nav-links">
+    <li><a href="#results">Results</a></li>
+    <li><a href="#metrics">Key Metrics</a></li>
+    <li><a href="#guidance">Guidance</a></li>
+    <li><a href="#reaction">Reaction</a></li>
+  </ul>
+  <div class="nav-btns">
+    <a class="nb nb1" href="../">D1</a>
+    <a class="nb nb2" href="../dashboard2/">D2</a>
+    <a class="nb nb3" href="../dashboard3/">D3</a>
+    <a class="nb nb4" href="../dashboard4/">D4</a>
+    <a class="nb nb5" href="../dashboard5/">D5</a>
+    <a class="nb nb6" href="../dashboard6/">D6</a>
+    <a class="nb nb7" href="../dashboard7/">D7</a>
+    <a class="nb nb-hub" href="../../hub/">Hub</a>
+  </div>
+</nav>
+<div class="wrapper">
+
+  <header class="hero">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow">Dashboard 8 · Earnings Report · Q4 2025 · Reported January 29, 2026</div>
+        <div class="hero-ticker">TSLA</div>
+        <div class="hero-name">Tesla, Inc.</div>
+        <div class="hero-badge">Electric Vehicles / Robotics</div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-label">Overall Result</div>
+        <div class="verdict-big" style="color:#f87171">MISS</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;color:#f59e0b;letter-spacing:.08em;margin-bottom:5px">Deliveries -8.6% YoY · EPS miss · Margin compression · Robotaxi guidance vague</div>
+        <div class="hero-sub">496K deliveries -8.6% · EPS $0.73 vs $0.76 est · Auto GM 17% · Robotaxi 'late 2026' · Stock -5%</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BEAT GRID -->
+  <div class="beat-grid">
+    <div class="beat-item">
+      <div class="beat-label">Revenue Actual</div>
+      <div class="beat-val" style="color:#f87171">$25.7B</div>
+      <div class="beat-sub">Est: $27.1B</div>
+    </div>
+    <div class="beat-item">
+      <div class="beat-label">Revenue Surprise</div>
+      <div class="beat-val" style="color:#f87171">-5.2%</div>
+      <div class="beat-sub">YoY: -7%</div>
+    </div>
+    <div class="beat-item">
+      <div class="beat-label">EPS Actual</div>
+      <div class="beat-val" style="color:#f87171">$0.73</div>
+      <div class="beat-sub">Est: $0.76</div>
+    </div>
+    <div class="beat-item">
+      <div class="beat-label">EPS Surprise</div>
+      <div class="beat-val" style="color:#f87171">-3.9%</div>
+      <div class="beat-sub">YoY: -71%</div>
+    </div>
+  </div>
+
+  <!-- RESULTS ANALYSIS -->
+  <section id="results">
+    <div class="section-head"><div class="section-head-label">Revenue & Profit Analysis</div><div class="section-head-line"></div></div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-head">Revenue vs Expectations</div>
+        <div class="chart-wrap"><canvas id="revChart"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-head">EPS vs Expectations</div>
+        <div class="chart-wrap"><canvas id="epsChart"></canvas></div>
+      </div>
+    </div>
+    <div class="analysis-block">
+      <div class="block-title">Results Commentary</div>
+      <div class="block-body">Tesla's Q4 2025 was the weakest earnings report of the Robotaxi era, with deliveries declining -8.6% YoY for the full year — the first annual delivery decline in company history. <strong>Auto gross margin compression to 17.1% (from 29% in 2022) is the most concerning fundamental trend.</strong> The EPS miss of $0.73 vs $0.76 expected was modest in absolute terms, but the combination of delivery miss, margin compression, and vague guidance created significant investor concern. Energy storage (+48% YoY) was the lone bright spot.</div>
+    </div>
+    <div class="quote-block">2026 will be a pivotal year for autonomy. We expect to launch unsupervised FSD in Austin this year, and Cybercab volume production is on track.<div class="quote-attr">— Elon Musk, CEO, Q4 2025 Earnings Call</div></div>
+  </section>
+
+  <!-- SEGMENT BREAKDOWN -->
+  <section id="segments">
+    <div class="section-head"><div class="section-head-label">Segment Breakdown</div><div class="section-head-line"></div></div>
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-head">Revenue by Segment</div>
+      <table class="tbl">
+        <thead><tr><th>Segment</th><th class="right">Revenue</th><th class="right">YoY Growth</th><th>Notes</th></tr></thead>
+        <tbody><tr>
+          <td style="font-size:.82rem">Automotive Revenue</td>
+          <td class="mono right">$19.8B</td>
+          <td class="mono right" style="color:#fbbf24">-8% YoY</td>
+          <td style="font-size:.78rem;color:var(--muted)">Price cuts + delivery decline; Cybercab delayed</td>
+        </tr><tr>
+          <td style="font-size:.82rem">Energy Generation & Storage</td>
+          <td class="mono right">$3.1B</td>
+          <td class="mono right" style="color:#34d399">+48% YoY</td>
+          <td style="font-size:.78rem;color:var(--muted)">Megapack continued strength</td>
+        </tr><tr>
+          <td style="font-size:.82rem">Services & Other</td>
+          <td class="mono right">$2.8B</td>
+          <td class="mono right" style="color:#34d399">+21% YoY</td>
+          <td style="font-size:.78rem;color:var(--muted)">FSD subscriptions + insurance growing</td>
+        </tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- KEY METRICS -->
+  <section id="metrics">
+    <div class="section-head"><div class="section-head-label">Key Metrics Investors Watch</div><div class="section-head-line"></div></div>
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-head">Earnings Scorecard — Actual vs Estimate</div>
+      <table class="tbl">
+        <thead><tr><th>Metric</th><th class="right">Actual</th><th class="right">Expected</th><th class="right">Surprise</th><th>Result</th></tr></thead>
+        <tbody><tr>
+          <td style="font-size:.83rem;font-weight:500">Vehicle Deliveries</td>
+          <td class="mono right">495,570</td>
+          <td class="mono right" style="color:var(--muted)">510,000</td>
+          <td class="mono right" style="color:#f87171;font-weight:500">-2.8%</td>
+          <td style="font-size:.75rem"><span style="background:#f8717120;color:#f87171;border:1px solid #f8717140;border-radius:3px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:.65rem">MISS</span></td>
+        </tr><tr>
+          <td style="font-size:.83rem;font-weight:500">Auto Gross Margin</td>
+          <td class="mono right">17.1%</td>
+          <td class="mono right" style="color:var(--muted)">18.2%</td>
+          <td class="mono right" style="color:#f87171;font-weight:500">-110bps</td>
+          <td style="font-size:.75rem"><span style="background:#f8717120;color:#f87171;border:1px solid #f8717140;border-radius:3px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:.65rem">MISS</span></td>
+        </tr><tr>
+          <td style="font-size:.83rem;font-weight:500">Energy Revenue</td>
+          <td class="mono right">$3.1B</td>
+          <td class="mono right" style="color:var(--muted)">$2.9B</td>
+          <td class="mono right" style="color:#34d399;font-weight:500">+6.9%</td>
+          <td style="font-size:.75rem"><span style="background:#34d39920;color:#34d399;border:1px solid #34d39940;border-radius:3px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:.65rem">BEAT</span></td>
+        </tr><tr>
+          <td style="font-size:.83rem;font-weight:500">Free Cash Flow</td>
+          <td class="mono right">$1.6B</td>
+          <td class="mono right" style="color:var(--muted)">$2.0B</td>
+          <td class="mono right" style="color:#f87171;font-weight:500">-20%</td>
+          <td style="font-size:.75rem"><span style="background:#f8717120;color:#f87171;border:1px solid #f8717140;border-radius:3px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:.65rem">MISS</span></td>
+        </tr><tr>
+          <td style="font-size:.83rem;font-weight:500">FSD Recognized Revenue</td>
+          <td class="mono right">$400M</td>
+          <td class="mono right" style="color:var(--muted)">$350M</td>
+          <td class="mono right" style="color:#34d399;font-weight:500">+14%</td>
+          <td style="font-size:.75rem"><span style="background:#34d39920;color:#34d399;border:1px solid #34d39940;border-radius:3px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:.65rem">BEAT</span></td>
+        </tr><tr>
+          <td style="font-size:.83rem;font-weight:500">Operating Margin</td>
+          <td class="mono right">6.2%</td>
+          <td class="mono right" style="color:var(--muted)">7.5%</td>
+          <td class="mono right" style="color:#f87171;font-weight:500">-130bps</td>
+          <td style="font-size:.75rem"><span style="background:#f8717120;color:#f87171;border:1px solid #f8717140;border-radius:3px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:.65rem">MISS</span></td>
+        </tr></tbody>
+      </table>
+    </div>
+    <div class="analysis-block">
+      <div class="block-title">Key Metrics Analysis</div>
+      <div class="block-body"><strong>The delivery miss (495,570 vs 510,000 expected) was the headline negative — but the more concerning metric was auto gross margin at 17.1%, down 110bps vs estimates.</strong> Price cuts used to defend market share against BYD are directly impressing margins. FCF of $1.6B was well below the $2.0B estimate, raising questions about capital allocation for Cybercab and Optimus investment. The Energy segment ($3.1B, +48%) remains strong and partially offsets auto weakness.</div>
+    </div>
+  </section>
+
+  <!-- GUIDANCE -->
+  <section id="guidance">
+    <div class="section-head"><div class="section-head-label">Management Guidance</div><div class="section-head-line"></div></div>
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-head">Forward Guidance vs Street Consensus</div>
+      <table class="tbl">
+        <thead><tr><th>Metric</th><th class="right">Guidance</th><th class="right">Consensus Was</th><th>Commentary</th></tr></thead>
+        <tbody><tr>
+          <td style="font-size:.82rem">2026 Delivery Volume</td>
+          <td class="mono right" style="color:#34d399">'Growth over 2025'</td>
+          <td class="mono right" style="color:var(--muted)">1.5M units</td>
+          <td style="font-size:.78rem;color:var(--muted)">Vague — did not provide specific unit target</td>
+        </tr><tr>
+          <td style="font-size:.82rem">Cybercab Launch</td>
+          <td class="mono right" style="color:#34d399">'Late 2026'</td>
+          <td class="mono right" style="color:var(--muted)">H1 2026</td>
+          <td style="font-size:.78rem;color:var(--muted)">Delayed from prior 'mid-2026' guidance</td>
+        </tr><tr>
+          <td style="font-size:.82rem">Auto Gross Margin 2026</td>
+          <td class="mono right" style="color:#34d399">'Should improve'</td>
+          <td class="mono right" style="color:var(--muted)">19%</td>
+          <td style="font-size:.78rem;color:var(--muted)">No specific target — concerning margin trajectory</td>
+        </tr><tr>
+          <td style="font-size:.82rem">Optimus Units 2026</td>
+          <td class="mono right" style="color:#34d399">100K+ internal use</td>
+          <td class="mono right" style="color:var(--muted)">100K</td>
+          <td style="font-size:.78rem;color:var(--muted)">Consistent with prior — no upside surprise</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <div class="analysis-block">
+      <div class="block-title">Guidance Analysis</div>
+      <div class="block-body"><strong>The absence of specific delivery or revenue guidance for 2026 was the most concerning element of the call.</strong> 'Growth over 2025' implies at least 1.78M+ deliveries (vs 1.77M in 2025), but the range is so wide as to be nearly meaningless. The Cybercab timeline moving from 'mid-2026' to 'late 2026' added to concerns about execution pace. Auto gross margin guidance was vague — the market wanted a specific path back to 20%+, and management didn't provide one.</div>
+    </div>
+  </section>
+
+  <!-- MARKET REACTION -->
+  <section id="reaction">
+    <div class="section-head"><div class="section-head-label">Market Reaction</div><div class="section-head-line"></div></div>
+    <div class="reaction-box">
+      <div class="block-title">Stock Reaction · After-Hours, Jan 29</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1rem">
+        <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px">After-Hours Move</div><div style="font-family:'IBM Plex Mono',monospace;font-size:1.5rem;font-weight:600;color:#f87171">-5.1%</div></div>
+        <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px">Pre-Earnings Price</div><div style="font-family:'IBM Plex Mono',monospace;font-size:1.2rem;color:var(--text)">$385.22</div></div>
+        <div><div style="font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px">Post-Earnings Price</div><div style="font-family:'IBM Plex Mono',monospace;font-size:1.2rem;color:#f87171">$365.61</div></div>
+      </div>
+      <div class="block-body"><strong>The -5.1% after-hours drop reflected investor frustration with the delivery miss and vague guidance</strong> — particularly the Cybercab timeline extension to 'late 2026.' Bulls had expected a more specific Robotaxi commercial timeline to offset the fundamental auto weakness. The stock had been elevated on Robotaxi optionality, and the earnings call provided little new evidence that the Robotaxi thesis was on a clear commercial trajectory.</div>
+    </div>
+    <div class="analysis-block">
+      <div class="block-title">Next Earnings Date</div>
+      <div class="block-body">Next earnings expected: <strong>April 2026</strong> · Q1 2026 results — key metrics: Q1 deliveries (early April estimate), Cybercab Austin launch progress, and auto gross margin trajectory.</div>
+    </div>
+  </section>
+
+</div>
+<footer>
+  <div><div class="footer-brand">TSLA · Earnings Report Breakdown</div><div>Dashboard 8 · Q4 2025 · Reported January 29, 2026</div></div>
+  <div style="max-width:480px;font-size:.7rem">For informational purposes only. Not investment advice. Earnings data sourced from company filings and analyst estimates.</div>
+</footer>
+<script>
+window.addEventListener('load', function() {
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = '#182030';
+  const revData = { actual: 25.7, estimate: 27.1 };
+  const epsData = { actual: 0.73, estimate: 0.76 };
+  const prev_revs = [19.3, 22.5, 25.2, 25.7];
+  const prev_eps  = [0.27, 0.52, 0.72, 0.73];
+  const quarters  = ['Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025'];
+
+  new Chart(document.getElementById('revChart'), {
+    type: 'bar',
+    data: {
+      labels: quarters,
+      datasets: [
+        { label: 'Revenue ($B)', data: prev_revs, backgroundColor: '#f59e0b33', borderColor: '#f59e0b', borderWidth: 2, borderRadius: 4 },
+        { label: 'Estimate', data: prev_revs.map((_,i) => i===quarters.length-1 ? revData.estimate : null), type:'line', borderColor:'#64748b', borderDash:[5,4], borderWidth:2, pointRadius:0 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{size:10},color:'#94a3b8'}},
+        tooltip:{callbacks:{label:function(c){return c.dataset.label+': $'+c.raw+'B'}}}
+      },
+      scales:{y:{grid:{color:'#182030'},ticks:{callback:function(v){return '$'+v+'B'}}},x:{grid:{display:false}}}
+    }
+  });
+
+  new Chart(document.getElementById('epsChart'), {
+    type: 'bar',
+    data: {
+      labels: quarters,
+      datasets: [
+        { label: 'EPS ($)', data: prev_eps, backgroundColor: '#34d39933', borderColor: '#34d399', borderWidth: 2, borderRadius: 4 },
+        { label: 'Estimate', data: prev_eps.map((_,i) => i===quarters.length-1 ? epsData.estimate : null), type:'line', borderColor:'#64748b', borderDash:[5,4], borderWidth:2, pointRadius:0 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{size:10},color:'#94a3b8'}},
+        tooltip:{callbacks:{label:function(c){return c.dataset.label+': $'+c.raw}}}
+      },
+      scales:{y:{grid:{color:'#182030'},ticks:{callback:function(v){return '$'+v}}},x:{grid:{display:false}}}
+    }
+  });
+});
+</script>
+</body>
+</html>
