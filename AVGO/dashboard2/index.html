@@ -11,15 +11,15 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#263040;--surface:#2e3a4e;--surface2:#36435a;--border:#38455c;--border2:#445268;
-  --accent:#5b9cf6;--accent2:#38bdf8;--green:#34d399;--red:#f87171;--amber:#fbbf24;
-  --text:#e0eef8;--muted:#6888a8;--muted2:#445268;
+  --bg:#070b10;--surface:#0e1420;--surface2:#141c2a;--border:#1a2436;--border2:#243248;
+  --accent:#2563eb;--accent2:#292524;--green:#15803d;--red:#b91c1c;--amber:#fbbf24;
+  --text:#1c1c18;--muted:#57534e;--muted2:#78716c;
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(91,156,246,0.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(56,189,248,0.03) 0%,transparent 60%);pointer-events:none;z-index:0}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-nav{position:sticky;top:0;z-index:100;background:rgba(38,48,64,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:54px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#29252408 0%,transparent 60%) 0%,transparent 60%),radial-gradient(ellipse at 20% 20%,#29252408 0%,transparent 60%) 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#fafaf8}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(7,11,16,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:54px}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
 .nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
@@ -188,8 +188,8 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
       <div class="card">
         <div class="card-head">Revenue Trend Chart</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Total Revenue ($B)</span>
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#38bdf8;display:inline-block"></span>Semiconductor Revenue ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#2563eb;display:inline-block"></span>Total Revenue ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#292524;display:inline-block"></span>Semiconductor Revenue ($B)</span>
         </div>
         <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
       </div>
@@ -227,8 +227,8 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
       <div class="card">
         <div class="card-head">Net Income Chart</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>GAAP Net Income ($B)</span>
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Non-GAAP Net Income ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#2563eb;display:inline-block"></span>GAAP Net Income ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#15803d;display:inline-block"></span>Non-GAAP Net Income ($B)</span>
         </div>
         <div class="chart-wrap"><canvas id="incomeChart"></canvas></div>
       </div>
@@ -266,8 +266,8 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
       <div class="card">
         <div class="card-head">Free Cash Flow Chart</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Free Cash Flow ($B)</span>
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>FCF Margin (%)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#15803d;display:inline-block"></span>Free Cash Flow ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#2563eb;display:inline-block"></span>FCF Margin (%)</span>
         </div>
         <div class="chart-wrap"><canvas id="fcfChart"></canvas></div>
       </div>
@@ -300,17 +300,17 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
         </table>
         <div style="margin-top:1.25rem">
           <div class="card-head" style="margin-bottom:1rem">FY2025 Margin Benchmarks vs. Peers</div>
-          <div class="health-row"><div class="health-lbl">Gross margin (76%)</div><div class="health-track"><div class="health-fill" style="width:76%;background:#5b9cf6"></div></div><div class="health-val" style="color:#5b9cf6">76%</div></div>
-          <div class="health-row"><div class="health-lbl">Adj. EBITDA margin (73%)</div><div class="health-track"><div class="health-fill" style="width:73%;background:#34d399"></div></div><div class="health-val" style="color:#34d399">73%</div></div>
-          <div class="health-row"><div class="health-lbl">FCF margin (46%)</div><div class="health-track"><div class="health-fill" style="width:46%;background:#38bdf8"></div></div><div class="health-val" style="color:#38bdf8">46%</div></div>
+          <div class="health-row"><div class="health-lbl">Gross margin (76%)</div><div class="health-track"><div class="health-fill" style="width:76%;background:#2563eb"></div></div><div class="health-val" style="color:#2563eb">76%</div></div>
+          <div class="health-row"><div class="health-lbl">Adj. EBITDA margin (73%)</div><div class="health-track"><div class="health-fill" style="width:73%;background:#15803d"></div></div><div class="health-val" style="color:#15803d">73%</div></div>
+          <div class="health-row"><div class="health-lbl">FCF margin (46%)</div><div class="health-track"><div class="health-fill" style="width:46%;background:#292524"></div></div><div class="health-val" style="color:#292524">46%</div></div>
           <div class="health-row"><div class="health-lbl">Net margin GAAP (44%)</div><div class="health-track"><div class="health-fill" style="width:44%;background:#fbbf24"></div></div><div class="health-val" style="color:#fbbf24">44%</div></div>
         </div>
       </div>
       <div class="card">
         <div class="card-head">Margin Trends Chart</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>Gross Margin</span>
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Adj. EBITDA Margin</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#2563eb;display:inline-block"></span>Gross Margin</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#15803d;display:inline-block"></span>Adj. EBITDA Margin</span>
           <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>GAAP Net Margin</span>
         </div>
         <div class="chart-wrap"><canvas id="marginChart"></canvas></div>
@@ -349,16 +349,16 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
       <div class="card">
         <div class="card-head">Debt vs. EBITDA — Leverage Trend</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#f87171;display:inline-block"></span>Gross Debt ($B)</span>
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#34d399;display:inline-block"></span>Adj. EBITDA ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#b91c1c;display:inline-block"></span>Gross Debt ($B)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#15803d;display:inline-block"></span>Adj. EBITDA ($B)</span>
         </div>
         <div class="chart-wrap"><canvas id="debtChart"></canvas></div>
         <div style="margin-top:1.25rem">
           <div class="card-head" style="margin-bottom:1rem">Debt Coverage Ratios (FY2025)</div>
-          <div class="health-row"><div class="health-lbl">ND/EBITDA (1.3x)</div><div class="health-track"><div class="health-fill" style="width:43%;background:#5b9cf6"></div></div><div class="health-val" style="color:var(--green)">1.3x</div></div>
+          <div class="health-row"><div class="health-lbl">ND/EBITDA (1.3x)</div><div class="health-track"><div class="health-fill" style="width:43%;background:#2563eb"></div></div><div class="health-val" style="color:var(--green)">1.3x</div></div>
           <div class="health-row"><div class="health-lbl">Debt/Equity (0.80x)</div><div class="health-track"><div class="health-fill" style="width:40%;background:#fbbf24"></div></div><div class="health-val" style="color:var(--amber)">0.80x</div></div>
-          <div class="health-row"><div class="health-lbl">Interest coverage (EBITDA/int.)</div><div class="health-track"><div class="health-fill" style="width:80%;background:#34d399"></div></div><div class="health-val" style="color:var(--green)">>10x</div></div>
-          <div class="health-row"><div class="health-lbl">Current ratio</div><div class="health-track"><div class="health-fill" style="width:76%;background:#38bdf8"></div></div><div class="health-val" style="color:var(--green)">1.9x</div></div>
+          <div class="health-row"><div class="health-lbl">Interest coverage (EBITDA/int.)</div><div class="health-track"><div class="health-fill" style="width:80%;background:#15803d"></div></div><div class="health-val" style="color:var(--green)">>10x</div></div>
+          <div class="health-row"><div class="health-lbl">Current ratio</div><div class="health-track"><div class="health-fill" style="width:76%;background:#292524"></div></div><div class="health-val" style="color:var(--green)">1.9x</div></div>
         </div>
       </div>
     </div>
@@ -395,7 +395,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
       <div class="card">
         <div class="card-head">ROE Trend &amp; Capital Return to Shareholders</div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;font-size:12px;color:var(--muted)">
-          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#5b9cf6;display:inline-block"></span>ROE (%)</span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#2563eb;display:inline-block"></span>ROE (%)</span>
           <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:2px;background:#fbbf24;display:inline-block"></span>Total Capital Return ($B)</span>
         </div>
         <div class="chart-wrap"><canvas id="roeChart"></canvas></div>
@@ -476,10 +476,10 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
 window.addEventListener('load', function() {
   var chartOpts = {
     responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#2e3a4e', borderColor: '#38455c', borderWidth: 1, titleColor: '#6888a8', bodyColor: '#e0eef8' }},
+    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0e1420', borderColor: '#1a2436', borderWidth: 1, titleColor: '#57534e', bodyColor: '#1c1c18' }},
     scales: {
-      x: { ticks: { color: '#6888a8', font: { size: 11 }, maxRotation: 0 }, grid: { display: false }, border: { color: '#38455c' }},
-      y: { ticks: { color: '#6888a8', font: { size: 11 }}, grid: { color: 'rgba(255,255,255,0.04)' }, border: { color: '#38455c' }, beginAtZero: true }
+      x: { ticks: { color: '#57534e', font: { size: 11 }, maxRotation: 0 }, grid: { display: false }, border: { color: '#1a2436' }},
+      y: { ticks: { color: '#57534e', font: { size: 11 }}, grid: { color: 'rgba(255,255,255,0.04)' }, border: { color: '#1a2436' }, beginAtZero: true }
     }
   };
   var yrs = ['FY2021','FY2022','FY2023','FY2024','FY2025'];
@@ -489,8 +489,8 @@ window.addEventListener('load', function() {
     type: 'bar',
     data: { labels: yrs,
       datasets: [
-        { label: 'Total Revenue', data: [27.5, 33.2, 35.8, 51.6, 59.0], backgroundColor: 'rgba(91,156,246,0.6)', borderColor: '#5b9cf6', borderWidth: 1, borderRadius: 4 },
-        { label: 'Semiconductor Revenue', data: [27.5, 33.2, 28.2, 30.1, 37.5], backgroundColor: 'rgba(56,189,248,0.5)', borderColor: '#38bdf8', borderWidth: 1, borderRadius: 4 }
+        { label: 'Total Revenue', data: [27.5, 33.2, 35.8, 51.6, 59.0], backgroundColor: 'rgba(91,156,246,0.6)', borderColor: '#2563eb', borderWidth: 1, borderRadius: 4 },
+        { label: 'Semiconductor Revenue', data: [27.5, 33.2, 28.2, 30.1, 37.5], backgroundColor: 'rgba(41,37,36,0.5)', borderColor: '#292524', borderWidth: 1, borderRadius: 4 }
       ]
     },
     options: { ...chartOpts, plugins: { ...chartOpts.plugins }, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => '$' + v + 'B' }}}}
@@ -501,8 +501,8 @@ window.addEventListener('load', function() {
     type: 'bar',
     data: { labels: yrs,
       datasets: [
-        { label: 'GAAP Net Income', data: [6.7, 11.5, 14.1, 5.9, 25.5], backgroundColor: 'rgba(91,156,246,0.6)', borderColor: '#5b9cf6', borderWidth: 1, borderRadius: 4 },
-        { label: 'Non-GAAP Net Income', data: [12.6, 16.5, 18.4, 23.7, 31.2], backgroundColor: 'rgba(52,211,153,0.5)', borderColor: '#34d399', borderWidth: 1, borderRadius: 4 }
+        { label: 'GAAP Net Income', data: [6.7, 11.5, 14.1, 5.9, 25.5], backgroundColor: 'rgba(91,156,246,0.6)', borderColor: '#2563eb', borderWidth: 1, borderRadius: 4 },
+        { label: 'Non-GAAP Net Income', data: [12.6, 16.5, 18.4, 23.7, 31.2], backgroundColor: 'rgba(52,211,153,0.5)', borderColor: '#15803d', borderWidth: 1, borderRadius: 4 }
       ]
     },
     options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => '$' + v + 'B' }}}}
@@ -513,15 +513,15 @@ window.addEventListener('load', function() {
     type: 'bar',
     data: { labels: yrs,
       datasets: [
-        { label: 'Free Cash Flow', data: [13.8, 16.3, 17.6, 19.4, 26.9], backgroundColor: 'rgba(52,211,153,0.6)', borderColor: '#34d399', borderWidth: 1, borderRadius: 4, yAxisID: 'y' },
-        { label: 'FCF Margin', data: [50, 49, 49, 38, 46], type: 'line', borderColor: '#5b9cf6', backgroundColor: 'rgba(91,156,246,0.15)', pointBackgroundColor: '#5b9cf6', borderWidth: 2, fill: true, tension: 0.3, yAxisID: 'y1' }
+        { label: 'Free Cash Flow', data: [13.8, 16.3, 17.6, 19.4, 26.9], backgroundColor: 'rgba(52,211,153,0.6)', borderColor: '#15803d', borderWidth: 1, borderRadius: 4, yAxisID: 'y' },
+        { label: 'FCF Margin', data: [50, 49, 49, 38, 46], type: 'line', borderColor: '#2563eb', backgroundColor: 'rgba(91,156,246,0.15)', pointBackgroundColor: '#2563eb', borderWidth: 2, fill: true, tension: 0.3, yAxisID: 'y1' }
       ]
     },
     options: { ...chartOpts,
       scales: {
         x: chartOpts.scales.x,
         y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => '$' + v + 'B' }, position: 'left' },
-        y1: { type: 'linear', position: 'right', ticks: { color: '#6888a8', font: { size: 11 }, callback: v => v + '%' }, grid: { display: false }, border: { color: '#38455c' }, beginAtZero: true }
+        y1: { type: 'linear', position: 'right', ticks: { color: '#57534e', font: { size: 11 }, callback: v => v + '%' }, grid: { display: false }, border: { color: '#1a2436' }, beginAtZero: true }
       }
     }
   });
@@ -531,8 +531,8 @@ window.addEventListener('load', function() {
     type: 'line',
     data: { labels: yrs,
       datasets: [
-        { label: 'Gross Margin', data: [72, 74, 74, 68, 76], borderColor: '#5b9cf6', backgroundColor: 'rgba(91,156,246,0.08)', pointBackgroundColor: '#5b9cf6', borderWidth: 2, fill: true, tension: 0.3 },
-        { label: 'Adj. EBITDA Margin', data: [58, 60, 65, 62, 73], borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,0.05)', pointBackgroundColor: '#34d399', borderWidth: 2, fill: false, tension: 0.3 },
+        { label: 'Gross Margin', data: [72, 74, 74, 68, 76], borderColor: '#2563eb', backgroundColor: 'rgba(91,156,246,0.08)', pointBackgroundColor: '#2563eb', borderWidth: 2, fill: true, tension: 0.3 },
+        { label: 'Adj. EBITDA Margin', data: [58, 60, 65, 62, 73], borderColor: '#15803d', backgroundColor: 'rgba(52,211,153,0.05)', pointBackgroundColor: '#15803d', borderWidth: 2, fill: false, tension: 0.3 },
         { label: 'GAAP Net Margin', data: [24, 35, 39, 11, 44], borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,0.05)', pointBackgroundColor: '#fbbf24', borderWidth: 2, fill: false, tension: 0.3 }
       ]
     },
@@ -544,8 +544,8 @@ window.addEventListener('load', function() {
     type: 'bar',
     data: { labels: yrs,
       datasets: [
-        { label: 'Gross Debt', data: [40, 39, 38, 69, 65], backgroundColor: 'rgba(248,113,113,0.5)', borderColor: '#f87171', borderWidth: 1, borderRadius: 4 },
-        { label: 'Adj. EBITDA', data: [16, 20, 23, 32, 43], backgroundColor: 'rgba(52,211,153,0.5)', borderColor: '#34d399', borderWidth: 1, borderRadius: 4 }
+        { label: 'Gross Debt', data: [40, 39, 38, 69, 65], backgroundColor: 'rgba(248,113,113,0.5)', borderColor: '#b91c1c', borderWidth: 1, borderRadius: 4 },
+        { label: 'Adj. EBITDA', data: [16, 20, 23, 32, 43], backgroundColor: 'rgba(52,211,153,0.5)', borderColor: '#15803d', borderWidth: 1, borderRadius: 4 }
       ]
     },
     options: { ...chartOpts, scales: { ...chartOpts.scales, y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => '$' + v + 'B' }}}}
@@ -556,7 +556,7 @@ window.addEventListener('load', function() {
     type: 'bar',
     data: { labels: yrs,
       datasets: [
-        { label: 'ROE (%)', data: [25, 47, 59, 9, 33], backgroundColor: 'rgba(91,156,246,0.6)', borderColor: '#5b9cf6', borderWidth: 1, borderRadius: 4, yAxisID: 'y' },
+        { label: 'ROE (%)', data: [25, 47, 59, 9, 33], backgroundColor: 'rgba(91,156,246,0.6)', borderColor: '#2563eb', borderWidth: 1, borderRadius: 4, yAxisID: 'y' },
         { label: 'Capital Return ($B)', data: [7.5, 12, 13.9, 11.4, 13], type: 'line', borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,0.1)', pointBackgroundColor: '#fbbf24', borderWidth: 2, fill: true, tension: 0.3, yAxisID: 'y1' }
       ]
     },
@@ -564,7 +564,7 @@ window.addEventListener('load', function() {
       scales: {
         x: chartOpts.scales.x,
         y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v + '%' }, position: 'left' },
-        y1: { type: 'linear', position: 'right', ticks: { color: '#6888a8', font: { size: 11 }, callback: v => '$' + v + 'B' }, grid: { display: false }, border: { color: '#38455c' }, beginAtZero: true }
+        y1: { type: 'linear', position: 'right', ticks: { color: '#57534e', font: { size: 11 }, callback: v => '$' + v + 'B' }, grid: { display: false }, border: { color: '#1a2436' }, beginAtZero: true }
       }
     }
   });
