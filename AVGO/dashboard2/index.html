@@ -11,7 +11,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#070b10;--surface:#0e1420;--surface2:#141c2a;--border:#1a2436;--border2:#243248;
+  --bg:#fafaf8;--surface:#f4f4f0;--surface2:#e8e8e4;--border:#dcdcd4;--border2:#ccccc4;
   --accent:#2563eb;--accent2:#292524;--green:#15803d;--red:#b91c1c;--amber:#fbbf24;
   --text:#1c1c18;--muted:#57534e;--muted2:#78716c;
 }
@@ -19,7 +19,7 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#29252408 0%,transparent 60%) 0%,transparent 60%),radial-gradient(ellipse at 20% 20%,#29252408 0%,transparent 60%) 0%,transparent 60%);pointer-events:none;z-index:0}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#fafaf8}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-nav{position:sticky;top:0;z-index:100;background:rgba(7,11,16,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:54px}
+nav{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:54px}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
 .nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
@@ -476,10 +476,10 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
 window.addEventListener('load', function() {
   var chartOpts = {
     responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0e1420', borderColor: '#1a2436', borderWidth: 1, titleColor: '#57534e', bodyColor: '#1c1c18' }},
+    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#f4f4f0', borderColor: '#dcdcd4', borderWidth: 1, titleColor: '#57534e', bodyColor: '#1c1c18' }},
     scales: {
-      x: { ticks: { color: '#57534e', font: { size: 11 }, maxRotation: 0 }, grid: { display: false }, border: { color: '#1a2436' }},
-      y: { ticks: { color: '#57534e', font: { size: 11 }}, grid: { color: 'rgba(255,255,255,0.04)' }, border: { color: '#1a2436' }, beginAtZero: true }
+      x: { ticks: { color: '#57534e', font: { size: 11 }, maxRotation: 0 }, grid: { display: false }, border: { color: '#dcdcd4' }},
+      y: { ticks: { color: '#57534e', font: { size: 11 }}, grid: { color: 'rgba(255,255,255,0.04)' }, border: { color: '#dcdcd4' }, beginAtZero: true }
     }
   };
   var yrs = ['FY2021','FY2022','FY2023','FY2024','FY2025'];
@@ -521,7 +521,7 @@ window.addEventListener('load', function() {
       scales: {
         x: chartOpts.scales.x,
         y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => '$' + v + 'B' }, position: 'left' },
-        y1: { type: 'linear', position: 'right', ticks: { color: '#57534e', font: { size: 11 }, callback: v => v + '%' }, grid: { display: false }, border: { color: '#1a2436' }, beginAtZero: true }
+        y1: { type: 'linear', position: 'right', ticks: { color: '#57534e', font: { size: 11 }, callback: v => v + '%' }, grid: { display: false }, border: { color: '#dcdcd4' }, beginAtZero: true }
       }
     }
   });
@@ -564,7 +564,7 @@ window.addEventListener('load', function() {
       scales: {
         x: chartOpts.scales.x,
         y: { ...chartOpts.scales.y, ticks: { ...chartOpts.scales.y.ticks, callback: v => v + '%' }, position: 'left' },
-        y1: { type: 'linear', position: 'right', ticks: { color: '#57534e', font: { size: 11 }, callback: v => '$' + v + 'B' }, grid: { display: false }, border: { color: '#1a2436' }, beginAtZero: true }
+        y1: { type: 'linear', position: 'right', ticks: { color: '#57534e', font: { size: 11 }, callback: v => '$' + v + 'B' }, grid: { display: false }, border: { color: '#dcdcd4' }, beginAtZero: true }
       }
     }
   });
