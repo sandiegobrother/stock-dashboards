@@ -9,36 +9,36 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#263040;--surface:#2e3a4e;--surface2:#36435a;--border:#38455c;--border2:#445268;--text:#e0eef8;--muted:#6888a8;--muted2:#445268;--green:#34d399;--red:#f87171;--amber:#fbbf24;--blue:#5b9cf6;--purple:#a78bfa}
+:root{--bg:#fafaf8;--surface:#f4f4f0;--surface2:#e8e8e4;--border:#dcdcd4;--border2:#ccccc4;--text:#1c1c18;--muted:#57534e;--muted2:#78716c;--green:#15803d;--red:#b91c1c;--amber:#fbbf24;--blue:#2563eb;--purple:#7c3aed}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#a78bfa08 0%,transparent 60%);pointer-events:none;z-index:0}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-nav{position:sticky;top:0;z-index:100;background:rgba(38,48,64,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:#a78bfa;letter-spacing:.1em;text-decoration:none}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#29252408 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#fafaf8}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:#7c3aed;letter-spacing:.1em;text-decoration:none}
 .nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:all .2s}
-.nav-links a:hover{color:var(--text);border-bottom-color:#a78bfa}
+.nav-links a:hover{color:var(--text);border-bottom-color:#7c3aed}
 .nav-btns{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.6rem;padding:4px 10px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
 .nb1{color:var(--muted);border-color:var(--border2)}.nb1:hover{background:rgba(255,255,255,.05)}
-.nb2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
-.nb3{color:#38bdf8;border-color:rgba(56,189,248,.3);background:rgba(56,189,248,.06)}
-.nb4{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
-.nb5{color:#f97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.06)}
-.nb6{color:#34d399;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06)}
-.nb-hub{color:#a78bfa;border-color:#a78bfa44;background:#a78bfa10}
+.nb2{color:#2563eb;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nb3{color:#292524;border-color:rgba(41,37,36,.3);background:rgba(41,37,36,.06)}
+.nb4{color:#7c3aed;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
+.nb5{color:#ea580c;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.06)}
+.nb6{color:#15803d;border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.06)}
+.nb-hub{color:#7c3aed;border-color:#7c3aed44;background:#7c3aed10}
 @media(max-width:700px){.nav-links{display:none}}
 .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
 .hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
 .hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
 .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
-.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:#a78bfa;line-height:1;margin-bottom:.4rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:#7c3aed;line-height:1;margin-bottom:.4rem}
 .hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#a78bfa10;border:1px solid #a78bfa30;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#a78bfa;letter-spacing:.08em}
-.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#a78bfa}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#7c3aed10;border:1px solid #7c3aed30;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#7c3aed;letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#7c3aed}
 .hero-right{text-align:right}
-.verdict-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;line-height:1;margin-bottom:4px;color:#5b9cf6}
+.verdict-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;line-height:1;margin-bottom:4px;color:#2563eb}
 .hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
 .hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:280px;text-align:right;line-height:1.5}
 @media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.8rem}}
@@ -58,12 +58,12 @@ nav{position:sticky;top:0;z-index:100;background:rgba(38,48,64,.95);backdrop-fil
 .reason-num{font-family:'IBM Plex Mono',monospace;font-size:1.2rem;font-weight:600;min-width:28px}
 .reason-title{font-size:.88rem;font-weight:500;color:var(--text)}
 .reason-tag{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:3px 10px;border-radius:4px;letter-spacing:.06em;white-space:nowrap}
-.buy-tag{background:#34d39915;color:#34d399;border:1px solid #34d39930}
-.avoid-tag{background:#f8717115;color:#f87171;border:1px solid #f8717130}
+.buy-tag{background:#15803d15;color:#15803d;border:1px solid #15803d30}
+.avoid-tag{background:#b91c1c15;color:#b91c1c;border:1px solid #b91c1c30}
 .reason-body{font-size:.86rem;line-height:1.72;color:var(--text)}
-.reason-body strong{color:#a78bfa;font-weight:500}
-.buy-card{border-left:2px solid #34d39940}
-.avoid-card{border-left:2px solid #f8717140}
+.reason-body strong{color:#7c3aed;font-weight:500}
+.buy-card{border-left:2px solid #15803d40}
+.avoid-card{border-left:2px solid #b91c1c40}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
 .card-head{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);font-weight:500;margin-bottom:1rem;padding-bottom:.75rem;border-bottom:1px solid var(--border)}
 .tbl{width:100%;border-collapse:collapse;font-size:.85rem}
@@ -78,23 +78,23 @@ nav{position:sticky;top:0;z-index:100;background:rgba(38,48,64,.95);backdrop-fil
 .score-bar-wrap{flex:1;display:flex;align-items:center;gap:.75rem;background:var(--surface2);border-radius:4px;padding:4px 8px}
 .score-bar{height:8px;border-radius:3px;transition:width .8s ease}
 .score-num{font-family:'IBM Plex Mono',monospace;font-size:.75rem;color:var(--text);min-width:32px}
-.thesis-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #a78bfa;border-radius:8px;padding:1.5rem;margin-bottom:2rem}
+.thesis-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #7c3aed;border-radius:8px;padding:1.5rem;margin-bottom:2rem}
 .thesis-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
 .thesis-body{font-size:.9rem;line-height:1.75;color:var(--text)}
-.thesis-body strong{color:#a78bfa;font-weight:500}
-.verdict-box{background:var(--surface);border:1px solid #5b9cf644;border-left:3px solid #5b9cf6;border-radius:8px;padding:1.5rem;margin-bottom:2rem}
+.thesis-body strong{color:#7c3aed;font-weight:500}
+.verdict-box{background:var(--surface);border:1px solid #2563eb44;border-left:3px solid #2563eb;border-radius:8px;padding:1.5rem;margin-bottom:2rem}
 .verdict-inner-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
 .verdict-inner-body{font-size:.9rem;line-height:1.75;color:var(--text)}
-.verdict-inner-body strong{color:#5b9cf6;font-weight:500}
+.verdict-inner-body strong{color:#2563eb;font-weight:500}
 .inst-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.5rem}
 @media(max-width:700px){.inst-grid{grid-template-columns:repeat(2,1fr)}}
 .inst-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
 .inst-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:5px}
-.inst-val{font-family:'IBM Plex Mono',monospace;font-size:1.1rem;font-weight:500;color:#a78bfa;line-height:1}
+.inst-val{font-family:'IBM Plex Mono',monospace;font-size:1.1rem;font-weight:500;color:#7c3aed;line-height:1}
 .inst-sub{font-size:.68rem;color:var(--muted);margin-top:3px}
 .chart-wrap{position:relative;width:100%;height:240px}
 footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
-.footer-brand{font-family:'IBM Plex Mono',monospace;color:#a78bfa;font-size:.85rem;margin-bottom:6px}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:#7c3aed;font-size:.85rem;margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -129,7 +129,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
       <div class="hero-right">
         <div class="hero-label">Institutional Verdict</div>
         <div class="verdict-big">BUY</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#5b9cf6;letter-spacing:.08em;margin-bottom:6px">84% EBITDA margin platform · E-com expansion · SEC resolution = re-rating</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#2563eb;letter-spacing:.08em;margin-bottom:6px">84% EBITDA margin platform · E-com expansion · SEC resolution = re-rating</div>
         <div class="hero-sub">~65% institutional ownership · $450 analyst target · Axon AI engine unmatched · $6.7B buybacks</div>
       </div>
     </div>
@@ -139,17 +139,17 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
   <div class="inst-grid">
     <div class="inst-card"><div class="inst-label">Institutional Own.</div><div class="inst-val">~65%</div><div class="inst-sub">Institutional owned</div></div>
     <div class="inst-card"><div class="inst-label">Largest Holder</div><div class="inst-val" style="font-size:.9rem">Vanguard Group</div><div class="inst-sub">~7% stake</div></div>
-    <div class="inst-card"><div class="inst-label">Analyst Consensus</div><div class="inst-val" style="font-size:.9rem;color:#34d399">Buy</div><div class="inst-sub">25+ analysts · avg $450</div></div>
-    <div class="inst-card"><div class="inst-label">Short Interest</div><div class="inst-val" style="color:#34d399">3.5%</div><div class="inst-sub">Elevated vs peers</div></div>
+    <div class="inst-card"><div class="inst-label">Analyst Consensus</div><div class="inst-val" style="font-size:.9rem;color:#15803d">Buy</div><div class="inst-sub">25+ analysts · avg $450</div></div>
+    <div class="inst-card"><div class="inst-label">Short Interest</div><div class="inst-val" style="color:#15803d">3.5%</div><div class="inst-sub">Elevated vs peers</div></div>
   </div>
 
   <!-- SCORECARD -->
   <div class="scorecard">
-    <div class="score-item"><div class="score-label">Conviction Score</div><div class="score-val" style="color:#a78bfa">7/10</div><div class="score-sub">Overall HF rating</div></div>
-    <div class="score-item"><div class="score-label">Business Quality</div><div class="score-val" style="color:#34d399">9/10</div><div class="score-sub">Moat + mgmt</div></div>
-    <div class="score-item"><div class="score-label">Growth Score</div><div class="score-val" style="color:#5b9cf6">8/10</div><div class="score-sub">2-4yr trajectory</div></div>
+    <div class="score-item"><div class="score-label">Conviction Score</div><div class="score-val" style="color:#7c3aed">7/10</div><div class="score-sub">Overall HF rating</div></div>
+    <div class="score-item"><div class="score-label">Business Quality</div><div class="score-val" style="color:#15803d">9/10</div><div class="score-sub">Moat + mgmt</div></div>
+    <div class="score-item"><div class="score-label">Growth Score</div><div class="score-val" style="color:#2563eb">8/10</div><div class="score-sub">2-4yr trajectory</div></div>
     <div class="score-item"><div class="score-val" style="color:#fbbf24">6/10</div><div class="score-label">Valuation</div><div class="score-sub">Price vs value</div></div>
-    <div class="score-item"><div class="score-val" style="color:#f87171">6/10</div><div class="score-label">Risk Level</div><div class="score-sub">Lower = safer</div></div>
+    <div class="score-item"><div class="score-val" style="color:#b91c1c">6/10</div><div class="score-label">Risk Level</div><div class="score-sub">Lower = safer</div></div>
   </div>
 
   <!-- BUY / AVOID -->
@@ -157,21 +157,21 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
     <div class="section-head"><div class="section-head-label">Why Institutions Buy</div><div class="section-head-line"></div></div>
     <div class="reason-card buy-card">
           <div class="reason-header">
-            <div class="reason-num" style="color:#34d399">B1</div>
+            <div class="reason-num" style="color:#15803d">B1</div>
             <div class="reason-title">84% EBITDA Margin — Best in Global Ad Technology</div>
             <div class="reason-tag buy-tag">QUALITY</div>
           </div>
           <div class="reason-body"><strong>AppLovin's 84% EBITDA margins are the highest of any scaled advertising technology company globally.</strong> By comparison: Meta has 52%, Alphabet 35%, The Trade Desk 35%. This margin structure reflects Axon AI's software economics — the engine improves with every ad auction without proportional cost increases. Institutional investors running software quality screens rank AppLovin's margin profile as best-in-class.</div>
         </div><div class="reason-card buy-card">
           <div class="reason-header">
-            <div class="reason-num" style="color:#34d399">B2</div>
+            <div class="reason-num" style="color:#15803d">B2</div>
             <div class="reason-title">E-Commerce Expansion — $1.45B 2026 Target = New Revenue Vertical</div>
             <div class="reason-tag buy-tag">GROWTH</div>
           </div>
           <div class="reason-body"><strong>Applying Axon's mobile optimization engine to e-commerce and DTC advertising opens a $150B+ addressable market that AppLovin hasn't previously accessed.</strong> Early pilots demonstrating superior ROAS vs Meta and Google for certain product categories are the most important data points for institutional growth investors. If $1.45B is achieved in 2026, it validates the 'Axon is generalizable' thesis worth $20B+ in incremental market cap.</div>
         </div><div class="reason-card buy-card">
           <div class="reason-header">
-            <div class="reason-num" style="color:#34d399">B3</div>
+            <div class="reason-num" style="color:#15803d">B3</div>
             <div class="reason-title">$6.7B in Buybacks — Management Allocating Capital Confidently</div>
             <div class="reason-tag buy-tag">CAPITAL RETURN</div>
           </div>
@@ -180,14 +180,14 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
     <div class="section-head"><div class="section-head-label">Why Institutions Avoid</div><div class="section-head-line"></div></div>
     <div class="reason-card avoid-card">
           <div class="reason-header">
-            <div class="reason-num" style="color:#f87171">A1</div>
+            <div class="reason-num" style="color:#b91c1c">A1</div>
             <div class="reason-title">SEC Investigation — Unknown Scope, Binary Risk</div>
             <div class="reason-tag avoid-tag">REGULATORY</div>
           </div>
           <div class="reason-body"><strong>The disclosed SEC investigation creates binary risk that value and risk-parity managers cannot model.</strong> Unknown scope means unknown liability — investigations can close with no action (most likely) or result in material fines, restatements, or executive actions that impair the investment case. Governance-sensitive institutions maintain reduced positions until clarity emerges.</div>
         </div><div class="reason-card avoid-card">
           <div class="reason-header">
-            <div class="reason-num" style="color:#f87171">A2</div>
+            <div class="reason-num" style="color:#b91c1c">A2</div>
             <div class="reason-title">3.5% Short Interest — Elevated vs Large-Cap Ad Tech</div>
             <div class="reason-tag avoid-tag">SENTIMENT</div>
           </div>
@@ -210,10 +210,10 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
           <td class="mono right" style="color:#fbbf24">+15-25%</td>
         </tr><tr>
           <td style="font-size:.82rem;font-weight:500">E-com Revenue $1.45B Confirmation</td>
-          <td class="mono" style="font-size:.75rem;color:#34d399">NEAR</td>
+          <td class="mono" style="font-size:.75rem;color:#15803d">NEAR</td>
           <td style="font-size:.8rem;color:var(--muted)">FY2026</td>
           <td style="font-size:.82rem">New vertical validation triggers analyst target increases</td>
-          <td class="mono right" style="color:#34d399">+20-35%</td>
+          <td class="mono right" style="color:#15803d">+20-35%</td>
         </tr><tr>
           <td style="font-size:.82rem;font-weight:500">CTV Advertising Pilot Results</td>
           <td class="mono" style="font-size:.75rem;color:#fbbf24">MID</td>
@@ -238,14 +238,14 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
       <div class="card">
         <div class="card-head">Hedge Fund Scoring Criteria</div>
         <div class="score-grid">
-          <div class="score-row"><span class="score-label-txt">Business Quality / Moat</span><div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:#34d399"></div><span class="score-num">9/10</span></div></div>
-<div class="score-row"><span class="score-label-txt">EBITDA Margin (84%)</span><div class="score-bar-wrap"><div class="score-bar" style="width:100%;background:#34d399"></div><span class="score-num">10/10</span></div></div>
-<div class="score-row"><span class="score-label-txt">E-com Expansion Potential</span><div class="score-bar-wrap"><div class="score-bar" style="width:80%;background:#34d399"></div><span class="score-num">8/10</span></div></div>
-<div class="score-row"><span class="score-label-txt">SEC Investigation</span><div class="score-bar-wrap"><div class="score-bar" style="width:40%;background:#f87171"></div><span class="score-num">4/10</span></div></div>
+          <div class="score-row"><span class="score-label-txt">Business Quality / Moat</span><div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:#15803d"></div><span class="score-num">9/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">EBITDA Margin (84%)</span><div class="score-bar-wrap"><div class="score-bar" style="width:100%;background:#15803d"></div><span class="score-num">10/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">E-com Expansion Potential</span><div class="score-bar-wrap"><div class="score-bar" style="width:80%;background:#15803d"></div><span class="score-num">8/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">SEC Investigation</span><div class="score-bar-wrap"><div class="score-bar" style="width:40%;background:#b91c1c"></div><span class="score-num">4/10</span></div></div>
 <div class="score-row"><span class="score-label-txt">Valuation at 35x P/E</span><div class="score-bar-wrap"><div class="score-bar" style="width:60%;background:#fbbf24"></div><span class="score-num">6/10</span></div></div>
-<div class="score-row"><span class="score-label-txt">Short Interest (3.5%)</span><div class="score-bar-wrap"><div class="score-bar" style="width:50%;background:#f87171"></div><span class="score-num">5/10</span></div></div>
-<div class="score-row"><span class="score-label-txt">FCF Generation ($4B)</span><div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:#34d399"></div><span class="score-num">9/10</span></div></div>
-<div class="score-row"><span class="score-label-txt">Buyback Program</span><div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:#34d399"></div><span class="score-num">9/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">Short Interest (3.5%)</span><div class="score-bar-wrap"><div class="score-bar" style="width:50%;background:#b91c1c"></div><span class="score-num">5/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">FCF Generation ($4B)</span><div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:#15803d"></div><span class="score-num">9/10</span></div></div>
+<div class="score-row"><span class="score-label-txt">Buyback Program</span><div class="score-bar-wrap"><div class="score-bar" style="width:90%;background:#15803d"></div><span class="score-num">9/10</span></div></div>
         </div>
       </div>
       <div class="card">
@@ -264,7 +264,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
     </div>
     <div class="verdict-box">
       <div class="verdict-inner-title">Institutional Verdict · APP · BUY · 84% EBITDA margin platform · E-com expansion · SEC resolution = re-rating</div>
-      <div class="verdict-inner-body"><strong style='color:#5b9cf6'>BUY — Premium Business at Fair Multiple, SEC Catalyst Ahead.</strong> AppLovin's 84% EBITDA margin justifies the 35x P/E premium. SEC resolution is the most binary near-term catalyst — remove the overhang and the stock re-rates toward $350+. E-com expansion at $1.45B target is the growth narrative validation. <strong style='color:#5b9cf6'>Recommended: 1.5-2% position. SEC resolution or e-com target achievement = add aggressively. 18-month target: $290-450.</strong></div>
+      <div class="verdict-inner-body"><strong style='color:#2563eb'>BUY — Premium Business at Fair Multiple, SEC Catalyst Ahead.</strong> AppLovin's 84% EBITDA margin justifies the 35x P/E premium. SEC resolution is the most binary near-term catalyst — remove the overhang and the stock re-rates toward $350+. E-com expansion at $1.45B target is the growth narrative validation. <strong style='color:#2563eb'>Recommended: 1.5-2% position. SEC resolution or e-com target achievement = add aggressively. 18-month target: $290-450.</strong></div>
     </div>
   </section>
 
@@ -275,8 +275,8 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
 </footer>
 <script>
 window.addEventListener('load', function() {
-  Chart.defaults.color = '#6888a8';
-  Chart.defaults.borderColor = '#38455c';
+  Chart.defaults.color = '#57534e';
+  Chart.defaults.borderColor = '#dcdcd4';
   const labels = ['Business Quality','Growth Potential','Valuation','Risk-Adjusted Ret.','Catalyst Density','Moat Durability'];
   const scores = [9, 8, 6, 7, 4, 8];
   new Chart(document.getElementById('radarChart'), {
@@ -286,10 +286,10 @@ window.addEventListener('load', function() {
       datasets: [{
         label: 'APP',
         data: scores,
-        backgroundColor: '#a78bfa22',
-        borderColor: '#a78bfa',
+        backgroundColor: '#7c3aed22',
+        borderColor: '#7c3aed',
         borderWidth: 2,
-        pointBackgroundColor: '#a78bfa',
+        pointBackgroundColor: '#7c3aed',
         pointRadius: 4,
       }]
     },
@@ -298,7 +298,7 @@ window.addEventListener('load', function() {
       plugins: { legend: {display:false} },
       scales: { r: {
         min: 0, max: 10,
-        grid: {color:'#38455c'},
+        grid: {color:'#dcdcd4'},
         ticks: {display:false},
         pointLabels: {color:'#94a3b8',font:{size:10}}
       }}
