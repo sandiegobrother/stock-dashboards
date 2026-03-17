@@ -9,35 +9,35 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#263040;--surface:#2e3a4e;--surface2:#36435a;--surface3:#38455c;--border:#38455c;--border2:#445268;--accent:#34d399;--text:#e0eef8;--muted:#6888a8;--muted2:#445268}
+:root{--bg:#fafaf8;--surface:#f4f4f0;--surface2:#e8e8e4;--surface3:#dcdcd4;--border:#dcdcd4;--border2:#ccccc4;--accent:#15803d;--text:#1c1c18;--muted:#57534e;--muted2:#78716c}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#34d39908 0%,transparent 60%);pointer-events:none;z-index:0}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-nav{position:sticky;top:0;z-index:100;background:rgba(38,48,64,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:#34d399;letter-spacing:.1em;text-decoration:none}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#29252408 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#fafaf8}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:#15803d;letter-spacing:.1em;text-decoration:none}
 .nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
-.nav-links a:hover{color:var(--text);border-bottom-color:#34d399}
+.nav-links a:hover{color:var(--text);border-bottom-color:#15803d}
 .nav-btns{display:flex;gap:8px;align-items:center}
 .nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
 .nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
-.nav-d2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
-.nav-d3{color:#38bdf8;border-color:rgba(56,189,248,.3);background:rgba(56,189,248,.06)}
-.nav-d4{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
-.nav-d5{color:#f97316;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.06)}
-.nav-hub{color:#34d399;border-color:#34d39944;background:#34d39910}
+.nav-d2{color:#2563eb;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nav-d3{color:#292524;border-color:rgba(41,37,36,.3);background:rgba(41,37,36,.06)}
+.nav-d4{color:#7c3aed;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
+.nav-d5{color:#ea580c;border-color:rgba(249,115,22,.3);background:rgba(249,115,22,.06)}
+.nav-hub{color:#15803d;border-color:#15803d44;background:#15803d10}
 @media(max-width:700px){.nav-links{display:none}}
 .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
 .hero{padding:3.5rem 0 2.5rem;border-bottom:1px solid var(--border);margin-bottom:2.5rem}
 .hero-top{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:end}
 .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:var(--muted2);text-transform:uppercase;margin-bottom:.75rem}
-.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:#34d399;line-height:1;margin-bottom:.4rem}
+.hero-ticker{font-family:'IBM Plex Mono',monospace;font-size:4rem;font-weight:500;color:#15803d;line-height:1;margin-bottom:.4rem}
 .hero-name{font-family:'Playfair Display',serif;font-size:1.35rem;font-weight:400;color:var(--muted);margin-bottom:.6rem}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#34d39910;border:1px solid #34d39930;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#34d399;letter-spacing:.08em}
-.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#34d399}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:#15803d10;border:1px solid #15803d30;border-radius:4px;padding:5px 14px;font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#15803d;letter-spacing:.08em}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#15803d}
 .hero-right{text-align:right}
-.growth-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;color:#34d399;line-height:1;margin-bottom:4px}
+.growth-big{font-family:'IBM Plex Mono',monospace;font-size:2rem;font-weight:600;color:#15803d;line-height:1;margin-bottom:4px}
 .hero-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:4px}
 .hero-sub{font-size:.78rem;color:var(--muted);margin-top:6px;max-width:280px;text-align:right;line-height:1.5}
 @media(max-width:600px){.hero-top{grid-template-columns:1fr}.hero-right{text-align:left}.hero-sub{text-align:left;max-width:100%}.hero-ticker{font-size:2.8rem}}
@@ -59,11 +59,11 @@ nav{position:sticky;top:0;z-index:100;background:rgba(38,48,64,.95);backdrop-fil
 .driver-impact{font-family:'IBM Plex Mono',monospace;font-size:.68rem;padding:4px 12px;border-radius:4px;font-weight:600;letter-spacing:.06em;white-space:nowrap}
 .driver-body{padding-top:.75rem;border-top:1px solid var(--border)}
 .driver-desc{font-size:.87rem;line-height:1.72;color:var(--text);margin-bottom:.75rem}
-.driver-desc strong{color:#34d399;font-weight:500}
+.driver-desc strong{color:#15803d;font-weight:500}
 .driver-metrics{display:flex;flex-wrap:wrap;gap:.5rem}
 .metric-pill{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:3px 10px;font-size:.72rem}
 .metric-label{color:var(--muted2);font-size:.65rem;text-transform:uppercase;letter-spacing:.06em}
-.metric-val{font-family:'IBM Plex Mono',monospace;color:#34d399;font-weight:500}
+.metric-val{font-family:'IBM Plex Mono',monospace;color:#15803d;font-weight:500}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem}
 @media(max-width:700px){.g2{grid-template-columns:1fr}}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.4rem}
@@ -79,13 +79,13 @@ nav{position:sticky;top:0;z-index:100;background:rgba(38,48,64,.95);backdrop-fil
 @media(max-width:700px){.tam-grid{grid-template-columns:1fr}}
 .tam-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.1rem;text-align:center}
 .tam-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted2);margin-bottom:6px}
-.tam-val{font-family:'IBM Plex Mono',monospace;font-size:1.4rem;font-weight:500;color:#34d399;line-height:1;margin-bottom:4px}
+.tam-val{font-family:'IBM Plex Mono',monospace;font-size:1.4rem;font-weight:500;color:#15803d;line-height:1;margin-bottom:4px}
 .tam-sub{font-size:.7rem;color:var(--muted)}
-.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #34d399;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
+.verdict-block{background:var(--surface);border:1px solid var(--border);border-left:3px solid #15803d;border-radius:8px;padding:1.5rem;margin-bottom:2.5rem}
 .verdict-title{font-family:'IBM Plex Mono',monospace;font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted2);margin-bottom:.75rem}
 .verdict-text{font-size:.9rem;line-height:1.75;color:var(--text)}
 footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;color:var(--muted2);display:flex;gap:2rem;flex-wrap:wrap;justify-content:space-between;margin-top:2rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-left:2rem;padding-right:2rem}
-.footer-brand{font-family:'IBM Plex Mono',monospace;color:#34d399;font-size:.85rem;margin-bottom:6px}
+.footer-brand{font-family:'IBM Plex Mono',monospace;color:#15803d;font-size:.85rem;margin-bottom:6px}
 </style>
 </head>
 <body>
@@ -119,7 +119,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
       <div class="hero-right">
         <div class="hero-label">2-4 Year Revenue Growth Est.</div>
         <div class="growth-big">+25% → +30%</div>
-        <div style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#34d399;letter-spacing:.08em;margin-bottom:6px">$21B → $45B+ Revenue by FY2028E</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:.7rem;color:#15803d;letter-spacing:.08em;margin-bottom:6px">$21B → $45B+ Revenue by FY2028E</div>
         <div class="hero-sub">39% revenue growth · 78M Mercado Pago MAU · $1B buyback · 15% e-com penetration → 25%</div>
       </div>
     </div>
@@ -128,10 +128,10 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
   <!-- SCORECARD -->
   <div class="scorecard">
     <div class="score-item"><div class="score-label">TAM 2026</div><div class="score-val" style="color:var(--text)">$2T+</div><div class="score-sub">LatAm digital economy TAM 2030</div></div>
-    <div class="score-item"><div class="score-label">TAM 2028E</div><div class="score-val" style="color:#34d399">$500B</div><div class="score-sub">LatAm e-com + fintech 2028E</div></div>
-    <div class="score-item"><div class="score-label">Industry CAGR</div><div class="score-val" style="color:#5b9cf6">25%</div><div class="score-sub">LatAm e-com CAGR 2025-28</div></div>
-    <div class="score-item"><div class="score-label">Rev FY2026E</div><div class="score-val" style="color:#34d399">$24B</div><div class="score-sub">+25% YoY</div></div>
-    <div class="score-item"><div class="score-label">Rev FY2028E</div><div class="score-val" style="color:#34d399">$40B</div><div class="score-sub">+30% CAGR est.</div></div>
+    <div class="score-item"><div class="score-label">TAM 2028E</div><div class="score-val" style="color:#15803d">$500B</div><div class="score-sub">LatAm e-com + fintech 2028E</div></div>
+    <div class="score-item"><div class="score-label">Industry CAGR</div><div class="score-val" style="color:#2563eb">25%</div><div class="score-sub">LatAm e-com CAGR 2025-28</div></div>
+    <div class="score-item"><div class="score-label">Rev FY2026E</div><div class="score-val" style="color:#15803d">$24B</div><div class="score-sub">+25% YoY</div></div>
+    <div class="score-item"><div class="score-label">Rev FY2028E</div><div class="score-val" style="color:#15803d">$40B</div><div class="score-sub">+30% CAGR est.</div></div>
   </div>
 
   <!-- GROWTH DRIVERS -->
@@ -140,12 +140,12 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
     
         <div class="driver-card">
           <div class="driver-header">
-            <div class="driver-num" style="color:#34d399">01</div>
+            <div class="driver-num" style="color:#15803d">01</div>
             <div class="driver-title-wrap">
               <div class="driver-name">E-Commerce Penetration — 15% → 25% by 2028</div>
               <div class="driver-category">Market Expansion</div>
             </div>
-            <div class="driver-impact" style="background:#34d39918;color:#34d399;border:1px solid #34d39933">VERY HIGH</div>
+            <div class="driver-impact" style="background:#15803d18;color:#15803d;border:1px solid #15803d33">VERY HIGH</div>
           </div>
           <div class="driver-body">
             <div class="driver-desc"><strong>Latin America's e-commerce penetration is 15% vs 25%+ in the US — representing a 10+ year secular growth runway simply from catching up to developed market norms.</strong> With 650M people and a growing middle class, even modest penetration gains translate to $50B+ in incremental GMV annually. MELI's 1,500+ fulfillment centers create a logistics moat that newcomers cannot replicate.</div>
@@ -156,12 +156,12 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
         </div>
         <div class="driver-card">
           <div class="driver-header">
-            <div class="driver-num" style="color:#34d399">02</div>
+            <div class="driver-num" style="color:#15803d">02</div>
             <div class="driver-title-wrap">
               <div class="driver-name">Mercado Pago — LatAm's PayPal + Square</div>
               <div class="driver-category">AI Technology</div>
             </div>
-            <div class="driver-impact" style="background:#34d39918;color:#34d399;border:1px solid #34d39933">VERY HIGH</div>
+            <div class="driver-impact" style="background:#15803d18;color:#15803d;border:1px solid #15803d33">VERY HIGH</div>
           </div>
           <div class="driver-body">
             <div class="driver-desc"><strong>Mercado Pago has 78M monthly active users growing 25% annually — making it the largest fintech platform in Latin America.</strong> The $12.5B credit portfolio growing 90% YoY, combined with insurance, investments, and digital accounts, creates a compounding fintech flywheel. Mercado Pago ARPU is still a fraction of US fintech comparables.</div>
@@ -172,12 +172,12 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
         </div>
         <div class="driver-card">
           <div class="driver-header">
-            <div class="driver-num" style="color:#34d399">03</div>
+            <div class="driver-num" style="color:#15803d">03</div>
             <div class="driver-title-wrap">
               <div class="driver-name">Mercado Ads — LatAm's Amazon Advertising</div>
               <div class="driver-category">Market Expansion</div>
             </div>
-            <div class="driver-impact" style="background:#34d39918;color:#34d399;border:1px solid #34d39933">HIGH</div>
+            <div class="driver-impact" style="background:#15803d18;color:#15803d;border:1px solid #15803d33">HIGH</div>
           </div>
           <div class="driver-body">
             <div class="driver-desc"><strong>Mercado Libre Ads is the largest digital advertising platform in Latin America, growing 30%+ annually.</strong> With 80M+ daily active buyers generating rich purchase intent data, MELI's ad platform offers targeting precision that traditional media cannot match. Advertising revenue is near 100% margin once the platform is built.</div>
@@ -188,12 +188,12 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
         </div>
         <div class="driver-card">
           <div class="driver-header">
-            <div class="driver-num" style="color:#34d399">04</div>
+            <div class="driver-num" style="color:#15803d">04</div>
             <div class="driver-title-wrap">
               <div class="driver-name">Geographic Expansion — Chile, Colombia, Mexico Growth</div>
               <div class="driver-category">Market Expansion</div>
             </div>
-            <div class="driver-impact" style="background:#34d39918;color:#34d399;border:1px solid #34d39933">HIGH</div>
+            <div class="driver-impact" style="background:#15803d18;color:#15803d;border:1px solid #15803d33">HIGH</div>
           </div>
           <div class="driver-body">
             <div class="driver-desc"><strong>Brazil (50% GMV) and Argentina (15% GMV) are MELI's mature markets — Mexico, Chile, and Colombia represent the next growth frontier where e-commerce penetration is even lower (5-10%).</strong> Mexico specifically is a massive opportunity: 130M people, 40% e-commerce penetration gap vs Brazil, and growing middle class.</div>
@@ -215,7 +215,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
     <div class="g2">
       <div class="card">
         <div class="card-head">Industry Growth Context</div>
-        <div style="font-size:.87rem;line-height:1.75;color:var(--text)"><strong style='color:#34d399'>Latin America is one of the world's fastest-growing digital economies</strong> — 650M people, 70%+ smartphone penetration, and structural tailwinds from financial inclusion (50%+ previously unbanked now using Mercado Pago). The combination of Amazon (e-commerce), PayPal (payments), Square (SMB financial services), and Shopify (e-commerce tools) in one platform is uniquely valuable in a market where these functions don't exist separately.</div>
+        <div style="font-size:.87rem;line-height:1.75;color:var(--text)"><strong style='color:#15803d'>Latin America is one of the world's fastest-growing digital economies</strong> — 650M people, 70%+ smartphone penetration, and structural tailwinds from financial inclusion (50%+ previously unbanked now using Mercado Pago). The combination of Amazon (e-commerce), PayPal (payments), Square (SMB financial services), and Shopify (e-commerce tools) in one platform is uniquely valuable in a market where these functions don't exist separately.</div>
       </div>
       <div class="card">
         <div class="card-head">TAM Expansion Chart</div>
@@ -235,31 +235,31 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
           <tbody><tr>
           <td style="font-size:.82rem">FY2025A</td>
           <td class="mono right">$21B</td>
-          <td class="mono right" style="color:#34d399">↑ +39%</td>
+          <td class="mono right" style="color:#15803d">↑ +39%</td>
           <td class="mono right">~$45.80</td>
           <td class="mono right">$2.5B</td>
-          <td class="mono right" style="color:#34d399">Record growth</td>
+          <td class="mono right" style="color:#15803d">Record growth</td>
         </tr><tr>
           <td style="font-size:.82rem">FY2026E</td>
           <td class="mono right">$26B</td>
-          <td class="mono right" style="color:#34d399">↑ +24%</td>
+          <td class="mono right" style="color:#15803d">↑ +24%</td>
           <td class="mono right">~$56.00</td>
           <td class="mono right">$3.2B</td>
-          <td class="mono right" style="color:#34d399">Pago credit + ads</td>
+          <td class="mono right" style="color:#15803d">Pago credit + ads</td>
         </tr><tr>
           <td style="font-size:.82rem">FY2027E</td>
           <td class="mono right">$33B</td>
-          <td class="mono right" style="color:#34d399">↑ +27%</td>
+          <td class="mono right" style="color:#15803d">↑ +27%</td>
           <td class="mono right">~$70.00</td>
           <td class="mono right">$4.2B</td>
-          <td class="mono right" style="color:#34d399">Mexico acceleration</td>
+          <td class="mono right" style="color:#15803d">Mexico acceleration</td>
         </tr><tr>
           <td style="font-size:.82rem">FY2028E</td>
           <td class="mono right">$42B</td>
-          <td class="mono right" style="color:#34d399">↑ +27%</td>
+          <td class="mono right" style="color:#15803d">↑ +27%</td>
           <td class="mono right">~$90.00</td>
           <td class="mono right">$5.5B</td>
-          <td class="mono right" style="color:#34d399">Pan-LatAm scale</td>
+          <td class="mono right" style="color:#15803d">Pan-LatAm scale</td>
         </tr></tbody>
         </table>
       </div>
@@ -275,7 +275,7 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
     <div class="section-head"><div class="section-head-label">Growth Verdict</div><div class="section-head-line"></div></div>
     <div class="verdict-block">
       <div class="verdict-title">Growth Potential Verdict · MELI · +25% → +30% Est. Revenue Growth 2-4 Years</div>
-      <div class="verdict-text">MercadoLibre has one of the most compelling long-term growth stories globally. <strong style='color:#34d399'>Revenue growing from $21B to $42B+ (100% cumulative over 3 years) in the world's most underpenetrated major digital economy is driven by secular tailwinds that will persist for 15-20 years.</strong> The $1B buyback and PEG of 0.7 confirm management and the market both see the stock as undervalued. The Shopee competitive threat is real but manageable given MELI's 25-year first-mover moat.</div>
+      <div class="verdict-text">MercadoLibre has one of the most compelling long-term growth stories globally. <strong style='color:#15803d'>Revenue growing from $21B to $42B+ (100% cumulative over 3 years) in the world's most underpenetrated major digital economy is driven by secular tailwinds that will persist for 15-20 years.</strong> The $1B buyback and PEG of 0.7 confirm management and the market both see the stock as undervalued. The Shopee competitive threat is real but manageable given MELI's 25-year first-mover moat.</div>
     </div>
   </section>
 
@@ -286,8 +286,8 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
 </footer>
 <script>
 window.addEventListener('load', function() {
-  Chart.defaults.color = '#6888a8';
-  Chart.defaults.borderColor = '#38455c';
+  Chart.defaults.color = '#57534e';
+  Chart.defaults.borderColor = '#dcdcd4';
 
   const years = ['FY2025A', 'FY2026E', 'FY2027E', 'FY2028E'];
   const revs  = [21.0, 26.0, 33.0, 42.0];
@@ -299,13 +299,13 @@ window.addEventListener('load', function() {
     data: {
       labels: ['2024', '2025', '2026E', '2027E', '2028E'],
       datasets: [{ label: 'Market Size ($B)', data: [100, 140, 190, 260, 350],
-        backgroundColor: ['#34d39933','#34d39955','#34d39977','#34d39999'],
-        borderColor: '#34d399', borderWidth: 2, borderRadius: 4 }]
+        backgroundColor: ['#15803d33','#15803d55','#15803d77','#15803d99'],
+        borderColor: '#15803d', borderWidth: 2, borderRadius: 4 }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: {display:false}, tooltip: { callbacks: { label: function(x){ return ' $'+x.raw+'B'; } } } },
-      scales: { y: { grid: {color:'#38455c'}, ticks: {callback: v => '$'+v+'B'} }, x: { grid: {display:false} } }
+      scales: { y: { grid: {color:'#dcdcd4'}, ticks: {callback: v => '$'+v+'B'} }, x: { grid: {display:false} } }
     }
   });
 
@@ -315,15 +315,15 @@ window.addEventListener('load', function() {
     data: {
       labels: years,
       datasets: [
-        { label: 'Revenue ($B)', data: revs, backgroundColor: '#34d39933', borderColor: '#34d399', borderWidth: 2, borderRadius: 4, yAxisID: 'y' },
-        { label: 'Growth %', data: growths, type: 'line', borderColor: '#5b9cf6', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#5b9cf6', yAxisID: 'y1' }
+        { label: 'Revenue ($B)', data: revs, backgroundColor: '#15803d33', borderColor: '#15803d', borderWidth: 2, borderRadius: 4, yAxisID: 'y' },
+        { label: 'Growth %', data: growths, type: 'line', borderColor: '#2563eb', borderWidth: 2, pointRadius: 4, pointBackgroundColor: '#2563eb', yAxisID: 'y1' }
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: {position:'top',labels:{font:{size:11},color:'#94a3b8'}} },
       scales: {
-        y: { grid: {color:'#38455c'}, ticks: {callback: v => '$'+v+'B'}, position: 'left' },
+        y: { grid: {color:'#dcdcd4'}, ticks: {callback: v => '$'+v+'B'}, position: 'left' },
         y1: { grid: {display:false}, ticks: {callback: v => v+'%'}, position: 'right' },
         x: { grid: {display:false} }
       }
