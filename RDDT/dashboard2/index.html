@@ -9,12 +9,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#070b10;--surface:#0e1420;--surface2:#141c2a;--surface3:#1a2436;--border:#1a2436;--border2:#243248;--accent:#2563eb;--green:#15803d;--red:#b91c1c;--amber:#fbbf24;--text:#1c1c18;--muted:#57534e;--muted2:#78716c}
+:root{--bg:#fafaf8;--surface:#f4f4f0;--surface2:#e8e8e4;--surface3:#dcdcd4;--border:#dcdcd4;--border2:#ccccc4;--accent:#2563eb;--green:#15803d;--red:#b91c1c;--amber:#fbbf24;--text:#1c1c18;--muted:#57534e;--muted2:#78716c}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#29252408 0%,transparent 60%) 0%,transparent 60%),radial-gradient(ellipse at 20% 20%,#29252408 0%,transparent 60%) 0%,transparent 60%);pointer-events:none;z-index:0}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#fafaf8}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-nav{position:sticky;top:0;z-index:100;background:rgba(7,11,16,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+nav{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
 .nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
@@ -334,10 +334,10 @@ window.addEventListener('load', function() {
   var yrs = ["2021", "2022", "2023", "2024", "2025"];
   var opts = {
     responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#0e1420',borderColor:'#1a2436',borderWidth:1,titleColor:'#57534e',bodyColor:'#1c1c18'} },
+    plugins:{ legend:{display:false}, tooltip:{backgroundColor:'#f4f4f0',borderColor:'#dcdcd4',borderWidth:1,titleColor:'#57534e',bodyColor:'#1c1c18'} },
     scales:{
-      x:{ ticks:{color:'#57534e',font:{size:11},maxRotation:0}, grid:{display:false}, border:{color:'#1a2436'} },
-      y:{ ticks:{color:'#57534e',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'#1a2436'}, beginAtZero:true }
+      x:{ ticks:{color:'#57534e',font:{size:11},maxRotation:0}, grid:{display:false}, border:{color:'#dcdcd4'} },
+      y:{ ticks:{color:'#57534e',font:{size:11}}, grid:{color:'rgba(255,255,255,0.04)'}, border:{color:'#dcdcd4'}, beginAtZero:true }
     }
   };
   function $B(v){ return '$'+v+'B'; }
@@ -350,7 +350,7 @@ window.addEventListener('load', function() {
   new Chart(document.getElementById('incChart'),{type:'bar',data:{labels:yrs,datasets:[{label:'GAAP',data:[-0.27, -0.16, -0.09, 0.18, 0.71],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#2563eb',borderWidth:1,borderRadius:4},{label:'NonGAAP',data:[-0.2, -0.1, -0.05, 0.33, 0.84],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#15803d',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
 
   // FCF dual axis
-  new Chart(document.getElementById('fcfChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[-0.25, -0.14, -0.04, 0.36, 0.68],backgroundColor:'rgba(52,211,153,0.6)',borderColor:'#15803d',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[0, 0, 0, 28, 31],borderColor:'#2563eb',backgroundColor:'rgba(91,156,246,0.15)',pointBackgroundColor:'#2563eb',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#57534e',font:{size:11},callback:pct},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+  new Chart(document.getElementById('fcfChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[-0.25, -0.14, -0.04, 0.36, 0.68],backgroundColor:'rgba(52,211,153,0.6)',borderColor:'#15803d',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[0, 0, 0, 28, 31],borderColor:'#2563eb',backgroundColor:'rgba(91,156,246,0.15)',pointBackgroundColor:'#2563eb',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#57534e',font:{size:11},callback:pct},grid:{display:false},border:{color:'#dcdcd4'},beginAtZero:true}}}});
 
   // Margins
   new Chart(document.getElementById('mgnChart'),{type:'line',data:{labels:yrs,datasets:[{data:[87, 88, 88, 90, 90],borderColor:'#2563eb',backgroundColor:'rgba(91,156,246,0.08)',pointBackgroundColor:'#2563eb',borderWidth:2,fill:true,tension:0.3},{data:[-34, -12, -7, 17, 40],borderColor:'#15803d',backgroundColor:'rgba(52,211,153,0.05)',pointBackgroundColor:'#15803d',borderWidth:2,fill:false,tension:0.3},{data:[-34, -19, -11, 14, 32],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.05)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:false,tension:0.3}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct}}}}});
@@ -359,7 +359,7 @@ window.addEventListener('load', function() {
   new Chart(document.getElementById('dbtChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0, 0, 0, 0, 0],backgroundColor:'rgba(248,113,113,0.5)',borderColor:'#b91c1c',borderWidth:1,borderRadius:4},{data:[0, 0, 0, 0.22, 0.88],backgroundColor:'rgba(52,211,153,0.5)',borderColor:'#15803d',borderWidth:1,borderRadius:4}]},options:{...opts,scales:{...opts.scales,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:$B}}}}});
 
   // ROE dual axis
-  new Chart(document.getElementById('roeChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0, -20, -10, 15, 35],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#2563eb',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[0, 0, 0, 0, 1.0],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.1)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#57534e',font:{size:11},callback:$B},grid:{display:false},border:{color:'#1a2436'},beginAtZero:true}}}});
+  new Chart(document.getElementById('roeChart'),{type:'bar',data:{labels:yrs,datasets:[{data:[0, -20, -10, 15, 35],backgroundColor:'rgba(91,156,246,0.6)',borderColor:'#2563eb',borderWidth:1,borderRadius:4,yAxisID:'y'},{type:'line',data:[0, 0, 0, 0, 1.0],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,0.1)',pointBackgroundColor:'#fbbf24',borderWidth:2,fill:true,tension:0.3,yAxisID:'y1'}]},options:{...opts,scales:{x:opts.scales.x,y:{...opts.scales.y,ticks:{...opts.scales.y.ticks,callback:pct},position:'left'},y1:{type:'linear',position:'right',ticks:{color:'#57534e',font:{size:11},callback:$B},grid:{display:false},border:{color:'#dcdcd4'},beginAtZero:true}}}});
 });
 </script>
 </body>
