@@ -9,12 +9,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#263040;--surface:#2e3a4e;--surface2:#36435a;--surface3:#38455c;--border:#38455c;--border2:#445268;--accent:#ef4444;--text:#e0eef8;--muted:#6888a8;--muted2:#445268}
+:root{--bg:#fafaf8;--surface:#f4f4f0;--surface2:#e8e8e4;--surface3:#dcdcd4;--border:#dcdcd4;--border2:#ccccc4;--accent:#ef4444;--text:#1c1c18;--muted:#57534e;--muted2:#78716c}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#ef444408 0%,transparent 60%);pointer-events:none;z-index:0}
-::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-nav{position:sticky;top:0;z-index:100;background:rgba(38,48,64,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,#29252408 0%,transparent 60%);pointer-events:none;z-index:0}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:#fafaf8}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+nav{position:sticky;top:0;z-index:100;background:rgba(250,250,248,.95);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);height:54px;padding:0 2rem;display:flex;align-items:center;justify-content:space-between}
 .nav-logo{font-family:'IBM Plex Mono',monospace;font-size:.85rem;font-weight:500;color:var(--accent);letter-spacing:.1em;text-decoration:none}
 .nav-links{display:flex;list-style:none}
 .nav-links a{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);text-decoration:none;padding:0 .85rem;height:54px;display:flex;align-items:center;border-bottom:2px solid transparent;transition:color .2s,border-color .2s}
@@ -22,9 +22,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(38,48,64,.95);backdrop-fil
 .nav-btns{display:flex;gap:8px;align-items:center}
 .nav-btn{font-family:'IBM Plex Mono',monospace;font-size:.62rem;padding:4px 12px;border-radius:4px;text-decoration:none;letter-spacing:.06em;transition:background .2s;border:1px solid}
 .nav-d1{color:var(--muted);border-color:var(--border2)}.nav-d1:hover{background:rgba(255,255,255,.05)}
-.nav-d2{color:#5b9cf6;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
-.nav-d3{color:#38bdf8;border-color:rgba(56,189,248,.3);background:rgba(56,189,248,.06)}
-.nav-d4{color:#a78bfa;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
+.nav-d2{color:#2563eb;border-color:rgba(91,156,246,.3);background:rgba(91,156,246,.06)}
+.nav-d3{color:#292524;border-color:rgba(41,37,36,.3);background:rgba(41,37,36,.06)}
+.nav-d4{color:#7c3aed;border-color:rgba(167,139,250,.3);background:rgba(167,139,250,.06)}
 .nav-hub{color:var(--accent);border-color:#ef444444;background:#ef444410}
 @media(max-width:700px){.nav-links{display:none}}
 .wrapper{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
@@ -120,9 +120,9 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
   <div class="summary-grid">
     <div class="sum-item"><div class="sum-label">Total Risks</div><div class="sum-val" style="color:var(--text)">6</div><div class="sum-sub">Identified</div></div>
     <div class="sum-item"><div class="sum-label">Critical</div><div class="sum-val" style="color:#ef4444">2</div><div class="sum-sub">Severity 8-10/10</div></div>
-    <div class="sum-item"><div class="sum-label">High</div><div class="sum-val" style="color:#f97316">4</div><div class="sum-sub">Severity 6-7/10</div></div>
+    <div class="sum-item"><div class="sum-label">High</div><div class="sum-val" style="color:#ea580c">4</div><div class="sum-sub">Severity 6-7/10</div></div>
     <div class="sum-item"><div class="sum-label">Top Risk Score</div><div class="sum-val" style="color:#ef4444">10/10</div><div class="sum-sub">Continued Gross Ma…</div></div>
-    <div class="sum-item"><div class="sum-label">Risk Horizon</div><div class="sum-val" style="color:#5b9cf6" >12–24 mo</div><div class="sum-sub">Primary timeframe</div></div>
+    <div class="sum-item"><div class="sum-label">Risk Horizon</div><div class="sum-val" style="color:#2563eb" >12–24 mo</div><div class="sum-sub">Primary timeframe</div></div>
   </div>
 
   <!-- RANKED RISKS -->
@@ -166,16 +166,16 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
             <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> FY2025 +7x revenue growth demonstrates the manufacturing ramp is real. $624M in cash from $600M senior notes provides runway regardless of near-term guidance outcomes.</div>
           </div>
         </div>
-        <div class="risk-card" style="border-left:3px solid #f97316">
+        <div class="risk-card" style="border-left:3px solid #ea580c">
           <div class="risk-header">
-            <div class="risk-rank" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">#3</div>
+            <div class="risk-rank" style="background:#ea580c22;color:#ea580c;border:1px solid #ea580c44">#3</div>
             <div class="risk-title-wrap">
               <div class="risk-name">$600M Senior Notes Debt Burden</div>
               <div class="risk-category">Financial</div>
             </div>
-            <div class="risk-badge" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">HIGH</div>
+            <div class="risk-badge" style="background:#ea580c22;color:#ea580c;border:1px solid #ea580c44">HIGH</div>
             <div class="risk-score-wrap">
-              <div class="risk-score" style="color:#f97316">8<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-score" style="color:#ea580c">8<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
               <div class="risk-prob" style="color:var(--muted);font-size:.65rem">65%</div>
             </div>
           </div>
@@ -184,16 +184,16 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
             <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> $624M cash balance provides 2+ years of operational runway at current burn rates. If positive gross margins are achieved in FY2026, FCF break-even becomes visible.</div>
           </div>
         </div>
-        <div class="risk-card" style="border-left:3px solid #f97316">
+        <div class="risk-card" style="border-left:3px solid #ea580c">
           <div class="risk-header">
-            <div class="risk-rank" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">#4</div>
+            <div class="risk-rank" style="background:#ea580c22;color:#ea580c;border:1px solid #ea580c44">#4</div>
             <div class="risk-title-wrap">
               <div class="risk-name">Tesla Megapack and CATL Competition</div>
               <div class="risk-category">Competition</div>
             </div>
-            <div class="risk-badge" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">HIGH</div>
+            <div class="risk-badge" style="background:#ea580c22;color:#ea580c;border:1px solid #ea580c44">HIGH</div>
             <div class="risk-score-wrap">
-              <div class="risk-score" style="color:#f97316">8<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-score" style="color:#ea580c">8<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
               <div class="risk-prob" style="color:var(--muted);font-size:.65rem">70%</div>
             </div>
           </div>
@@ -202,16 +202,16 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
             <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> Eos targets 8-12 hour storage (vs Tesla Megapack's 2-4 hours) — a differentiated use case where zinc chemistry's long-duration economics are genuinely superior.</div>
           </div>
         </div>
-        <div class="risk-card" style="border-left:3px solid #f97316">
+        <div class="risk-card" style="border-left:3px solid #ea580c">
           <div class="risk-header">
-            <div class="risk-rank" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">#5</div>
+            <div class="risk-rank" style="background:#ea580c22;color:#ea580c;border:1px solid #ea580c44">#5</div>
             <div class="risk-title-wrap">
               <div class="risk-name">IRA Tax Credit Dependency</div>
               <div class="risk-category">Regulatory</div>
             </div>
-            <div class="risk-badge" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">HIGH</div>
+            <div class="risk-badge" style="background:#ea580c22;color:#ea580c;border:1px solid #ea580c44">HIGH</div>
             <div class="risk-score-wrap">
-              <div class="risk-score" style="color:#f97316">7<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-score" style="color:#ea580c">7<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
               <div class="risk-prob" style="color:var(--muted);font-size:.65rem">30%</div>
             </div>
           </div>
@@ -220,16 +220,16 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
             <div class="risk-mitigant"><span class="mitigant-label">Mitigant:</span> Eos's US manufacturing (100% made in America) qualifies for the most favorable IRA credit tiers. Political support for US manufacturing creates bipartisan protection.</div>
           </div>
         </div>
-        <div class="risk-card" style="border-left:3px solid #f97316">
+        <div class="risk-card" style="border-left:3px solid #ea580c">
           <div class="risk-header">
-            <div class="risk-rank" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">#6</div>
+            <div class="risk-rank" style="background:#ea580c22;color:#ea580c;border:1px solid #ea580c44">#6</div>
             <div class="risk-title-wrap">
               <div class="risk-name">Going Concern History</div>
               <div class="risk-category">Financial</div>
             </div>
-            <div class="risk-badge" style="background:#f9731622;color:#f97316;border:1px solid #f9731644">HIGH</div>
+            <div class="risk-badge" style="background:#ea580c22;color:#ea580c;border:1px solid #ea580c44">HIGH</div>
             <div class="risk-score-wrap">
-              <div class="risk-score" style="color:#f97316">7<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
+              <div class="risk-score" style="color:#ea580c">7<span style="font-size:.6rem;color:var(--muted)">/10</span></div>
               <div class="risk-prob" style="color:var(--muted);font-size:.65rem">25%</div>
             </div>
           </div>
@@ -271,12 +271,12 @@ footer{border-top:1px solid var(--border);padding:2rem 0 1rem;font-size:.72rem;c
 </footer>
 <script>
 window.addEventListener('load', function() {
-  Chart.defaults.color = '#6888a8';
-  Chart.defaults.borderColor = '#38455c';
+  Chart.defaults.color = '#57534e';
+  Chart.defaults.borderColor = '#dcdcd4';
 
   const names   = ['Continued Gross Margin…', 'FY2026 Revenue Guidanc…', '$600M Senior Notes Deb…', 'Tesla Megapack and CAT…', 'IRA Tax Credit Depende…', 'Going Concern History'];
   const scores  = [10, 9, 8, 8, 7, 7];
-  const colors  = ['#ef4444', '#ef4444', '#f97316', '#f97316', '#f97316', '#f97316'];
+  const colors  = ['#ef4444', '#ef4444', '#ea580c', '#ea580c', '#ea580c', '#ea580c'];
   const probs   = [65.0, 60.0, 65.0, 70.0, 30.0, 25.0];
 
   // Bar chart
@@ -293,7 +293,7 @@ window.addEventListener('load', function() {
       plugins: { legend: {display:false},
         tooltip: { callbacks: { label: c => ` Score: ${c.raw}/10` } } },
       scales: {
-        x: { min:0, max:10, grid: {color:'#38455c'}, ticks: {callback: v => v+'/10'} },
+        x: { min:0, max:10, grid: {color:'#dcdcd4'}, ticks: {callback: v => v+'/10'} },
         y: { grid: {display:false}, ticks: {font:{size:10}} }
       }
     }
@@ -320,8 +320,8 @@ window.addEventListener('load', function() {
       plugins: { legend: {display:false},
         tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: Score ${ctx.raw.x}/10 · Prob ${ctx.raw.y}%` } } },
       scales: {
-        x: { min:0, max:10, title: {display:true, text:'Severity (0-10)', color:'#6888a8'}, grid: {color:'#38455c'} },
-        y: { min:0, max:100, title: {display:true, text:'Probability (%)', color:'#6888a8'}, grid: {color:'#38455c'} }
+        x: { min:0, max:10, title: {display:true, text:'Severity (0-10)', color:'#57534e'}, grid: {color:'#dcdcd4'} },
+        y: { min:0, max:100, title: {display:true, text:'Probability (%)', color:'#57534e'}, grid: {color:'#dcdcd4'} }
       }
     }
   });
